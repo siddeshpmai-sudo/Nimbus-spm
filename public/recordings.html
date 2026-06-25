@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Training Recordings — NimbusWiz Tech</title>
+  <meta name="description" content="Watch your NimbusWiz Tech training recordings.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="recordings.css">
+</head>
+<body>
+
+<div class="layout">
+
+  <!-- ── Sidebar ─────────────────────────────── -->
+  <aside class="sidebar" id="sidebar" role="navigation" aria-label="Course filters">
+
+    <div class="sidebar-logo">
+      <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo">
+      <span class="sidebar-logo-text"><strong>NimbusWiz</strong>Tech</span>
+    </div>
+
+    <div class="sidebar-section">
+      <p class="sidebar-label">Filter by Course</p>
+      <div id="filter-list">
+        <!-- Populated by JS -->
+        <button class="filter-btn active" data-course="all" id="filter-all">
+          <span class="dot"></span>
+          All Recordings
+          <span class="filter-count" id="count-all">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- User card -->
+    <div class="sidebar-user">
+      <div class="user-card">
+        <div class="user-avatar" id="user-avatar">
+          <span id="user-initials">?</span>
+        </div>
+        <div class="user-info">
+          <div class="user-name" id="user-name">Loading...</div>
+          <div class="user-email" id="user-email"></div>
+        </div>
+        <a href="/auth/logout" class="logout-btn" id="logout-btn" title="Sign out" aria-label="Sign out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16 17 21 12 16 7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </aside>
+
+  <!-- Mobile sidebar overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <!-- ── Main ────────────────────────────────── -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar" role="banner">
+      <button class="mobile-menu-btn" id="mobile-menu-btn" aria-label="Toggle sidebar" aria-expanded="false">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <line x1="3" y1="12" x2="21" y2="12"/>
+          <line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+      <h1 class="topbar-title">
+        Training Recordings
+        <span id="topbar-count"></span>
+      </h1>
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <input type="search" class="search-input" id="search-input" placeholder="Search recordings…" aria-label="Search recordings">
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="content" id="content" role="main">
+
+      <!-- Loading skeletons (shown while fetching) -->
+      <div class="loading-state" id="loading-state" aria-label="Loading recordings" aria-live="polite">
+        <div class="skeleton"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+        <div class="skeleton"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+        <div class="skeleton"><div class="skeleton-thumb"></div><div class="skeleton-body"><div class="skeleton-line w60"></div><div class="skeleton-line w80"></div><div class="skeleton-line w40"></div></div></div>
+      </div>
+
+      <!-- Video grid (populated by JS) -->
+      <div id="video-grid" style="display:none;">
+        <p class="section-heading" id="grid-heading">All Recordings</p>
+        <div class="video-grid" id="video-grid-inner" role="list" aria-label="Training recordings"></div>
+        <div class="empty-state" id="empty-state" style="display:none;" role="status">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <h3>No recordings found</h3>
+          <p>Try a different search or filter</p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ── Video Player Modal ────────────────────────── -->
+<div class="modal-overlay" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <div class="modal-header-text">
+        <span class="modal-course-tag" id="modal-course"></span>
+        <h2 class="modal-title" id="modal-title">Video Title</h2>
+        <p class="modal-meta" id="modal-meta"></p>
+      </div>
+      <button class="modal-close" id="modal-close" aria-label="Close video player">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+        </svg>
+      </button>
+    </div>
+    <div class="modal-player" id="modal-player">
+      <!-- iframe inserted by JS -->
+    </div>
+    <p class="modal-desc" id="modal-desc"></p>
+  </div>
+</div>
+
+<script src="recordings.js"></script>
+</body>
+</html>

@@ -1,0 +1,831 @@
+[
+
+  {
+    "id": "linux-shell-class1-intro",
+    "title": "Linux & Shell Scripting — Class 1 (Intro)",
+    "description": "Introduction to Linux fundamentals, terminal basics and shell environment.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1feRXp3_j-oAx5UQuxf0mt-cbX0JPFI7f",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class1-dec25",
+    "title": "Linux — Class 1",
+    "description": "Linux file system, directories, file operations and basic commands.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "170JOjYw9CmEwiJpv-ABUWF6qEK0pj_5x",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class2-dec25",
+    "title": "Linux — Class 2",
+    "description": "User management, file permissions, ownership and process management.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1JnDSDoHZV53fQLbRP-kQWjDtckgZxY6E",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class3-dec25",
+    "title": "Linux — Class 3",
+    "description": "Package management, networking basics and systemd services.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1VERcfF1ex89WVwsngBfNbdeMbjcED1RT",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class4-dec25",
+    "title": "Linux — Class 4",
+    "description": "Advanced Linux administration — cron jobs, logs, disk management.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1GzFmN-GXCgwyXq09rHeVOq7-V4rYzWA1",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class5-1-dec25",
+    "title": "Linux — Class 5 (Part 1)",
+    "description": "Shell scripting fundamentals — variables, conditionals and loops.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1YuySEhgW1uhFjKRZO_0sfKZ3-HPRrgJO",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "linux-class5-2-dec25",
+    "title": "Linux — Class 5 (Part 2)",
+    "description": "Shell scripting continued — functions, arrays and script automation.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1gUoEggbedUm5aZmvfT5-eGd3FA5st6OI",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "shell-class2-dec25",
+    "title": "Shell Scripting — Class 2",
+    "description": "Advanced shell scripting — error handling, file processing and automation patterns.",
+    "course": "Linux & Shell Scripting",
+    "driveFileId": "1H7Nmi64qoeZrFipjsylEAVNw0Tri8z1y",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "git-shell-class3-dec25",
+    "title": "Git & Shell Scripting — Class 3",
+    "description": "Git branching strategies and shell scripting integration for automation.",
+    "course": "Git & Version Control",
+    "driveFileId": "14JuJ0QXq1rG1ldDzMPiCuutTRkonW9A5",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "git-class2-dec25",
+    "title": "Git — Class 2",
+    "description": "Git staging, commits, branching, merging and conflict resolution.",
+    "course": "Git & Version Control",
+    "driveFileId": "1ueOvvorUm6YwttYCnhYoRehweSQs24cz",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "git-class3-dec25",
+    "title": "Git — Class 3",
+    "description": "Remote repositories, pull requests and collaborative Git workflows.",
+    "course": "Git & Version Control",
+    "driveFileId": "1lKFlzDTdOSbdM8eW-00Y97K6UUoDx293",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "git-class4-dec25",
+    "title": "Git — Class 4",
+    "description": "Git rebase, cherry-pick, stash and advanced history management.",
+    "course": "Git & Version Control",
+    "driveFileId": "11ySBIx_EwlxnibHk6wc-pJmL36u_u9-M",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "git-class5-dec25",
+    "title": "Git — Class 5",
+    "description": "Git hooks, tags, releases and integration with CI/CD pipelines.",
+    "course": "Git & Version Control",
+    "driveFileId": "1IDrSkSvfQXgVXfmkTuxFZcnoRqSevsrU",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "aws-class1-1-dec25",
+    "title": "AWS — Class 1 (Part 1)",
+    "description": "Introduction to AWS Cloud — global infrastructure, IAM basics and console overview.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1G39RFM9e1CVM5C3DwhV9FKPkjxHAsUzK",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class1-2-dec25",
+    "title": "AWS — Class 1 (Part 2)",
+    "description": "EC2 instance types, launch templates, security groups and key pairs.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1c_MxGLSu7hqxRSMjDI2KcsAa3BiI7J7b",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class2-dec25",
+    "title": "AWS — Class 2",
+    "description": "EC2 deep dive — EBS volumes, snapshots, AMIs and instance storage.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1bpf2_KRlc419MwhdtDlcCPPoidNT8zio",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class3-dec25",
+    "title": "AWS — Class 3",
+    "description": "VPC architecture — subnets, route tables, internet gateways and NAT.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1ys4yJpC8zPJ5omd6kdG-FxU2I9eoO1Mc",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class4-dec25",
+    "title": "AWS — Class 4",
+    "description": "VPC peering, VPN, Direct Connect and advanced networking concepts.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "127kObIAT7yfQVNXnqVQgAyMtX7ajVMPV",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class5-dec25",
+    "title": "AWS — Class 5",
+    "description": "S3 — buckets, storage classes, versioning, lifecycle policies and static hosting.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1OpiNRFQzhJwvERBU7_wend8pCaM9SepP",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class6-dec25",
+    "title": "AWS — Class 6",
+    "description": "IAM — users, groups, roles, policies and cross-account access.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1mISg9Hw-khlwH2O50juvbCZhj6azH2ys",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class7-s3-dec25",
+    "title": "AWS — Class 7: S3 Advanced",
+    "description": "S3 advanced features — cross-region replication, encryption, access points.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1QHfJ4YqNbCqOoHjnE5Kx0V42jfdyucUB",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class8-httpd-dec25",
+    "title": "AWS — Class 8: HTTPD Web Hosting",
+    "description": "Deploying HTTPD web server on EC2, configuring Apache and web hosting on AWS.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1dzr9zZgUJJ6njTJT9ImP-HDie3Di8qsZ",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class8-lb-dec25",
+    "title": "AWS — Class 8: Load Balancer",
+    "description": "Application Load Balancer, target groups, health checks and listener rules.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1RkDPwr3ggncQvQNHhqheU73KlE4PN7Cw",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class9-lb-demo",
+    "title": "AWS — Class 9: Load Balancer Demo",
+    "description": "Hands-on LB demo — blue/green deployments, sticky sessions and SSL termination.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1_l-eNVobzsc75G1kX_ON9xCEHFSuuBVP",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class10-iam-asg",
+    "title": "AWS — Class 10: IAM & Auto Scaling",
+    "description": "IAM policies deep dive and Auto Scaling Groups — launch configurations and scaling policies.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1da2nEafJYW04xL63FVC3-6yS-mEVjQRj",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class12-asg-route53",
+    "title": "AWS — Class 12: ASG & Route 53",
+    "description": "Auto Scaling Groups with Route 53 — DNS routing, health checks and failover.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1hqOYJ7G8Aj-4kei41R47wz-InWCzOxRY",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class13-lambda-cft",
+    "title": "AWS — Class 13: Lambda & CloudFormation",
+    "description": "Introduction to Lambda serverless functions and CloudFormation for IaC.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1Ir5U0O4L3ESdbq_iqTPUeVfdL6h5YknE",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class14-cft",
+    "title": "AWS — Class 14: CloudFormation",
+    "description": "CloudFormation stacks, templates, parameters, outputs and nested stacks.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1bb2blzTgaNP18dKcuGa52mDbt_uZdAgO",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class15-cft-cli",
+    "title": "AWS — Class 15: CloudFormation & CLI",
+    "description": "Managing AWS resources with CloudFormation and the AWS CLI tooling.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1VBeRjxIzhQ2bHHSKqoUImuw9_ss0F_gE",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-class16-cft-cli",
+    "title": "AWS — Class 16: CloudFormation & CLI Advanced",
+    "description": "Advanced CloudFormation — change sets, drift detection and CLI automation scripts.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "13vyf3yRuuFaGHT6cuzOworjmwIaCsQSo",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-asg-stress-cw",
+    "title": "AWS — ASG Stress Test, CloudWatch & CloudTrail",
+    "description": "Stress testing Auto Scaling, CloudWatch alarms and CloudTrail audit logging.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "1KAyxbfLGlro8-FGOd9P7728ZVMTQN84E",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "aws-rds-dec25",
+    "title": "AWS — RDS Managed Databases",
+    "description": "Creating and managing RDS instances — MySQL, backups, Multi-AZ and read replicas.",
+    "course": "AWS Cloud Computing",
+    "driveFileId": "115qthCvnJ59n1VNiv6P_0G2OwxXUyHGh",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "docker-class1-dec25",
+    "title": "Docker — Class 1",
+    "description": "Docker fundamentals — containers vs VMs, images, Dockerfile and docker run.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1NCU67V30Exv9E-ABTmtOzbLOQ18ddRK0",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "docker-class2-dec25",
+    "title": "Docker — Class 2",
+    "description": "Docker networking, volumes, bind mounts and container lifecycle management.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1W_n3NrEzNFJzHDZBfvfzvxrON3IAQGXK",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "docker-class3-dec25",
+    "title": "Docker — Class 3",
+    "description": "Docker Compose — multi-container applications, services and environment configs.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1ibvJTn7WgYTjlMGn0CNsdKkVR1Jv-zFc",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "docker-class4-dec25",
+    "title": "Docker — Class 4",
+    "description": "Docker registry, pushing images to DockerHub and private registries.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "11xsKaC5lR4YdBXRxMophyKVBr4gsQFXz",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "docker-class5-dec25",
+    "title": "Docker — Class 5",
+    "description": "Docker Swarm, container orchestration basics and production best practices.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1RPXpKoGM9Ngbwye94w28ieuO4GxVDA_V",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "docker-qa-jenkins-agent",
+    "title": "Docker Q&A + Jenkins Docker Agent",
+    "description": "Docker Q&A session and configuring Jenkins with Docker agents for CI/CD.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1FfSE3i1CpMZ4bMNDo-Wh0t3wA-o7qLql",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class1-dec25",
+    "title": "Kubernetes — Class 1",
+    "description": "Kubernetes architecture — control plane, nodes, pods and cluster setup.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1TgbXZQpce8aWAXh6mpfs1R4__2uaib4l",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class2-jan25",
+    "title": "Kubernetes — Class 2",
+    "description": "Deployments, ReplicaSets, rolling updates and rollback strategies.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1yO3fxJ6kLpJko_-t92Yzz1GqPBpcvBUz",
+    "date": "2025-01-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class3-dec25",
+    "title": "Kubernetes — Class 3",
+    "description": "Services — ClusterIP, NodePort, LoadBalancer and Endpoints.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1DLAJgJDAE90mmlAkTVbjZXhg7KeKMR0E",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class4-dec25",
+    "title": "Kubernetes — Class 4",
+    "description": "ConfigMaps, Secrets and environment variable injection into pods.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "15jUqlAP12gILbsZRJs6MWwWoUOKXQT8n",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class5-dec25",
+    "title": "Kubernetes — Class 5",
+    "description": "Persistent Volumes, PVCs, StorageClasses and stateful applications.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "17dPgw0RZfWa8tMxLx2yUU2LQIXUrzMDH",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class5-jan25",
+    "title": "Kubernetes — Class 5 (Jan Batch)",
+    "description": "Namespaces, resource quotas and limits for multi-team cluster management.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1yzzdln1JKDAMjuo0PaZZxWVoJHTDebWy",
+    "date": "2025-01-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class6-dec25",
+    "title": "Kubernetes — Class 6",
+    "description": "Ingress controllers, TLS termination and path-based routing.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1AY3__-LoRxugQC7Umciw7RjfhhN_FzyM",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class8-dec25",
+    "title": "Kubernetes — Class 8",
+    "description": "RBAC, service accounts and Kubernetes security best practices.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1RsNS2DAGezf1ZfBen9gy0vV9pUuh2T72",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class9-dec25",
+    "title": "Kubernetes — Class 9",
+    "description": "Horizontal Pod Autoscaler, Vertical Pod Autoscaler and cluster autoscaling.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "15rwa8XbsF1W1pXYhw4CiFUeHsyT9Jec9",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class10-dec25",
+    "title": "Kubernetes — Class 10",
+    "description": "DaemonSets, StatefulSets and Jobs/CronJobs in Kubernetes.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1AGm5y07bUnLGRp_ByQOQkolEpVsaOvyy",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class11-dec25",
+    "title": "Kubernetes — Class 11",
+    "description": "Network policies, pod-to-pod communication and CNI plugins.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1xU2fDT5aXL2RVTxGkTu9Z30MhvARh89K",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class12-dec25",
+    "title": "Kubernetes — Class 12",
+    "description": "Kubernetes monitoring with Prometheus, Grafana integration and alerting.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1lF5MKapJZm7Np4MeVrEepdCImjtnLIHO",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class13-dec25",
+    "title": "Kubernetes — Class 13",
+    "description": "EKS setup on AWS — managed node groups, cluster add-ons and IAM roles.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "18cThMdDsXdIiToDapGC0DLLVPt6Of2lZ",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "k8s-class14-dec25",
+    "title": "Kubernetes — Class 14",
+    "description": "Production Kubernetes — blue/green deployments, canary releases and GitOps.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1VUKYBSc2B8HE_jRTW_JfxmqSb7fe6hg2",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "helm-class1-dec25",
+    "title": "Helm — Class 1",
+    "description": "Introduction to Helm — package manager for Kubernetes, charts and repositories.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1bt_KuBMWFmprFzPByOBVinqHT-r7Zlcq",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "helm-class2-dec25",
+    "title": "Helm — Class 2",
+    "description": "Writing custom Helm charts — templates, values files and chart dependencies.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1hD0HTNi797FI35Wq962ayOOikaCOQONd",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "helm-class3-jan25",
+    "title": "Helm — Class 3",
+    "description": "Helm hooks, chart testing and deploying applications with Helm in CI/CD.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "1JqPC12E8o_rd33sGrrqOEsb-RLo9h5CX",
+    "date": "2025-01-01",
+    "duration": ""
+  },
+  {
+    "id": "helm-class4-cicd",
+    "title": "Helm — Class 4 & CI/CD Intro",
+    "description": "Advanced Helm patterns and introduction to CI/CD integration with Deekshith.",
+    "course": "Docker & Kubernetes",
+    "driveFileId": "15mx1y7amWM3ePA8HBRbsZJo9OpTNWgPF",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "cicd-jenkins-class1-intro",
+    "title": "CI/CD & Jenkins — Class 1 (Intro)",
+    "description": "Introduction to CI/CD concepts, DevOps pipeline overview and Jenkins architecture.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "15p0WozYsuQR6usB1TelvrEuzciGuR-_5",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class1-dec25",
+    "title": "Jenkins — Class 1",
+    "description": "Jenkins installation, configuration, plugins and first freestyle job creation.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1LusobuD6fyzGql1KWCGOHI1fq65mCzmh",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class2-dec25",
+    "title": "Jenkins — Class 2",
+    "description": "Declarative pipelines, Jenkinsfile syntax and pipeline stages.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1mMsTp_Lx1tq9BVM6Szcc44FPxf641Sbh",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class3-dec25",
+    "title": "Jenkins — Class 3",
+    "description": "Jenkins shared libraries, parameterized builds and multi-branch pipelines.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1YREDQh5OX21i-VffuULjT0LH4Edy2GpX",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class4-dec25",
+    "title": "Jenkins — Class 4",
+    "description": "Jenkins master-slave architecture, distributed builds and build agents.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1in_ZxiXw4TKpzyLMgcdaeT5oO64k-WR_",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class5-dec25",
+    "title": "Jenkins — Class 5",
+    "description": "Jenkins integration with GitHub, webhooks and automated trigger pipelines.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "192Wycf7OTzqzmQoCanbU69wYqLCnpRm7",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class6-maven-dec25",
+    "title": "Jenkins — Class 6: Maven",
+    "description": "Maven build lifecycle, Jenkins Maven integration and artifact management.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "13JxmH7j0yqxVm2NeH8M0wEBNMaFXET57",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class7-tomcat-dec25",
+    "title": "Jenkins — Class 7: Tomcat Deployment",
+    "description": "Automated deployment to Apache Tomcat using Jenkins pipeline.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "11MB3x1GsMyCqDMfkae9sSj3wrIFxT1J1",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-class8-dec25",
+    "title": "Jenkins — Class 8",
+    "description": "Jenkins pipeline with SonarQube, quality gates and code coverage reports.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "19khHiJ8tBNSygTDB8yxnBGyFH47R9BGw",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-jfrog-pipeline",
+    "title": "Jenkins — JFrog, Docker, Maven & Sonar Pipeline",
+    "description": "End-to-end CI/CD pipeline integrating Jenkins with JFrog, Docker, Maven and SonarQube.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1UnvRrQRTKjXj7_u3SRslbgbH-OMxyq0V",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jenkins-secrets-integration",
+    "title": "Jenkins — AWS Secrets Manager Integration",
+    "description": "Integrating Jenkins with AWS Secrets Manager for secure credential management.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1BivI4oXIzt_b9RS8JDO3UiMDu4thFBBv",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "jfrog-dec25",
+    "title": "JFrog Artifactory",
+    "description": "Setting up JFrog Artifactory as a universal artifact repository for CI/CD pipelines.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "168F3SKSF0wgskX9GoAyVY6ik9y7UD4nF",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "sonarqube-dec25",
+    "title": "SonarQube — Code Quality Analysis",
+    "description": "Integrating SonarQube for static code analysis, quality gates and security scanning.",
+    "course": "CI/CD Pipelines",
+    "driveFileId": "1TWnaabSC0IC33utBgFfJVyAq5uuYqHyq",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "terraform-class1-dec25",
+    "title": "Terraform — Class 1",
+    "description": "Introduction to Terraform — IaC concepts, providers, resources and state.",
+    "course": "Terraform",
+    "driveFileId": "1Sho3DOddP9-X2Ux39eIRRK4wIJiKpurU",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "terraform-class2-dec25",
+    "title": "Terraform — Class 2",
+    "description": "Terraform variables, outputs, data sources and local values.",
+    "course": "Terraform",
+    "driveFileId": "1yMgqxCJ-90sZ3Pbb35ry0ymz9a6Cf5nw",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "terraform-class3-dec25",
+    "title": "Terraform — Class 3",
+    "description": "Terraform modules — reusable infrastructure components and module registry.",
+    "course": "Terraform",
+    "driveFileId": "15xHrQMZh768k0-X63PoicjaoY6oSUm6V",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "terraform-class4-dec25",
+    "title": "Terraform — Class 4",
+    "description": "Remote state with S3 and DynamoDB, state locking and workspaces.",
+    "course": "Terraform",
+    "driveFileId": "1tCLS0FG3nVXk2f5hfoX1OfTLTixNv1R9",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "terraform-class5-dec25",
+    "title": "Terraform — Class 5",
+    "description": "Terraform in CI/CD — automated plan and apply with Jenkins integration.",
+    "course": "Terraform",
+    "driveFileId": "1l0LaIkRYVAKG1nq0PyypfSFhSP1vY7Cq",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "python-class1-jun25",
+    "title": "Python — Class 1",
+    "description": "Python basics — variables, data types, operators and control flow.",
+    "course": "Python Programming",
+    "driveFileId": "13iy5_KHd8N5jT3u-wrnFPw_wObOUcF0g",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "python-class2-jun25",
+    "title": "Python — Class 2",
+    "description": "Python functions, modules, file handling and exception management.",
+    "course": "Python Programming",
+    "driveFileId": "1XHp-ZX0KrDg4YRARSj6q2bGnxxgLpSP5",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "python-class3-jun25",
+    "title": "Python — Class 3",
+    "description": "Python for DevOps — scripting, OS module, subprocess and automation.",
+    "course": "Python Programming",
+    "driveFileId": "1LsB2R9wWFSG2AJCfDI6-8_lO43Q83Ekm",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "python-class4-jun25",
+    "title": "Python — Class 4",
+    "description": "Python with AWS SDK (Boto3) — automating EC2, S3 and IAM operations.",
+    "course": "Python Programming",
+    "driveFileId": "1DbU407g-AHAp7tZzo7eXT9nDrExmvcsA",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "python-class5-jun25",
+    "title": "Python — Class 5",
+    "description": "Python REST APIs, requests library and JSON handling for DevOps workflows.",
+    "course": "Python Programming",
+    "driveFileId": "1Ih4VCiBi5gTtTfs_0npVZfqmKWObx_At",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "python-jira-rds-jun25",
+    "title": "Python — Jira & RDS Integration",
+    "description": "Automating Jira tickets and AWS RDS operations using Python scripts.",
+    "course": "Python Programming",
+    "driveFileId": "1MsBhGo6uAKz9ry2GuBjT0FvhCHUs3K6Q",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "prometheus-grafana-dec25",
+    "title": "Prometheus & Grafana — Dec Batch",
+    "description": "Setting up Prometheus for metrics collection and Grafana dashboards for infrastructure monitoring.",
+    "course": "Monitoring & Observability",
+    "driveFileId": "10KhpGEEdRtsR5shndpjo_7VvUfryrHrK",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "prometheus-grafana-jun25",
+    "title": "Prometheus & Grafana — Jun Batch",
+    "description": "Hands-on monitoring setup with Prometheus alerting rules and Grafana dashboard customization.",
+    "course": "Monitoring & Observability",
+    "driveFileId": "1RDldME7B4kgUN8A4dOecwl-b55H2gaYw",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+
+
+  {
+    "id": "argocd-jun25",
+    "title": "Argo CD — Deep Dive",
+    "description": "Continuous delivery with Argo CD — sync policies, rollbacks and app health.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1vagqVt3SQlhfU9Eaz2RbMmKyVjx_2Gpd",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "argocd-migration-jun25",
+    "title": "Argo CD & Application Migration",
+    "description": "ArgoCD GitOps workflows and application migration strategies between clusters.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1D_AZLdzBFdVZle060TpI08LnTJWNamEi",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "ansible-class1-jun25",
+    "title": "Ansible — Class 1",
+    "description": "Introduction to Ansible, inventory, playbooks and automation fundamentals.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1lTAPU2KUuVk0U9XPeMAD_jRYA29eGdeH",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "jira-rmp-dec25",
+    "title": "Jira & Release Management",
+    "description": "Project tracking with Jira, sprint planning, issue management and release process.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1HiItHcXsTo2-go5GHWnF-2V9wM8YARmw",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "masterclass-dec25",
+    "title": "Master Class — December 2025",
+    "description": "Comprehensive master class covering advanced DevOps concepts and real-world project scenarios.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1lPeLjijcEjDbah627NwFgEI9vfuEBL59",
+    "date": "2025-12-01",
+    "duration": ""
+  },
+  {
+    "id": "project-harsha-1-jun25",
+    "title": "Project Explanation by Harsha — Session 1",
+    "description": "Real-world DevOps project walkthrough — architecture, tools and deployment explained.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1fiKnpfyiFtnVkmbDubvfCMzZ6XyIyc5M",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "project-harsha-2-jun25",
+    "title": "Project Explanation by Harsha — Session 2",
+    "description": "Continuation — CI/CD setup and Kubernetes deployment walkthrough.",
+    "course": "Advanced DevOps",
+    "driveFileId": "12Wli1XjSHp5esAby9olJq-l_js3kuiSk",
+    "date": "2025-06-01",
+    "duration": ""
+  },
+  {
+    "id": "project-harsha-full-jun25",
+    "title": "Project Explanation by Harsha — Full Session",
+    "description": "Complete end-to-end project explanation with live demo and Q&A.",
+    "course": "Advanced DevOps",
+    "driveFileId": "1WSJmKFt_qirko75dmAxi_2bLsN7h4lil",
+    "date": "2025-06-01",
+    "duration": ""
+  }
+]

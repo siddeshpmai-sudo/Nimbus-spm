@@ -2,28 +2,140 @@
 // NimbusWiz Tech — Express Server
 // Serves static files + handles form submission
 // Sends email (Nodemailer) + SMS (Twilio)
+// Google OAuth for protected recordings portal
 // ============================================
 
 'use strict';
 
 require('dotenv').config();
-const express  = require('express');
-const path     = require('path');
+const express    = require('express');
+const path       = require('path');
 const nodemailer = require('nodemailer');
-const twilio   = require('twilio');
+const twilio     = require('twilio');
+const session    = require('express-session');
+const passport   = require('passport');
+const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
+const fs         = require('fs');
 
-const app = express();
+const app  = express();
 const PORT = process.env.PORT || 3000;
 
 // ── Parse JSON and URL-encoded bodies ──────────
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// ── Session middleware ───────────────────────────
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'nimbuswiz-secret-change-in-production',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false, maxAge: 24 * 60 * 60 * 1000 }, // 24 hours
+}));
+
+// ── Passport setup ───────────────────────────────
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Allowed emails whitelist (comma-separated in .env)
+function getAllowedEmails() {
+  const raw = process.env.ALLOWED_EMAILS || '';
+  return raw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+}
+
+// Register Google OAuth strategy only if credentials are configured
+const GOOGLE_OAUTH_READY = process.env.GOOGLE_CLIENT_ID &&
+  !process.env.GOOGLE_CLIENT_ID.includes('YOUR_GOOGLE');
+
+if (GOOGLE_OAUTH_READY) {
+  passport.use(new GoogleStrategy({
+    clientID:     process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    callbackURL:  `${process.env.SITE_URL || 'http://localhost:' + PORT}/auth/google/callback`,
+  }, (_accessToken, _refreshToken, profile, done) => {
+    const email   = (profile.emails?.[0]?.value || '').toLowerCase();
+    const allowed = getAllowedEmails();
+
+    if (!allowed.length) {
+      return done(null, false, { message: 'No allowed emails configured.' });
+    }
+    if (!allowed.includes(email)) {
+      return done(null, false, { message: 'access_denied' });
+    }
+    return done(null, {
+      id:     profile.id,
+      name:   profile.displayName,
+      email:  email,
+      avatar: profile.photos?.[0]?.value || null,
+    });
+  }));
+} else {
+  console.warn('[AUTH] ⚠️  GOOGLE_CLIENT_ID not set — OAuth disabled. Add credentials to .env to enable recordings portal.');
+}
+
+passport.serializeUser((user, done) => done(null, user));
+passport.deserializeUser((user, done) => done(null, user));
+
+// ── Auth middleware ──────────────────────────────
+function requireAuth(req, res, next) {
+  if (req.isAuthenticated()) return next();
+  res.redirect('/login');
+}
+
 // ── Serve static files (HTML, CSS, JS, images) ─
 app.use(express.static(path.join(__dirname, 'public')));
 
 // ── Health check ────────────────────────────────
 app.get('/health', (_req, res) => res.json({ status: 'ok', ts: new Date().toISOString() }));
+
+// ── Login page ───────────────────────────────────
+app.get('/login', (req, res) => {
+  if (req.isAuthenticated()) return res.redirect('/recordings');
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// ── Google OAuth routes (only active when credentials are set) ──
+app.get('/auth/google', (req, res, next) => {
+  if (!GOOGLE_OAUTH_READY) {
+    return res.status(503).send('<h2>Google OAuth not configured yet.</h2><p>Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET to your .env file.</p><a href="/login">← Back</a>');
+  }
+  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next);
+});
+
+app.get('/auth/google/callback', (req, res, next) => {
+  if (!GOOGLE_OAUTH_READY) return res.redirect('/login');
+  passport.authenticate('google', { failureRedirect: '/login?error=access_denied' })(req, res, () => res.redirect('/recordings'));
+});
+
+// ── Logout ───────────────────────────────────────
+app.get('/auth/logout', (req, res) => {
+  req.logout(() => {
+    req.session.destroy(() => {
+      res.redirect('/login');
+    });
+  });
+});
+
+// ── Protected: recordings page ──────────────────
+app.get('/recordings', requireAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'recordings.html'));
+});
+
+// ── Protected API: current user info ───────────
+app.get('/api/me', requireAuth, (req, res) => {
+  res.json(req.user);
+});
+
+// ── Protected API: recordings list ──────────────
+app.get('/api/recordings', requireAuth, (_req, res) => {
+  try {
+    const filePath = path.join(__dirname, 'recordings.json');
+    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+    res.json(data);
+  } catch (err) {
+    console.error('[RECORDINGS] Failed to read recordings.json:', err.message);
+    res.status(500).json({ error: 'Could not load recordings.' });
+  }
+});
 
 // ── Email transporter (Gmail SMTP) ─────────────
 function createEmailTransporter() {
@@ -210,6 +322,10 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`📧 Email notifications: ${process.env.GMAIL_USER ? '✅ configured' : '⚠️  NOT configured (.env missing)'}`);
   const smsReady = process.env.TWILIO_ACCOUNT_SID && !process.env.TWILIO_ACCOUNT_SID.includes('xxx');
   console.log(`📱 SMS notifications:   ${smsReady ? '✅ configured' : '⚠️  NOT configured (.env missing)'}`);
+  const oauthReady = process.env.GOOGLE_CLIENT_ID && !process.env.GOOGLE_CLIENT_ID.includes('YOUR');
+  console.log(`🔐 Google OAuth:        ${oauthReady ? '✅ configured' : '⚠️  NOT configured (add GOOGLE_CLIENT_ID to .env)'}`);
+  const emailCount = (process.env.ALLOWED_EMAILS || '').split(',').filter(Boolean).length;
+  console.log(`🎓 Allowed students:    ${emailCount > 0 ? `✅ ${emailCount} email(s) whitelisted` : '⚠️  No emails in ALLOWED_EMAILS'}`);
   console.log(`\nPress Ctrl+C to stop.\n`);
 });
 
