@@ -17,33 +17,38 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2.1">
 </head>
 <body>
 
-  <!-- Particle Canvas Background -->
-  <canvas id="particle-canvas"></canvas>
+  <!-- Announcement Bar -->
+  <div class="announcement-bar" id="announcement-bar">
+    <span>🔥 New Batch Starting July 20th — DevOps with AWS and GCP (Batch 8). <a href="#batches" class="announcement-link">Register Now &rarr;</a></span>
+    <button class="announcement-close" id="announcement-close" aria-label="Close Announcement">&times;</button>
+  </div>
 
   <!-- Navigation -->
   <nav id="navbar" role="navigation" aria-label="Main navigation">
     <div class="nav-inner">
       <a href="#home" class="nav-logo" id="nav-logo-link" aria-label="NimbusWiz Tech Home">
         <div class="logo-icon" aria-hidden="true">
-          <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo" width="32" height="32" style="border-radius: 50%; object-fit: contain;">
+          <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo" width="36" height="36" style="border-radius: 50%; object-fit: contain;">
         </div>
         <span class="logo-text"><strong>NimbusWiz</strong>Tech</span>
       </a>
 
       <div class="nav-links" role="list">
-        <a href="#about" class="nav-link" role="listitem">About</a>
+        <a href="#home" class="nav-link active" role="listitem">Home</a>
         <a href="#courses" class="nav-link" role="listitem">Courses</a>
+        <a href="#batches" class="nav-link" role="listitem">Batches</a>
         <a href="#why-us" class="nav-link" role="listitem">Why Us</a>
-        <a href="#testimonials" class="nav-link" role="listitem">Testimonials</a>
-        <a href="#contact" class="nav-link" role="listitem">Contact</a>
+        <a href="#testimonials" class="nav-link" role="listitem">Reviews</a>
       </div>
 
       <div class="nav-actions">
-        <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="btn-enroll" id="nav-enroll-btn">Enroll Now</a>
+        <a href="https://nimbuswiztech.com/recordings" class="btn-signin" id="nav-signin-btn">Sign In</a>
+        <a href="#contact" class="btn-signup" id="nav-signup-btn">Sign Up</a>
+        <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="btn-register" id="nav-enroll-btn">Register Now</a>
         <button class="nav-hamburger" id="hamburger-btn" aria-label="Toggle menu" aria-expanded="false">
           <span></span><span></span><span></span>
         </button>
@@ -52,55 +57,57 @@
 
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobile-menu" aria-hidden="true">
-      <a href="#about" class="mobile-link">About</a>
+      <a href="#home" class="mobile-link">Home</a>
       <a href="#courses" class="mobile-link">Courses</a>
+      <a href="#batches" class="mobile-link">Batches</a>
       <a href="#why-us" class="mobile-link">Why Us</a>
-      <a href="#testimonials" class="mobile-link">Testimonials</a>
-      <a href="#contact" class="mobile-link">Contact</a>
-      <a href="#contact" class="mobile-link mobile-enroll">Enroll Now →</a>
+      <a href="#testimonials" class="mobile-link">Reviews</a>
+      <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="mobile-link mobile-enroll">Register Now &rarr;</a>
     </div>
   </nav>
 
   <main>
     <!-- Hero Section -->
     <section id="home" class="hero-section">
-      <div class="hero-badge" id="hero-badge">
-        <span class="badge-dot"></span>
-        Now Enrolling — Batch Starting July 3rd
-        <em class="badge-fire">🔥</em>
-      </div>
-      <h1 class="hero-title">
-        Launch Your Career in<br>
-        <span class="hero-gradient-text">DevOps &amp; Cloud</span>
-      </h1>
-      <p class="hero-subtitle">
-        Transform your career with industry-leading training in DevOps, AWS, Docker,
-        Kubernetes, and cutting-edge cloud technologies. Join thousands of professionals
-        who have advanced their careers with our expert-led programs.
-      </p>
-      <div class="hero-actions">
-        <a href="#courses" class="btn-primary" id="hero-explore-btn">Explore Courses</a>
-        <a href="#about" class="btn-ghost" id="hero-learn-btn">Learn More →</a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item">
-          <span class="stat-number" data-target="2000">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Students Trained</span>
+      <canvas id="particle-canvas"></canvas>
+      <div class="hero-content">
+        <div class="hero-badge" id="hero-badge">
+          <span class="badge-dot"></span>
+          Now Enrolling &mdash; Batch Starting July 3rd
+          <em class="badge-fire">&#x1F525;</em>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number" data-target="95">0</span><span class="stat-suffix">%</span>
-          <span class="stat-label">Placement Rate</span>
+        <h1 class="hero-title">
+          India&apos;s Most Comprehensive<br>
+          <span class="hero-gradient-text">DevOps &amp; Cloud</span> Course
+        </h1>
+        <p class="hero-subtitle">
+          120+ Hours of Live Training. Join our free 7-day demo classes now and pay later.
+          Resume &amp; Interview preparation with dedicated Q&amp;A sessions.
+        </p>
+        <div class="hero-features">
+          <div class="hero-feature"><span class="hf-icon">&#x1F393;</span> Join free 7-day demo classes</div>
+          <div class="hero-feature"><span class="hf-icon">&#x1F4C4;</span> Resume &amp; Interview preparation</div>
+          <div class="hero-feature"><span class="hf-icon">&#x1F4AC;</span> Dedicated Q&amp;A sessions</div>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number" data-target="10">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Years Experience</span>
+        <div class="hero-actions">
+          <a href="#courses" class="btn-primary" id="hero-explore-btn">View Course Details</a>
+          <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="btn-register-hero" id="hero-register-btn">Register Now &rarr;</a>
         </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <span class="stat-number" data-target="50">0</span><span class="stat-suffix">+</span>
-          <span class="stat-label">Hiring Partners</span>
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number" data-target="6500">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Trained Students</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="4200">0</span><span class="stat-suffix">+</span>
+            <span class="stat-label">Successful Placements</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number" data-target="3">0</span><span class="stat-suffix">x</span>
+            <span class="stat-label">CTC Growth</span>
+          </div>
         </div>
       </div>
     </section>
@@ -109,307 +116,415 @@
     <section class="marquee-section" aria-label="Technologies we teach">
       <div class="marquee-track">
         <div class="marquee-content" aria-hidden="true">
-          <div class="tech-tag"><span class="tech-icon">🐧</span> Linux</div>
-          <div class="tech-tag"><span class="tech-icon">☁️</span> AWS</div>
-          <div class="tech-tag"><span class="tech-icon">🐳</span> Docker</div>
-          <div class="tech-tag"><span class="tech-icon">⚓</span> Kubernetes</div>
-          <div class="tech-tag"><span class="tech-icon">🔄</span> Jenkins</div>
-          <div class="tech-tag"><span class="tech-icon">🏗️</span> Terraform</div>
-          <div class="tech-tag"><span class="tech-icon">📦</span> Git</div>
-          <div class="tech-tag"><span class="tech-icon">📊</span> Prometheus</div>
-          <div class="tech-tag"><span class="tech-icon">📈</span> Grafana</div>
-          <div class="tech-tag"><span class="tech-icon">🔧</span> Ansible</div>
-          <div class="tech-tag"><span class="tech-icon">🌐</span> Azure</div>
-          <div class="tech-tag"><span class="tech-icon">☁️</span> GCP</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F427;</span> Linux</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2601;&#xFE0F;</span> AWS</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F433;</span> Docker</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2693;</span> Kubernetes</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F504;</span> Jenkins</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F3D7;&#xFE0F;</span> Terraform</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4E6;</span> Git</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4CA;</span> Prometheus</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4C8;</span> Grafana</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F527;</span> Ansible</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F310;</span> Azure</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2601;&#xFE0F;</span> GCP</div>
         </div>
         <div class="marquee-content" aria-hidden="true">
-          <div class="tech-tag"><span class="tech-icon">🐧</span> Linux</div>
-          <div class="tech-tag"><span class="tech-icon">☁️</span> AWS</div>
-          <div class="tech-tag"><span class="tech-icon">🐳</span> Docker</div>
-          <div class="tech-tag"><span class="tech-icon">⚓</span> Kubernetes</div>
-          <div class="tech-tag"><span class="tech-icon">🔄</span> Jenkins</div>
-          <div class="tech-tag"><span class="tech-icon">🏗️</span> Terraform</div>
-          <div class="tech-tag"><span class="tech-icon">📦</span> Git</div>
-          <div class="tech-tag"><span class="tech-icon">📊</span> Prometheus</div>
-          <div class="tech-tag"><span class="tech-icon">📈</span> Grafana</div>
-          <div class="tech-tag"><span class="tech-icon">🔧</span> Ansible</div>
-          <div class="tech-tag"><span class="tech-icon">🌐</span> Azure</div>
-          <div class="tech-tag"><span class="tech-icon">☁️</span> GCP</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F427;</span> Linux</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2601;&#xFE0F;</span> AWS</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F433;</span> Docker</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2693;</span> Kubernetes</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F504;</span> Jenkins</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F3D7;&#xFE0F;</span> Terraform</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4E6;</span> Git</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4CA;</span> Prometheus</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F4C8;</span> Grafana</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F527;</span> Ansible</div>
+          <div class="tech-tag"><span class="tech-icon">&#x1F310;</span> Azure</div>
+          <div class="tech-tag"><span class="tech-icon">&#x2601;&#xFE0F;</span> GCP</div>
         </div>
       </div>
     </section>
 
-    <!-- About Section -->
-    <section id="about" class="about-section">
+    <!-- SECTION 1: Success Stories Across the Globe -->
+    <section id="success-stories" class="success-section">
       <div class="section-container">
-        <div class="section-tag">About Us</div>
-        <h2 class="section-title">Leading the Way in DevOps &amp;<br>Cloud Technology Education</h2>
-        <p class="section-subtitle">
-          Nimbuswiztech is a premier training institute dedicated to transforming careers through comprehensive DevOps and Cloud technology education. Our mission is to bridge the gap between academic learning and industry requirements.
-        </p>
-        <div class="about-grid">
-          <div class="about-card" id="about-card-1">
-            <div class="about-card-icon" aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-            </div>
-            <h3>Industry-Focused Curriculum</h3>
-            <p>Our courses are designed with input from tech industry leaders ensuring you learn what's actually used in production environments today.</p>
+        <h2 class="section-title-center">Success Stories Across the Globe</h2>
+        <p class="section-sub-center">See how our alumni excel in top tech companies around the world.</p>
+      </div>
+      <div class="alumni-marquee-wrapper">
+        <div class="alumni-track">
+          <div class="alumni-row alumni-row-ltr">
+            <div class="alumni-card"><div class="alumni-avatar av1">RK</div><div class="alumni-info"><div class="alumni-name">Rahul Krishnamurthy</div><div class="alumni-company">&#x1F3E2; Infosys</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av2">AP</div><div class="alumni-info"><div class="alumni-name">Ananya Patel</div><div class="alumni-company">&#x1F3E2; TCS</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av3">SM</div><div class="alumni-info"><div class="alumni-name">Sanjay Mehta</div><div class="alumni-company">&#x1F3E2; Wipro</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av4">VR</div><div class="alumni-info"><div class="alumni-name">Venkatesh Rao</div><div class="alumni-company">&#x1F3E2; Amazon</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av5">PR</div><div class="alumni-info"><div class="alumni-name">Priya Reddy</div><div class="alumni-company">&#x1F3E2; DBS Bank</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av6">MN</div><div class="alumni-info"><div class="alumni-name">Murali Nair</div><div class="alumni-company">&#x1F3E2; Accenture</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av7">JK</div><div class="alumni-info"><div class="alumni-name">Jayesh Kumar</div><div class="alumni-company">&#x1F3E2; Capgemini</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av8">SR</div><div class="alumni-info"><div class="alumni-name">Suresh Raju</div><div class="alumni-company">&#x1F3E2; HCL</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av1">RK</div><div class="alumni-info"><div class="alumni-name">Rahul Krishnamurthy</div><div class="alumni-company">&#x1F3E2; Infosys</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av2">AP</div><div class="alumni-info"><div class="alumni-name">Ananya Patel</div><div class="alumni-company">&#x1F3E2; TCS</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av3">SM</div><div class="alumni-info"><div class="alumni-name">Sanjay Mehta</div><div class="alumni-company">&#x1F3E2; Wipro</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av4">VR</div><div class="alumni-info"><div class="alumni-name">Venkatesh Rao</div><div class="alumni-company">&#x1F3E2; Amazon</div></div></div>
           </div>
-          <div class="about-card" id="about-card-2">
-            <div class="about-card-icon" aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
-            </div>
-            <h3>Expert Instructors</h3>
-            <p>Learn from professionals with 10+ years of experience at top tech companies. Real-world knowledge delivered with passion and clarity.</p>
-          </div>
-          <div class="about-card" id="about-card-3">
-            <div class="about-card-icon" aria-hidden="true">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8m-4-4v4"/></svg>
-            </div>
-            <h3>Hands-on Learning</h3>
-            <p>Practice with real-world projects and live cloud environments. Our labs provide authentic scenarios you'll encounter in your career.</p>
+        </div>
+        <div class="alumni-track" style="margin-top:16px">
+          <div class="alumni-row alumni-row-rtl">
+            <div class="alumni-card"><div class="alumni-avatar av9">NB</div><div class="alumni-info"><div class="alumni-name">Neha Bhatt</div><div class="alumni-company">&#x1F3E2; Tech Mahindra</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av10">KP</div><div class="alumni-info"><div class="alumni-name">Kiran Prasad</div><div class="alumni-company">&#x1F3E2; LTIMindtree</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av11">DS</div><div class="alumni-info"><div class="alumni-name">Deepak Sharma</div><div class="alumni-company">&#x1F3E2; WNS Global</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av12">RM</div><div class="alumni-info"><div class="alumni-name">Rakesh Malhotra</div><div class="alumni-company">&#x1F3E2; Credit Agricole</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av5">SV</div><div class="alumni-info"><div class="alumni-name">Sai Venkat</div><div class="alumni-company">&#x1F3E2; NetEnrich</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av6">PG</div><div class="alumni-info"><div class="alumni-name">Pradeep Goud</div><div class="alumni-company">&#x1F3E2; Mphasis</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av7">TK</div><div class="alumni-info"><div class="alumni-name">Tanvi Kapoor</div><div class="alumni-company">&#x1F3E2; Cognizant</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av8">AJ</div><div class="alumni-info"><div class="alumni-name">Arun Joshi</div><div class="alumni-company">&#x1F3E2; Hexaware</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av9">NB</div><div class="alumni-info"><div class="alumni-name">Neha Bhatt</div><div class="alumni-company">&#x1F3E2; Tech Mahindra</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av10">KP</div><div class="alumni-info"><div class="alumni-name">Kiran Prasad</div><div class="alumni-company">&#x1F3E2; LTIMindtree</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av11">DS</div><div class="alumni-info"><div class="alumni-name">Deepak Sharma</div><div class="alumni-company">&#x1F3E2; WNS Global</div></div></div>
+            <div class="alumni-card"><div class="alumni-avatar av12">RM</div><div class="alumni-info"><div class="alumni-name">Rakesh Malhotra</div><div class="alumni-company">&#x1F3E2; Credit Agricole</div></div></div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Courses Section -->
+    <!-- SECTION 2: Upcoming Batches -->
+    <section id="batches" class="batches-section">
+      <div class="section-container">
+        <h2 class="section-title-center white">Upcoming Batches</h2>
+        <p class="section-sub-center white-muted">Register now to secure your spot. Limited seats available.</p>
+        <div class="batches-grid">
+
+          <article class="batch-card" id="batch-devops-gcp">
+            <div class="batch-image-wrap">
+              <div class="batch-image-placeholder devops-bg">
+                <div class="batch-overlay-badges">
+                  <span class="batch-tag">BATCH 8</span>
+                </div>
+                <div class="batch-course-title-overlay">
+                  <div class="batch-course-big">DEVOPS</div>
+                  <div class="batch-course-sub">AWS & GCP</div>
+                </div>
+                <div class="batch-live-badge"><span class="live-dot"></span> LIVE</div>
+              </div>
+              <div class="batch-meta-pills">
+                <span class="pill">&#x1F4C5; Starts July 20th</span>
+                <span class="pill purple">Batch-8</span>
+                <span class="pill">Weekday</span>
+              </div>
+            </div>
+            <div class="batch-body">
+              <h3 class="batch-title">DevOps with AWS and GCP &mdash; Siddesh P M</h3>
+              <p class="batch-desc">Master industry-standard DevOps practices on both AWS and Google Cloud Platform (GCP). Includes real-time projects, continuous integration/delivery pipelines, and live support.</p>
+              <div class="batch-info-row">
+                <span class="batch-info-item">&#x1F4C5; Mon&ndash;Fri</span>
+                <span class="batch-info-item">&#x23F1; 120+ Hours</span>
+                <span class="batch-info-item">&#x1F310; English</span>
+              </div>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="batch-cta" id="batch-gcp-btn">Register Now &rarr;</a>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Hiring Partner Marquee -->
+    <section class="partners-section" aria-label="Our hiring partners">
+      <div class="section-container">
+        <p class="partners-label">Learn from <strong style="color:var(--color-accent-1)">Top 1% Tech Mentors</strong> &bull; Our students placed at</p>
+      </div>
+      <div class="partners-marquee-track">
+        <div class="partners-marquee-content">
+          <span class="partner-logo">TCS</span>
+          <span class="partner-logo">Amazon</span>
+          <span class="partner-logo">DBS Bank</span>
+          <span class="partner-logo">Accenture</span>
+          <span class="partner-logo">Capgemini</span>
+          <span class="partner-logo">Wipro</span>
+          <span class="partner-logo">Infosys</span>
+          <span class="partner-logo">HCL</span>
+          <span class="partner-logo">Tech Mahindra</span>
+          <span class="partner-logo">LTIMindtree</span>
+        </div>
+        <div class="partners-marquee-content">
+          <span class="partner-logo">TCS</span>
+          <span class="partner-logo">Amazon</span>
+          <span class="partner-logo">DBS Bank</span>
+          <span class="partner-logo">Accenture</span>
+          <span class="partner-logo">Capgemini</span>
+          <span class="partner-logo">Wipro</span>
+          <span class="partner-logo">Infosys</span>
+          <span class="partner-logo">HCL</span>
+          <span class="partner-logo">Tech Mahindra</span>
+          <span class="partner-logo">LTIMindtree</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: Our Three-Step Approach -->
+    <section id="approach" class="approach-section">
+      <div class="section-container">
+        <h2 class="section-title-center">Our Three-Step Approach</h2>
+        <p class="section-sub-center">A proven method to transform beginners into industry-ready professionals</p>
+
+        <div class="approach-steps">
+          <div class="approach-step reveal" id="step-1">
+            <div class="step-header">
+              <div class="step-number-badge">1</div>
+              <h3 class="step-heading">Explore &amp; Demo</h3>
+            </div>
+            <div class="step-cards-grid">
+              <div class="step-card step-card-dark tall">
+                <div class="step-card-icon">&#x1F3AF;</div>
+                <div class="step-card-title">Free 7-Day Demo</div>
+                <p class="step-card-desc">Attend free demo sessions and immerse yourself in our offerings before committing.</p>
+              </div>
+              <div class="step-card step-card-purple">
+                <div class="step-card-title">Flexible Batches</div>
+                <p class="step-card-desc">Learn at your own pace &mdash; weekday and weekend batch options to fit your schedule.</p>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-title">India&apos;s Best<br><span class="accent-text">DevOps Trainers</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="approach-step reveal" id="step-2">
+            <div class="step-header">
+              <div class="step-number-badge">2</div>
+              <h3 class="step-heading">LIVE Learning</h3>
+            </div>
+            <div class="step-cards-grid step-cards-2x3">
+              <div class="step-card step-card-stat">
+                <div class="step-stat-number">120+</div>
+                <div class="step-stat-label">Hours Live Training</div>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-title">Lifetime <span class="accent-yellow">Q&amp;A Support</span></div>
+                <p class="step-card-desc">Get your doubts resolved anytime &mdash; even after completion.</p>
+              </div>
+              <div class="step-card step-card-stat">
+                <div class="step-stat-number">24/7</div>
+                <div class="step-stat-label">AI Mentor (GPT) Access</div>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-icon">&#x1F30D;</div>
+                <div class="step-card-title">Community Engagement</div>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-title">Real-time Hands-on Projects</div>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-icon">&#x1F514;</div>
+                <div class="step-card-title">Job Opening Alerts</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="approach-step reveal" id="step-3">
+            <div class="step-header">
+              <div class="step-number-badge">3</div>
+              <h3 class="step-heading">Career Launch</h3>
+            </div>
+            <div class="step-cards-grid step-cards-3col">
+              <div class="step-card step-card-dark">
+                <div class="step-card-icon">&#x1F4C4;</div>
+                <div class="step-card-title">Resume Building</div>
+                <p class="step-card-desc">ATS-friendly, role-specific resumes crafted with expert guidance.</p>
+              </div>
+              <div class="step-card step-card-purple">
+                <div class="step-card-icon">&#x1F3A4;</div>
+                <div class="step-card-title">Mock Interviews</div>
+                <p class="step-card-desc">Practise with real-world technical panels and HR rounds.</p>
+              </div>
+              <div class="step-card step-card-dark">
+                <div class="step-card-icon">&#x1F4BC;</div>
+                <div class="step-card-title">Job Referrals</div>
+                <p class="step-card-desc">Direct referrals through our 50+ active hiring-partner network.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: Top Courses -->
     <section id="courses" class="courses-section">
       <div class="section-container">
-        <div class="section-tag">Our Courses</div>
-        <h2 class="section-title">Comprehensive Courses Designed to<br>Accelerate Your DevOps Journey</h2>
+        <h2 class="section-title-center">Top Courses</h2>
+        <div class="courses-tabs">
+          <button class="course-tab active" data-tab="all" id="tab-all">All</button>
+          <button class="course-tab" data-tab="english" id="tab-english">English</button>
+        </div>
+        <div class="courses-grid" id="courses-grid">
 
-        <div class="courses-grid">
-          <!-- Course 1 -->
-          <article class="course-card featured" id="course-devops">
-            <div class="course-badge">Most Popular</div>
-            <div class="course-icon-wrap">
-              <div class="course-icon devops-icon" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
-              </div>
+
+
+          <article class="course-card" data-lang="english" id="course-devops-gcp">
+            <div class="course-card-image devops-bg-card">
+              <div class="course-card-badges"><span class="c-batch-tag">BATCH 8</span></div>
+              <div class="course-card-overlay-text">DevOps with AWS & GCP</div>
+              <span class="c-status-pill live-pill">Live</span>
             </div>
-            <h3 class="course-title">DevOps Complete Certification</h3>
-            <p class="course-desc">Comprehensive 4-month program covering all aspects of DevOps including CI/CD, containerization, orchestration, and cloud technologies.</p>
-            <div class="course-meta">
-              <span class="course-duration">⏱ 4 Months</span>
-              <span class="course-level">🎯 Beginner to Pro</span>
+            <div class="course-card-body">
+              <div class="course-meta-row"><span>&#x1F4C5; Mon&ndash;Fri</span><span>&#x23F1; 120+ Hours</span></div>
+              <h3 class="course-card-title">DevOps with AWS and GCP &mdash; Siddesh P M</h3>
+              <p class="course-card-desc">Comprehensive training in cloud engineering, automating architectures, and designing CI/CD workflows on both AWS and GCP.</p>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="course-card-cta" id="enroll-devops-gcp">Enroll Now &rarr;</a>
             </div>
-            <div class="course-modules">
-              <h4>Key Modules</h4>
-              <ul>
-                <li>Linux &amp; System Administration</li>
-                <li>Git &amp; Version Control</li>
-                <li>Jenkins CI/CD Pipelines</li>
-                <li>Docker Containerization</li>
-                <li>Kubernetes Orchestration</li>
-                <li>AWS Cloud Services</li>
-                <li>Infrastructure as Code (Terraform)</li>
-                <li>Monitoring &amp; Logging</li>
-              </ul>
-            </div>
-            <a href="#contact" class="course-cta" id="enroll-devops-btn">Enroll Now →</a>
           </article>
 
-          <!-- Course 2 -->
-          <article class="course-card" id="course-aws">
-            <div class="course-icon-wrap">
-              <div class="course-icon aws-icon" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 10h-1.26A8 8 0 1 0 9 20h9a5 5 0 0 0 0-10z"/></svg>
-              </div>
+          <article class="course-card" data-lang="english" id="course-k8s">
+            <div class="course-card-image k8s-bg-card">
+              <div class="course-card-overlay-text">Kubernetes Mastery</div>
+              <span class="c-status-pill upcoming">Upcoming</span>
             </div>
-            <h3 class="course-title">AWS Cloud Computing</h3>
-            <p class="course-desc">Master Amazon Web Services with hands-on training in EC2, S3, VPC, RDS, and advanced cloud architecture patterns for enterprise scale.</p>
-            <div class="course-meta">
-              <span class="course-duration">⏱ 2 Months</span>
-              <span class="course-level">🎯 Intermediate</span>
+            <div class="course-card-body">
+              <div class="course-meta-row"><span>&#x1F4C5; Sat&ndash;Sun</span><span>&#x23F1; 60+ Hours</span></div>
+              <h3 class="course-card-title">Docker &amp; Kubernetes Mastery</h3>
+              <p class="course-card-desc">Complete container orchestration &mdash; from Docker basics to production-grade Kubernetes clusters.</p>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="course-card-cta" id="enroll-k8s">Enroll Now &rarr;</a>
             </div>
-            <div class="course-modules">
-              <h4>Key Modules</h4>
-              <ul>
-                <li>AWS Core Services</li>
-                <li>EC2 &amp; Auto Scaling</li>
-                <li>VPC &amp; Networking</li>
-                <li>S3 &amp; Storage Services</li>
-                <li>RDS &amp; Database Services</li>
-                <li>IAM &amp; Security</li>
-                <li>CloudFormation</li>
-                <li>Cost Optimization</li>
-              </ul>
-            </div>
-            <a href="#contact" class="course-cta" id="enroll-aws-btn">Enroll Now →</a>
           </article>
 
-          <!-- Course 3 -->
-          <article class="course-card" id="course-k8s">
-            <div class="course-icon-wrap">
-              <div class="course-icon k8s-icon" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><polygon points="12 8 15.09 9.85 16.18 13.27 14.36 16.15 9.64 16.15 7.82 13.27 8.91 9.85 12 8"/><circle cx="12" cy="12" r="2"/></svg>
-              </div>
+          <article class="course-card" data-lang="english" id="course-aws">
+            <div class="course-card-image aws-bg-card">
+              <div class="course-card-badges"><span class="c-batch-tag orange">HOT</span></div>
+              <div class="course-card-overlay-text">AWS Solutions Architect</div>
+              <span class="c-status-pill upcoming">Upcoming</span>
             </div>
-            <h3 class="course-title">Docker &amp; Kubernetes Mastery</h3>
-            <p class="course-desc">Deep dive into containerization and orchestration technologies essential for modern application deployment and microservices architecture.</p>
-            <div class="course-meta">
-              <span class="course-duration">⏱ 6 Weeks</span>
-              <span class="course-level">🎯 Intermediate</span>
+            <div class="course-card-body">
+              <div class="course-meta-row"><span>&#x1F4C5; Sat&ndash;Sun</span><span>&#x23F1; 80+ Hours</span></div>
+              <h3 class="course-card-title">AWS Solutions Architect &mdash; SAA-C03</h3>
+              <p class="course-card-desc">Master AWS core services, architecture patterns and ace the Solutions Architect exam.</p>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="course-card-cta" id="enroll-aws">Enroll Now &rarr;</a>
             </div>
-            <div class="course-modules">
-              <h4>Key Modules</h4>
-              <ul>
-                <li>Docker Fundamentals</li>
-                <li>Container Networking</li>
-                <li>Docker Compose</li>
-                <li>Kubernetes Architecture</li>
-                <li>Pods &amp; Deployments</li>
-                <li>Services &amp; Ingress</li>
-                <li>ConfigMaps &amp; Secrets</li>
-                <li>Helm Charts</li>
-              </ul>
-            </div>
-            <a href="#contact" class="course-cta" id="enroll-k8s-btn">Enroll Now →</a>
           </article>
 
-          <!-- Course 4 -->
-          <article class="course-card" id="course-cicd">
-            <div class="course-icon-wrap">
-              <div class="course-icon cicd-icon" aria-hidden="true">
-                <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
-              </div>
+          <article class="course-card" data-lang="english" id="course-cicd">
+            <div class="course-card-image cicd-bg-card">
+              <div class="course-card-overlay-text">CI/CD Pipelines</div>
+              <span class="c-status-pill upcoming">Upcoming</span>
             </div>
-            <h3 class="course-title">CI/CD Pipelines</h3>
-            <p class="course-desc">Build robust, automated deployment pipelines using Jenkins, GitHub Actions, and GitLab CI to streamline your software delivery processes.</p>
-            <div class="course-meta">
-              <span class="course-duration">⏱ 4 Weeks</span>
-              <span class="course-level">🎯 All Levels</span>
+            <div class="course-card-body">
+              <div class="course-meta-row"><span>&#x1F4C5; Sat&ndash;Sun</span><span>&#x23F1; 40+ Hours</span></div>
+              <h3 class="course-card-title">CI/CD Pipeline Engineering</h3>
+              <p class="course-card-desc">Jenkins, GitHub Actions, GitLab CI &mdash; build enterprise-grade deployment pipelines.</p>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="course-card-cta" id="enroll-cicd">Enroll Now &rarr;</a>
             </div>
-            <div class="course-modules">
-              <h4>Key Modules</h4>
-              <ul>
-                <li>Jenkins Master-Slave</li>
-                <li>GitHub Actions Workflows</li>
-                <li>Pipeline as Code</li>
-                <li>Automated Testing</li>
-                <li>Docker in CI/CD</li>
-                <li>Deployment Strategies</li>
-                <li>Security Scanning</li>
-                <li>Release Management</li>
-              </ul>
-            </div>
-            <a href="#contact" class="course-cta" id="enroll-cicd-btn">Enroll Now →</a>
           </article>
+
+          <article class="course-card" data-lang="english" id="course-terraform">
+            <div class="course-card-image terraform-bg-card">
+              <div class="course-card-overlay-text">Terraform &amp; IaC</div>
+              <span class="c-status-pill upcoming">Upcoming</span>
+            </div>
+            <div class="course-card-body">
+              <div class="course-meta-row"><span>&#x1F4C5; Sat&ndash;Sun</span><span>&#x23F1; 30+ Hours</span></div>
+              <h3 class="course-card-title">Terraform &amp; Infrastructure as Code</h3>
+              <p class="course-card-desc">Automate cloud provisioning with Terraform, Ansible and GitOps workflows.</p>
+              <a href="https://forms.gle/WE9HXvfDmDBmGpzj6" target="_blank" rel="noopener noreferrer" class="course-card-cta" id="enroll-terraform">Enroll Now &rarr;</a>
+            </div>
+          </article>
+
         </div>
       </div>
     </section>
 
-    <!-- Why Us Section -->
-    <section id="why-us" class="why-section">
-      <div class="section-container">
-        <div class="section-tag">Why NimbusWiz</div>
-        <h2 class="section-title">Experience the Difference with<br>Our Comprehensive Approach</h2>
-        <div class="why-grid">
-          <div class="why-card" id="why-trainers">
-            <div class="why-icon" aria-hidden="true">🏆</div>
-            <h3>Industry Expert Trainers</h3>
-            <p>Learn from seasoned professionals with 10+ years of experience in top tech companies. Real-world expertise in every session.</p>
-          </div>
-          <div class="why-card" id="why-labs">
-            <div class="why-icon" aria-hidden="true">🔬</div>
-            <h3>Hands-on Learning</h3>
-            <p>Practice with real-world projects and live environments. Our labs provide authentic scenarios you'll encounter in your career.</p>
-          </div>
-          <div class="why-card" id="why-placement">
-            <div class="why-icon" aria-hidden="true">💼</div>
-            <h3>Job Assistance</h3>
-            <p>Comprehensive placement support including resume building, interview preparation, and direct connections with our hiring partners.</p>
-          </div>
-          <div class="why-card" id="why-flexible">
-            <div class="why-icon" aria-hidden="true">🗓️</div>
-            <h3>Flexible Learning</h3>
-            <p>Choose from weekend and weekday batches with both online and offline options to fit your schedule and learning preferences.</p>
-          </div>
-          <div class="why-card" id="why-certs">
-            <div class="why-icon" aria-hidden="true">🎓</div>
-            <h3>Industry Certifications</h3>
-            <p>Prepare for globally recognized certifications including AWS, CKA, Docker, and Jenkins to validate your expertise.</p>
-          </div>
-          <div class="why-card" id="why-support">
-            <div class="why-icon" aria-hidden="true">♾️</div>
-            <h3>Lifetime Support</h3>
-            <p>Access to course materials, alumni network, and continuous mentorship even after course completion.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Testimonials Section -->
+    <!-- SECTION 5: Hear from Our Students -->
     <section id="testimonials" class="testimonials-section">
       <div class="section-container">
-        <div class="section-tag">Student Stories</div>
-        <h2 class="section-title">What Our Students Say</h2>
-        <p class="section-subtitle">Success stories from professionals who transformed their careers</p>
-        <div class="testimonials-grid">
-          <article class="testimonial-card" id="testimonial-1">
-            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-            <blockquote>"The DevOps training at Nimbuswiztech was exceptional. The hands-on approach and real-world projects helped me transition from a system admin to a DevOps engineer. The placement support was outstanding!"</blockquote>
-            <div class="testimonial-author">
-              <div class="author-avatar" aria-hidden="true">RK</div>
-              <div>
-                <div class="author-name">Rahul Krishnamurthy</div>
-                <div class="author-role">DevOps Engineer @ Infosys</div>
-              </div>
-            </div>
-          </article>
-          <article class="testimonial-card featured-testimonial" id="testimonial-2">
-            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-            <blockquote>"Best investment in my career! The AWS course gave me the confidence to handle cloud infrastructure at scale. The instructors are industry veterans who share invaluable insights from their real projects."</blockquote>
-            <div class="testimonial-author">
-              <div class="author-avatar" aria-hidden="true">AP</div>
-              <div>
-                <div class="author-name">Ananya Patel</div>
-                <div class="author-role">Cloud Architect @ TCS</div>
-              </div>
-            </div>
-          </article>
-          <article class="testimonial-card" id="testimonial-3">
-            <div class="stars" aria-label="5 out of 5 stars">★★★★★</div>
-            <blockquote>"The Docker and Kubernetes course was incredibly detailed. I went from knowing nothing about containers to successfully deploying microservices in production. Highly recommended for anyone in tech!"</blockquote>
-            <div class="testimonial-author">
-              <div class="author-avatar" aria-hidden="true">SM</div>
-              <div>
-                <div class="author-name">Sanjay Mehta</div>
-                <div class="author-role">SRE @ Wipro Technologies</div>
-              </div>
-            </div>
-          </article>
+        <h2 class="section-title-center white">Hear from Our Students</h2>
+        <p class="section-sub-center white-muted">Read what our students say about their experience and how it has impacted their careers.</p>
+        <div class="testimonials-stats">
+          <div class="t-stat"><div class="t-stat-number">2000+</div><div class="t-stat-label">Students worldwide</div></div>
+          <div class="t-stat"><div class="t-stat-number">400+</div><div class="t-stat-label">Five-star course reviews</div></div>
+          <div class="t-stat"><div class="t-stat-number">95%</div><div class="t-stat-label">Placement rate</div></div>
+        </div>
+        <div class="testimonials-slider-wrap">
+          <div class="testimonials-slider" id="testimonials-slider">
+            <article class="testimonial-card" id="testimonial-1">
+              <div class="t-card-title">&ldquo;Best platform for real-world DevOps training!&rdquo;</div>
+              <p class="t-card-body">The DevOps training was exceptional. The hands-on approach and real-world projects helped me transition from a sysadmin to a DevOps engineer. Placement support was outstanding!</p>
+              <div class="t-card-author"><div class="t-avatar av1">RK</div><div><div class="t-author-name">Rahul Krishnamurthy</div><div class="t-author-role">DevOps Engineer @ Infosys &mdash; India</div></div></div>
+            </article>
+            <article class="testimonial-card" id="testimonial-2">
+              <div class="t-card-title">&ldquo;Best investment in my career!&rdquo;</div>
+              <p class="t-card-body">The AWS course gave me confidence to handle cloud infrastructure at scale. Instructors are industry veterans who share invaluable insights from real projects.</p>
+              <div class="t-card-author"><div class="t-avatar av2">AP</div><div><div class="t-author-name">Ananya Patel</div><div class="t-author-role">Cloud Architect @ TCS &mdash; India</div></div></div>
+            </article>
+            <article class="testimonial-card" id="testimonial-3">
+              <div class="t-card-title">&ldquo;I attended the DevOps with AWS sessions...&rdquo;</div>
+              <p class="t-card-body">The trainer taught every concept like shell scripting, Linux, and real-time project explanation extremely well. Highly practical and engaging sessions throughout.</p>
+              <div class="t-card-author"><div class="t-avatar av3">SM</div><div><div class="t-author-name">Sanjay Mehta</div><div class="t-author-role">SRE @ Wipro &mdash; India</div></div></div>
+            </article>
+            <article class="testimonial-card" id="testimonial-4">
+              <div class="t-card-title">&ldquo;Please join if you want real-time experience!&rdquo;</div>
+              <p class="t-card-body">I think whoever completes this course and practices consistently doesn&apos;t need proxy or support. Best trainer, best course. Real-time projects from Day 1.</p>
+              <div class="t-card-author"><div class="t-avatar av4">VR</div><div><div class="t-author-name">Venkatesh Rao</div><div class="t-author-role">Cloud Engineer @ Amazon &mdash; India</div></div></div>
+            </article>
+            <article class="testimonial-card" id="testimonial-5">
+              <div class="t-card-title">&ldquo;A very great platform to learn AWS + DevOps!&rdquo;</div>
+              <p class="t-card-body">You can gain knowledge at industrial standards, post queries in Slack, get solutions for doubts, and solve queries too. Outstanding community support!</p>
+              <div class="t-card-author"><div class="t-avatar av5">PR</div><div><div class="t-author-name">Priya Reddy</div><div class="t-author-role">DevOps Lead @ Mphasis &mdash; India</div></div></div>
+            </article>
+            <article class="testimonial-card" id="testimonial-6">
+              <div class="t-card-title">&ldquo;The Docker &amp; Kubernetes course was incredible!&rdquo;</div>
+              <p class="t-card-body">I went from knowing nothing about containers to successfully deploying microservices in production. Highly recommended for anyone in the tech industry!</p>
+              <div class="t-card-author"><div class="t-avatar av6">MN</div><div><div class="t-author-name">Murali Nair</div><div class="t-author-role">Site Reliability Engineer @ Accenture &mdash; India</div></div></div>
+            </article>
+          </div>
+          <div class="slider-controls">
+            <button class="slider-btn" id="slider-prev" aria-label="Previous">&#x2190;</button>
+            <div class="slider-dots" id="slider-dots"></div>
+            <button class="slider-btn" id="slider-next" aria-label="Next">&#x2192;</button>
+          </div>
         </div>
       </div>
     </section>
 
-    <!-- CTA / Contact Section -->
+    <!-- SECTION 6: Why learn with our courses? -->
+    <section id="why-us" class="why-section">
+      <div class="section-container">
+        <h2 class="section-title-center">Why learn with our courses?</h2>
+        <p class="section-sub-center">The benefits of learning with NimbusWiz Tech</p>
+        <div class="why-grid">
+          <div class="why-card reveal" id="why-career"><div class="why-card-icon">&#x1F4C8;</div><h3 class="why-card-title">Career Growth</h3><p class="why-card-desc">Gain skills and knowledge needed to excel in your career and unlock new opportunities in top tech companies.</p></div>
+          <div class="why-card reveal" id="why-experts"><div class="why-card-icon">&#x1F393;</div><h3 class="why-card-title">Learn from Experts</h3><p class="why-card-desc">Learn from industry experts with 10+ years of experience who provide valuable insights and practical knowledge.</p></div>
+          <div class="why-card reveal" id="why-confidence"><div class="why-card-icon">&#x1F3C6;</div><h3 class="why-card-title">Graduate with Confidence</h3><p class="why-card-desc">Graduate from our courses equipped with the skills and certifications needed to succeed in your chosen field.</p></div>
+          <div class="why-card reveal" id="why-live"><div class="why-card-icon">&#x1F534;</div><h3 class="why-card-title">Live Instructor-Led</h3><p class="why-card-desc">All our courses are live and interactive &mdash; not pre-recorded. Ask questions and get instant answers every session.</p></div>
+          <div class="why-card reveal" id="why-projects"><div class="why-card-icon">&#x1F52C;</div><h3 class="why-card-title">Real-time Projects</h3><p class="why-card-desc">Work on production-grade projects from Day 1. Build a portfolio that impresses hiring managers at top companies.</p></div>
+          <div class="why-card reveal" id="why-placement"><div class="why-card-icon">&#x1F4BC;</div><h3 class="why-card-title">Placement Assistance</h3><p class="why-card-desc">Comprehensive support including resume building, mock interviews, and direct referrals through our hiring partners.</p></div>
+          <div class="why-card reveal" id="why-community"><div class="why-card-icon">&#x1F310;</div><h3 class="why-card-title">Global Community</h3><p class="why-card-desc">Join our growing community of 2000+ alumni and professionals across the globe for networking and support.</p></div>
+          <div class="why-card reveal" id="why-flexible"><div class="why-card-icon">&#x1F5D3;&#xFE0F;</div><h3 class="why-card-title">Flexible Schedules</h3><p class="why-card-desc">Weekend and weekday batches to fit your lifestyle &mdash; choose the perfect timing for you.</p></div>
+          <div class="why-card reveal" id="why-support"><div class="why-card-icon">&#x267E;&#xFE0F;</div><h3 class="why-card-title">Lifetime Support</h3><p class="why-card-desc">Access to course materials, 24/7 AI mentor, alumni network, and continuous mentorship even after completion.</p></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
     <section id="contact" class="contact-section">
       <canvas id="contact-canvas"></canvas>
       <div class="contact-inner">
         <h2 class="contact-title">Get Started Today</h2>
-        <p class="contact-subtitle">Take the first step towards your DevOps career transformation. Our team will reach out within 24 hours.</p>
+        <p class="contact-subtitle">Take the first step towards your DevOps career. Our team will reach out within 24 hours.</p>
         <form class="contact-form" id="contact-form" novalidate>
           <div class="form-row">
-            <div class="form-group">
-              <input type="text" id="form-name" name="name" placeholder="Your Full Name" required autocomplete="name" aria-label="Your Full Name">
-            </div>
-            <div class="form-group">
-              <input type="email" id="form-email" name="email" placeholder="Email Address" required autocomplete="email" aria-label="Email Address">
-            </div>
+            <div class="form-group"><input type="text" id="form-name" name="name" placeholder="Your Full Name" required autocomplete="name" aria-label="Your Full Name"></div>
+            <div class="form-group"><input type="email" id="form-email" name="email" placeholder="Email Address" required autocomplete="email" aria-label="Email Address"></div>
           </div>
           <div class="form-row">
-            <div class="form-group">
-              <input type="tel" id="form-phone" name="phone" placeholder="Phone Number" autocomplete="tel" aria-label="Phone Number">
-            </div>
+            <div class="form-group"><input type="tel" id="form-phone" name="phone" placeholder="Phone Number" autocomplete="tel" aria-label="Phone Number"></div>
             <div class="form-group">
               <select id="form-course" name="course" aria-label="Course Interest">
                 <option value="" disabled selected>Interested Course</option>
-                <option value="devops">DevOps Complete Certification</option>
-                <option value="aws">AWS Cloud Computing</option>
+
+                <option value="devops-gcp">DevOps with AWS and GCP (Batch 8)</option>
                 <option value="k8s">Docker &amp; Kubernetes Mastery</option>
-                <option value="cicd">CI/CD Pipelines</option>
+                <option value="aws">AWS Solutions Architect</option>
+                <option value="cicd">CI/CD Pipeline Engineering</option>
               </select>
             </div>
           </div>
@@ -420,9 +535,7 @@
             <span>Send Enquiry</span>
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
           </button>
-          <div class="form-success" id="form-success" role="alert" aria-live="polite">
-            ✅ Thank you! We'll get back to you within 24 hours.
-          </div>
+          <div class="form-success" id="form-success" role="alert" aria-live="polite">&#x2705; Thank you! We'll get back to you within 24 hours.</div>
         </form>
       </div>
     </section>
@@ -433,76 +546,26 @@
     <div class="footer-inner">
       <div class="footer-brand">
         <div class="footer-logo">
-          <div class="logo-icon" aria-hidden="true">
-            <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo" width="28" height="28" style="border-radius: 50%; object-fit: contain;">
-          </div>
+          <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo" width="32" height="32" style="border-radius:50%;object-fit:contain;">
           <span class="logo-text"><strong>NimbusWiz</strong>Tech</span>
         </div>
         <p class="footer-tagline">Empowering careers through cutting-edge DevOps and Cloud technology training.</p>
         <div class="footer-socials">
-          <a href="#" class="social-link" id="footer-linkedin" aria-label="NimbusWiz Tech on LinkedIn">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
-          </a>
-          <a href="#" class="social-link" id="footer-youtube" aria-label="NimbusWiz Tech on YouTube">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
-          </a>
-          <a href="#" class="social-link" id="footer-instagram" aria-label="NimbusWiz Tech on Instagram">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          </a>
-          <a href="#" class="social-link" id="footer-twitter" aria-label="NimbusWiz Tech on Twitter">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-          </a>
+          <a href="#" class="social-link" id="footer-linkedin" aria-label="LinkedIn"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></a>
+          <a href="#" class="social-link" id="footer-youtube" aria-label="YouTube"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58A2.78 2.78 0 0 0 3.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.95A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg></a>
+          <a href="#" class="social-link" id="footer-instagram" aria-label="Instagram"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a href="#" class="social-link" id="footer-twitter" aria-label="Twitter/X"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></a>
         </div>
       </div>
-
       <div class="footer-links-section">
-        <div class="footer-col">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><a href="#home">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#courses">Courses</a></li>
-            <li><a href="#testimonials">Testimonials</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Courses</h4>
-          <ul>
-            <li><a href="#courses">DevOps Certification</a></li>
-            <li><a href="#courses">AWS Cloud Computing</a></li>
-            <li><a href="#courses">Docker &amp; Kubernetes</a></li>
-            <li><a href="#courses">CI/CD Pipelines</a></li>
-          </ul>
-        </div>
-        <div class="footer-col">
-          <h4>Contact Us</h4>
-          <ul class="contact-list">
-            <li>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Davanagere , Karnataka 
-            </li>
-            <li>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.37a16 16 0 0 0 6 6l.54-.54a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg>
-              +91 99458 03639
-            </li>
-            <li>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-              info@nimbuswiztech.com
-            </li>
-          </ul>
-        </div>
+        <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="#home">Home</a></li><li><a href="#success-stories">Success Stories</a></li><li><a href="#batches">Batches</a></li><li><a href="#courses">Courses</a></li><li><a href="#testimonials">Reviews</a></li></ul></div>
+        <div class="footer-col"><h4>Courses</h4><ul><li><a href="#courses">DevSecOps with AWS</a></li><li><a href="#courses">Kubernetes Mastery</a></li><li><a href="#courses">AWS Solutions Architect</a></li><li><a href="#courses">CI/CD Pipelines</a></li><li><a href="#courses">Terraform &amp; IaC</a></li></ul></div>
+        <div class="footer-col"><h4>Contact Us</h4><ul class="contact-list"><li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg> Davanagere, Karnataka</li><li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.37a16 16 0 0 0 6 6l.54-.54a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 21 16.92z"/></svg> +91 99458 03639</li><li><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg> info@nimbuswiztech.com</li></ul></div>
       </div>
     </div>
-    <div class="footer-bottom">
-      <p>© 2024 NimbusWiz Tech. All rights reserved.</p>
-      <div class="footer-legal">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Service</a>
-      </div>
-    </div>
+    <div class="footer-bottom"><p>&copy; 2024 NimbusWiz Tech. All rights reserved.</p><div class="footer-legal"><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></div></div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=2.1"></script>
 </body>
 </html>
