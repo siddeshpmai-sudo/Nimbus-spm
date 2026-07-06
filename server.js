@@ -78,7 +78,23 @@ passport.deserializeUser((user, done) => done(null, user));
 // ── Auth middleware ──────────────────────────────
 function requireAuth(req, res, next) {
   if (req.isAuthenticated()) return next();
-  res.redirect('/login');
+  
+  // Enforce real authentication if Google OAuth credentials are set or in production
+  if (GOOGLE_OAUTH_READY || process.env.NODE_ENV === 'production') {
+    return res.redirect('/login');
+  }
+
+  // Mock login for local testing
+  req.user = {
+    id: 'test-user',
+    name: 'Developer Test',
+    email: 'test@nimbuswiztech.com',
+    avatar: null
+  };
+  req.login(req.user, (err) => {
+    if (err) return next(err);
+    next();
+  });
 }
 
 // ── Serve static files (HTML, CSS, JS, images) ─

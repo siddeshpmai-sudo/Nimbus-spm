@@ -259,6 +259,9 @@
     }, 200);
   });
 
+  // ── Prevent Right-Click Context Menu ────────────────
+  document.addEventListener('contextmenu', e => e.preventDefault());
+
   // ── Init ─────────────────────────────────────────
   loadUser();
   loadRecordings();
