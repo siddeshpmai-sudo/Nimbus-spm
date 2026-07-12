@@ -12,6 +12,7 @@ const express    = require('express');
 const path       = require('path');
 const nodemailer = require('nodemailer');
 const twilio     = require('twilio');
+const { google } = require('googleapis');
 const session    = require('express-session');
 const passport   = require('passport');
 const { Strategy: GoogleStrategy } = require('passport-google-oauth20');
@@ -36,10 +37,29 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Allowed emails whitelist (comma-separated in .env)
-function getAllowedEmails() {
+// Allowed emails per batch (from access.json)
+function getUserBatches(email) {
+  const batches = [];
+  try {
+    const accessData = JSON.parse(fs.readFileSync(path.join(__dirname, 'access.json'), 'utf8'));
+    for (const [batch, batchInfo] of Object.entries(accessData)) {
+      const emails = batchInfo.emails || [];
+      if (emails.map(e => e.toLowerCase()).includes(email)) {
+        batches.push(batch);
+      }
+    }
+  } catch (err) {
+    console.error('[AUTH] Failed to read access.json:', err.message);
+  }
+  
+  if (batches.length > 0) return batches;
+  
+  // Fallback to .env for admin/Jan 26 if not in access.json
   const raw = process.env.ALLOWED_EMAILS || '';
-  return raw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+  const allowed = raw.split(',').map(e => e.trim().toLowerCase()).filter(Boolean);
+  if (allowed.includes(email)) return ['Jan 26'];
+
+  return null;
 }
 
 // Register Google OAuth strategy only if credentials are configured
@@ -53,12 +73,9 @@ if (GOOGLE_OAUTH_READY) {
     callbackURL:  `${process.env.SITE_URL || 'http://localhost:' + PORT}/auth/google/callback`,
   }, (_accessToken, _refreshToken, profile, done) => {
     const email   = (profile.emails?.[0]?.value || '').toLowerCase();
-    const allowed = getAllowedEmails();
+    const batches = getUserBatches(email);
 
-    if (!allowed.length) {
-      return done(null, false, { message: 'No allowed emails configured.' });
-    }
-    if (!allowed.includes(email)) {
+    if (!batches || batches.length === 0) {
       return done(null, false, { message: 'access_denied' });
     }
     return done(null, {
@@ -66,6 +83,7 @@ if (GOOGLE_OAUTH_READY) {
       name:   profile.displayName,
       email:  email,
       avatar: profile.photos?.[0]?.value || null,
+      batches: batches
     });
   }));
 } else {
@@ -89,7 +107,8 @@ function requireAuth(req, res, next) {
     id: 'test-user',
     name: 'Developer Test',
     email: 'test@nimbuswiztech.com',
-    avatar: null
+    avatar: null,
+    batches: ['Jan 26']
   };
   req.login(req.user, (err) => {
     if (err) return next(err);
@@ -141,14 +160,102 @@ app.get('/api/me', requireAuth, (req, res) => {
   res.json(req.user);
 });
 
-// ── Protected API: recordings list ──────────────
-app.get('/api/recordings', requireAuth, (_req, res) => {
+let driveClient = null;
+
+function getDriveClient() {
+  if (driveClient) return driveClient;
+  const credentialsPath = path.join(__dirname, 'google-credentials.json');
+  if (fs.existsSync(credentialsPath)) {
+    const auth = new google.auth.GoogleAuth({
+      keyFile: credentialsPath,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly'],
+    });
+    driveClient = google.drive({ version: 'v3', auth });
+    return driveClient;
+  }
+  return null;
+}
+
+async function getDriveFilesRecursive(folderId, drive, batch, currentPath = '') {
+  let allRecordings = [];
   try {
-    const filePath = path.join(__dirname, 'recordings.json');
-    const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
-    res.json(data);
+    const res = await drive.files.list({
+      q: `'${folderId}' in parents and trashed = false`,
+      fields: 'files(id,name,mimeType,createdTime)',
+      supportsAllDrives: true,
+      includeItemsFromAllDrives: true
+    });
+    
+    const data = res.data;
+    
+    for (const file of data.files || []) {
+      if (file.mimeType === 'application/vnd.google-apps.folder') {
+        const subPath = currentPath ? `${currentPath} / ${file.name}` : file.name;
+        const subFiles = await getDriveFilesRecursive(file.id, drive, batch, subPath);
+        allRecordings.push(...subFiles);
+      } else {
+        // Assume video file
+        allRecordings.push({
+          id: `${batch}-${file.id}`,
+          title: file.name.replace(/\.[^/.]+$/, ""),
+          description: currentPath ? `Folder: ${currentPath}` : `Recording for ${batch}`,
+          course: currentPath ? `${batch} - ${currentPath}` : batch,
+          driveFileId: file.id,
+          date: file.createdTime ? file.createdTime.split('T')[0] : '',
+          duration: ""
+        });
+      }
+    }
   } catch (err) {
-    console.error('[RECORDINGS] Failed to read recordings.json:', err.message);
+    console.error('Failed to fetch recursive folder', folderId, err);
+  }
+  return allRecordings;
+}
+
+// ── Protected API: recordings list ──────────────
+app.get('/api/recordings', requireAuth, async (req, res) => {
+  try {
+    const userBatches = req.user.batches || ['Jan 26'];
+    let accessData = {};
+    try {
+      accessData = JSON.parse(fs.readFileSync(path.join(__dirname, 'access.json'), 'utf8'));
+    } catch (err) {}
+    
+    let allRecordings = [];
+
+    for (const batch of userBatches) {
+      const batchInfo = accessData[batch] || { mode: 'legacy' };
+      
+      if (batchInfo.mode === 'gdrive' && batchInfo.driveFolderId) {
+        const drive = getDriveClient();
+        if (!drive) {
+          console.warn(`Service Account missing (google-credentials.json) for ${batch}`);
+          continue;
+        }
+        
+        const folderId = batchInfo.driveFolderId;
+        const recordings = await getDriveFilesRecursive(folderId, drive, batch);
+        allRecordings.push(...recordings);
+      } else if (batchInfo.mode === 'legacy') {
+        const filePath = path.join(__dirname, 'recordings.json');
+        if (fs.existsSync(filePath)) {
+          const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+          allRecordings.push(...data);
+        }
+      }
+    }
+    
+    // Remove duplicates if the user sees the same recordings.json multiple times
+    const uniqueIds = new Set();
+    const uniqueRecordings = allRecordings.filter(r => {
+      if (uniqueIds.has(r.id)) return false;
+      uniqueIds.add(r.id);
+      return true;
+    });
+
+    res.json(uniqueRecordings);
+  } catch (err) {
+    console.error('[RECORDINGS] Failed to load recordings:', err.message);
     res.status(500).json({ error: 'Could not load recordings.' });
   }
 });
