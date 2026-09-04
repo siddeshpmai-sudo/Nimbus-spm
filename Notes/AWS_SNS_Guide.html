@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SNS – Complete Teaching Guide</title>
+    <style>
+        :root{--primary:#FF9900;--primary-dark:#c77b00;--secondary:#232F3E;--accent:#1A9C3E;--info:#2563EB;--warning:#D97706;--danger:#DC2626;--light-bg:#F8FAFC;--card-bg:#FFFFFF;--border:#E2E8F0;--text-main:#1E293B;--text-muted:#64748B;--code-bg:#1e1e2e;--code-text:#cdd6f4}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;color:var(--text-main);background:var(--light-bg);padding:0 20px 60px}
+        .hero{background:linear-gradient(135deg,#1a0533 0%,#3b0764 50%,#6d28d9 100%);color:white;text-align:center;padding:60px 40px 50px;margin:0 -20px 40px}
+        .hero-badge{display:inline-block;background:rgba(255,153,0,.25);border:1px solid rgba(255,153,0,.5);color:var(--primary);padding:5px 16px;border-radius:50px;font-size:.8em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+        .hero h1{font-size:2.8em;font-weight:800;margin-bottom:12px}.hero h1 span{color:var(--primary)}
+        .hero p{font-size:1.1em;opacity:.85;max-width:650px;margin:0 auto 24px}
+        .hero-meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+        .hero-meta span{background:rgba(255,255,255,.12);padding:6px 18px;border-radius:6px;font-size:.88em;font-weight:600}
+        .container{max-width:1100px;margin:0 auto}
+        .section-heading{display:flex;align-items:center;gap:14px;margin:50px 0 24px}
+        .section-icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#7C3AED,#5b21b6);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;box-shadow:0 4px 12px rgba(124,58,237,.35)}
+        .section-heading h2{font-size:1.7em;font-weight:800;color:var(--secondary)}
+        .card{background:var(--card-bg);border-radius:12px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)}
+        .card h3{font-size:1.15em;font-weight:700;color:var(--secondary);margin-bottom:14px}
+        .card h4{font-size:1em;font-weight:700;color:#7C3AED;margin:18px 0 8px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        @media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.hero h1{font-size:1.9em}}
+        .concept-card{background:var(--card-bg);border-radius:10px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
+        .concept-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+        .concept-card .icon{font-size:2em;margin-bottom:10px}
+        .concept-card h3{font-size:1.05em;font-weight:700;color:var(--secondary);margin-bottom:8px}
+        .concept-card p{font-size:.9em;color:var(--text-muted);line-height:1.6}
+        .code-block{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:10px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.88em;line-height:1.7;margin:14px 0;white-space:pre}
+        .code-label{background:#313244;color:#cba6f7;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:6px 6px 0 0;display:inline-block;letter-spacing:.5px}
+        .callout{padding:16px 20px;border-radius:8px;margin:16px 0;font-size:.93em;display:flex;gap:12px;align-items:flex-start}
+        .callout .icon{font-size:1.2em;flex-shrink:0;margin-top:1px}
+        .callout-info{background:#DBEAFE;border-left:4px solid var(--info)}
+        .callout-warning{background:#FEF3C7;border-left:4px solid var(--warning)}
+        .callout-success{background:#DCFCE7;border-left:4px solid var(--accent)}
+        .callout-danger{background:#FEE2E2;border-left:4px solid var(--danger)}
+        .callout-purple{background:#F3E8FF;border-left:4px solid #7C3AED}
+        .analogy{background:linear-gradient(135deg,#f5f3ff,#ede9fe);border:1px solid #c4b5fd;border-radius:10px;padding:20px 24px;margin:16px 0}
+        .analogy .analogy-title{font-weight:800;color:#7C3AED;font-size:.85em;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+        .compare-table{width:100%;border-collapse:collapse;font-size:.9em;margin:16px 0}
+        .compare-table th{background:var(--secondary);color:white;padding:12px 16px;text-align:left}
+        .compare-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+        .compare-table tr:nth-child(even) td{background:#f8fafc}
+        .compare-table td:first-child{font-weight:700;color:var(--secondary)}
+        .step-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+        .step-num{background:#7C3AED;color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;flex-shrink:0}
+        .step-content{padding-top:4px}
+        .step-content strong{display:block;margin-bottom:3px}
+        .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+        .flow-box{background:var(--secondary);color:white;padding:8px 16px;border-radius:8px;font-size:.85em;font-weight:600}
+        .flow-box.purple{background:#7C3AED}
+        .flow-box.blue{background:var(--info)}
+        .flow-box.orange{background:var(--primary-dark)}
+        .flow-box.green{background:var(--accent)}
+        .flow-box.red{background:var(--danger)}
+        .flow-arrow{color:var(--text-muted);font-size:1.2em;font-weight:700}
+        .fan-diagram{background:#1e1e2e;border-radius:12px;padding:28px;font-family:monospace;font-size:.88em;color:#cdd6f4;line-height:2}
+        .lab{background:linear-gradient(135deg,#1e1e2e,#181825);border-radius:12px;padding:28px;margin-bottom:24px;color:#cdd6f4}
+        .lab-title{color:#cba6f7;font-weight:800;font-size:1.05em;margin-bottom:6px}
+        .lab-desc{color:#a6adc8;font-size:.88em;margin-bottom:16px}
+        .lab ol{padding-left:20px;color:#cdd6f4;font-size:.9em;line-height:1.9}
+        .lab code{background:#313244;color:#f9e2af;padding:1px 6px;border-radius:4px;font-family:monospace}
+        .divider{border:none;height:2px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:40px 0}
+        ul li,ol li{margin-bottom:6px}
+        ul,ol{padding-left:20px}
+        .summary-card{background:linear-gradient(135deg,var(--secondary),#3b0764);color:white;border-radius:12px;padding:32px;margin-bottom:24px}
+        .summary-card h2{color:var(--primary);margin-bottom:16px;font-size:1.4em}
+        .checklist{list-style:none;padding:0}
+        .checklist li{padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+        .checklist li::before{content:"✅";flex-shrink:0}
+    </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">📘 AWS Teaching Guide – Day Session</div>
+  <h1>AWS <span>SNS</span></h1>
+  <p>Simple Notification Service — Fully managed pub/sub messaging for application-to-application (A2A) and application-to-person (A2P) communications at any scale.</p>
+  <div class="hero-meta">
+    <span>🕐 45–60 Minutes</span>
+    <span>🎯 Beginner–Intermediate</span>
+    <span>📣 Pub/Sub Messaging</span>
+    <span>🔗 Integrates with CloudWatch, Lambda, SQS</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: WHAT IS SNS -->
+  <div class="section-heading">
+    <div class="section-icon">📣</div>
+    <h2>What is AWS SNS?</h2>
+  </div>
+
+  <div class="card">
+    <div class="analogy">
+      <div class="analogy-title">📺 Analogy — TV Broadcast Channel</div>
+      <p>Think of SNS like a TV broadcast channel. The TV station (Publisher) broadcasts a single program (message). Anyone who has tuned in to that channel (Subscribers) receives it simultaneously. One message → many receivers at once. You don't send individual messages to each subscriber — you broadcast once and SNS handles delivery to all of them.</p>
+    </div>
+
+    <h3>SNS = Pub/Sub (Publish-Subscribe) Pattern</h3>
+    <div class="grid-3">
+      <div class="concept-card">
+        <div class="icon">📤</div>
+        <h3>Publisher (Producer)</h3>
+        <p>Any entity that sends a message to an SNS Topic. Can be: your app, a CloudWatch Alarm, an S3 event, another AWS service.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">📌</div>
+        <h3>Topic</h3>
+        <p>The messaging channel. A named resource in SNS. Publishers send to the topic; subscribers receive from it. Like a broadcast station ID.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">📥</div>
+        <h3>Subscriber (Consumer)</h3>
+        <p>Receives messages from the topic. Can be: Email, SMS, HTTP endpoint, Lambda, SQS queue, mobile push.</p>
+      </div>
+    </div>
+
+    <div class="fan-diagram">
+                        ┌─────────────────────────────────────────────┐
+                        │              SNS TOPIC                       │
+   Publisher            │        "OrderPlaced-Events"                  │
+  ┌──────────┐  publish │                                              │
+  │ Your App │ ────────►│  Message: {orderId: 1001, amount: $299}     │
+  └──────────┘          │                                              │
+                        └──────────────┬──────────────────────────────┘
+                                       │ Fan-Out (all at once)
+              ┌──────────────┬─────────┴──────────┬──────────────┐
+              ▼              ▼                    ▼              ▼
+        📧 Email         📱 SMS             λ Lambda         📦 SQS Queue
+     (notify team)   (alert manager)   (process order)   (update inventory)</div>
+  </div>
+
+  <div class="card">
+    <h3>SNS Topic Types</h3>
+    <table class="compare-table">
+      <tr><th>Type</th><th>Description</th><th>Use When</th></tr>
+      <tr><td>Standard Topic</td><td>Best-effort ordering. May deliver duplicates. Very high throughput (100K+ msg/sec).</td><td>Most use cases. Notifications, fan-out, decoupling.</td></tr>
+      <tr><td>FIFO Topic</td><td>Strict ordering. Exactly-once delivery. Lower throughput (300 msg/sec).</td><td>Financial transactions, inventory updates where order matters.</td></tr>
+    </table>
+
+    <h3>Supported Subscriber Protocols</h3>
+    <div class="grid-2">
+      <ul>
+        <li>📧 <strong>Email / Email-JSON</strong> — direct emails (requires confirmation)</li>
+        <li>📱 <strong>SMS</strong> — text message to phone number</li>
+        <li>λ <strong>AWS Lambda</strong> — trigger a function on every message</li>
+        <li>📦 <strong>SQS</strong> — deliver to a queue for decoupled processing</li>
+      </ul>
+      <ul>
+        <li>🌐 <strong>HTTP/HTTPS</strong> — POST to a web endpoint</li>
+        <li>📲 <strong>Mobile Push</strong> — iOS (APNs), Android (FCM), Kindle (ADM)</li>
+        <li>📬 <strong>Amazon SES</strong> — rich email via Simple Email Service</li>
+        <li>⚡ <strong>Amazon EventBridge</strong> — event-driven workflows</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- SECTION 2: HOW IT WORKS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">⚙️</div>
+    <h2>Hands-On: Create SNS Topic &amp; Subscribe (Step-by-Step)</h2>
+  </div>
+
+  <div class="card">
+    <h3>Lab 1: Create Topic and Email Subscription</h3>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Open SNS Console</strong>
+        Go to AWS Console → Simple Notification Service → Topics → Create topic
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Configure the Topic</strong>
+        <ul>
+          <li>Type: <strong>Standard</strong></li>
+          <li>Name: <code>DevOps-Alerts</code></li>
+          <li>Display name: <code>DevOps Team Alerts</code> (appears in SMS subject)</li>
+          <li>Encryption: Leave default (SSE disabled) for lab, enable SSE-KMS for production</li>
+          <li>Access Policy: Default (topic owner can publish and subscribe)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Create the Topic → Note the ARN</strong>
+        ARN format: <code>arn:aws:sns:ap-south-1:123456789012:DevOps-Alerts</code>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Add Email Subscription</strong>
+        <ul>
+          <li>Topics → DevOps-Alerts → Create subscription</li>
+          <li>Protocol: <strong>Email</strong></li>
+          <li>Endpoint: <code>student@example.com</code></li>
+          <li>Create subscription → AWS sends a confirmation email</li>
+          <li>Open the email → Click "Confirm subscription" link</li>
+          <li>Status changes from <em>PendingConfirmation</em> to <em>Confirmed</em></li>
+        </ul>
+        <div class="callout callout-warning">
+          <span class="icon">⚠️</span>
+          <div><strong>Important:</strong> Email subscriptions must be confirmed by the recipient before they receive any messages. Unconfirmed subscriptions expire after 3 days.</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>Publish a Test Message</strong>
+        <ul>
+          <li>Topics → DevOps-Alerts → Publish message</li>
+          <li>Subject: <code>Test Alert from DevOps</code></li>
+          <li>Message: <code>This is a test notification from AWS SNS. Your monitoring is working!</code></li>
+          <li>Click Publish → Check your inbox within seconds!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-title">🔬 Lab 2: Publish via AWS CLI</div>
+    <div class="lab-desc">Practice publishing SNS messages from the command line — used in automation scripts</div>
+    <ol>
+      <li>Publish a message to your topic:
+        <code>aws sns publish --topic-arn arn:aws:sns:ap-south-1:123456789012:DevOps-Alerts --message "Server CPU is at 95%!" --subject "CRITICAL: High CPU Alert"</code></li>
+      <li>Subscribe an SQS queue (from Lab later):
+        <code>aws sns subscribe --topic-arn arn:aws:sns:ap-south-1:123456789012:DevOps-Alerts --protocol sqs --notification-endpoint arn:aws:sqs:ap-south-1:123456789012:my-queue</code></li>
+      <li>List all subscriptions for a topic:
+        <code>aws sns list-subscriptions-by-topic --topic-arn arn:aws:sns:ap-south-1:123456789012:DevOps-Alerts</code></li>
+    </ol>
+  </div>
+
+  <!-- SECTION 3: SNS + CLOUDWATCH INTEGRATION -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔔</div>
+    <h2>Key Integration: SNS + CloudWatch Alarms</h2>
+  </div>
+  <div class="card">
+    <h3>The Most Common SNS Pattern in Production</h3>
+    <div class="flow">
+      <div class="flow-box blue">EC2 CPU &gt; 80%</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box orange">CloudWatch Alarm fires</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">SNS Topic: DevOps-Alerts</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">Email to team</div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-box green">SMS to on-call</div>
+      <div class="flow-arrow">+</div>
+      <div class="flow-box green">Lambda: page PagerDuty</div>
+    </div>
+    <br>
+    <p>When you create a CloudWatch Alarm, the "Actions" section lets you select an SNS topic. SNS then fans out to all subscribers — email, SMS, Lambda — simultaneously.</p>
+    <div class="callout callout-success">
+      <span class="icon">✅</span>
+      <div><strong>Best Practice:</strong> Create one SNS topic per severity level: <code>Critical-Alerts</code>, <code>Warning-Alerts</code>, <code>Info-Alerts</code>. Route different teams to different severity topics.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: MESSAGE FILTERING -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔎</div>
+    <h2>Message Filtering — Advanced Feature</h2>
+  </div>
+  <div class="card">
+    <h3>What is Message Filtering?</h3>
+    <p>Instead of every subscriber receiving every message, you can attach a <strong>filter policy</strong> to a subscription so subscribers only receive messages relevant to them.</p>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <div><strong>Example:</strong> An e-commerce app publishes all order events to one SNS topic. The payment service only needs "OrderPlaced" events. The shipping service only needs "PaymentConfirmed" events. Filter policies route only the right messages to each subscriber.</div>
+    </div>
+    <div class="code-label">MESSAGE ATTRIBUTES (published with message)</div>
+    <div class="code-block">{
+  "event_type": "OrderPlaced",
+  "region": "india",
+  "order_value": 299
+}</div>
+    <div class="code-label">FILTER POLICY ON PAYMENT SERVICE SUBSCRIPTION</div>
+    <div class="code-block">{
+  "event_type": ["OrderPlaced"],
+  "region": ["india", "us"]
+}</div>
+    <div class="code-label">FILTER POLICY ON SHIPPING SERVICE SUBSCRIPTION</div>
+    <div class="code-block">{
+  "event_type": ["PaymentConfirmed"]
+}</div>
+    <p style="margin-top:10px;">Result: Payment service only receives OrderPlaced events. Shipping service only receives PaymentConfirmed. Both subscribe to the same topic — no duplicate consumers needed.</p>
+  </div>
+
+  <!-- SECTION 5: SNS FAN-OUT PATTERN -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🌐</div>
+    <h2>SNS Fan-Out Pattern — The Most Important Architecture Pattern</h2>
+  </div>
+  <div class="card">
+    <h3>SNS → Multiple SQS Queues (Fan-Out)</h3>
+    <p>One message published to SNS is delivered to multiple SQS queues simultaneously. Each queue is processed independently by a different microservice. This achieves loose coupling and parallel processing.</p>
+    <div class="fan-diagram">
+    ORDER PLACED EVENT
+          │
+          ▼
+   [SNS Topic: orders]
+          │
+    ──────┴───────────────────────────────────────
+    │              │                 │             │
+    ▼              ▼                 ▼             ▼
+[SQS: payments] [SQS: inventory] [SQS: email]  [SQS: analytics]
+    │              │                 │             │
+    ▼              ▼                 ▼             ▼
+ Payment        Reduce           Send "Order   Record to
+ Lambda         Stock Lambda     Confirmed"    Data Lake
+                                 Lambda</div>
+    <div class="callout callout-success">
+      <span class="icon">✅</span>
+      <div><strong>Why this pattern is powerful:</strong> If the inventory service is slow, it doesn't block payment or email. Each service processes at its own pace. If a service fails, messages stay in its SQS queue for retry — nothing is lost.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: MESSAGE DELIVERY & DLQ -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">📬</div>
+    <h2>Message Delivery, Retries &amp; Dead Letter Queues</h2>
+  </div>
+  <div class="card">
+    <h3>SNS Delivery Retries</h3>
+    <p>When SNS can't deliver a message to an HTTP/Lambda subscriber, it retries automatically with exponential backoff.</p>
+    <table class="compare-table">
+      <tr><th>Protocol</th><th>Retry Behaviour</th></tr>
+      <tr><td>HTTP/HTTPS</td><td>Up to 100,000 retries over 23 days</td></tr>
+      <tr><td>Lambda</td><td>Up to 3 retries</td></tr>
+      <tr><td>SQS</td><td>No retries needed — SQS stores the message indefinitely</td></tr>
+      <tr><td>Email</td><td>Best-effort, no guaranteed delivery. Not for critical flows.</td></tr>
+      <tr><td>SMS</td><td>Best-effort based on carrier</td></tr>
+    </table>
+
+    <h3>Dead Letter Queue (DLQ) for SNS</h3>
+    <p>After all retries are exhausted, failed messages can be sent to an SQS Dead Letter Queue for manual review.</p>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <div><strong>Always configure a DLQ</strong> for production SNS subscriptions. Without a DLQ, failed messages are silently dropped — you'll never know what was lost.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: PRICING -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">💰</div>
+    <h2>SNS Pricing</h2>
+  </div>
+  <div class="card">
+    <table class="compare-table">
+      <tr><th>Feature</th><th>Price</th></tr>
+      <tr><td>First 1 million SNS requests/month</td><td>FREE</td></tr>
+      <tr><td>Additional API requests</td><td>$0.50 per million</td></tr>
+      <tr><td>Email deliveries</td><td>FREE (100K/month then $2/100K)</td></tr>
+      <tr><td>HTTP/HTTPS deliveries</td><td>FREE (100K/month then $0.60/million)</td></tr>
+      <tr><td>SQS deliveries</td><td>FREE</td></tr>
+      <tr><td>Lambda deliveries</td><td>FREE</td></tr>
+      <tr><td>SMS (India)</td><td>$0.00645 per message (approx ₹0.54)</td></tr>
+    </table>
+    <div class="callout callout-success">
+      <span class="icon">💡</span>
+      <div><strong>Cost Reality:</strong> For most monitoring and notification use cases, SNS costs are minimal — often pennies per month. It's essentially free until you reach millions of messages.</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <h2>📚 Session Summary — SNS Key Takeaways</h2>
+    <ul class="checklist" style="color:white">
+      <li>SNS = Pub/Sub: one publisher, many subscribers — "broadcast" model</li>
+      <li>Topic = the messaging channel. Publishers publish to a topic, subscribers receive from it</li>
+      <li>Standard Topics: high throughput, best-effort ordering. FIFO: strict order, exactly-once</li>
+      <li>Subscribers: Email, SMS, Lambda, SQS, HTTP, Mobile Push</li>
+      <li>Email subscriptions require manual confirmation (click link in email)</li>
+      <li>Fan-out pattern: SNS → multiple SQS queues → independent microservices (most common production pattern)</li>
+      <li>Message Filtering: subscribers only get messages that match their filter policy</li>
+      <li>DLQ: configure Dead Letter Queue for every HTTP/Lambda subscription in production</li>
+      <li>SNS + CloudWatch Alarms = standard monitoring → alerting pattern in AWS</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

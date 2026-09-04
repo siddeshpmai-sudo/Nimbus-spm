@@ -1,0 +1,80 @@
+docker.bintray.io/jfrog/artifactory-pro:latest
+
+
+
+Jfrog artifactory installation
+1.install the JRE from OpenJDK 11:
+   sudo apt install default-jre
+
+2.Download Artifactory packages onto /opt/
+   cd /opt 
+   wget https://jfrog.bintray.com/artifactory/jfrog-artifactory-oss-6.9.6.zip
+
+3.extract artifactory tar.gz file
+   unzip jfrog-artifactory-oss-6.9.6.zip
+
+4.Go inside to bin directory and start the servicesaccess artifactory from browser
+   cd /opt/jfrog-artifactory-oss-6.9.6/bin
+   ./artifactory.sh start
+
+5.access artifactory from browser
+   http://<PUBLIC_IP_Address>:8081 
+
+6.Provide credentials
+   username: admin
+   password: passwrod 
+
+
+
+pipeline{
+    agent any
+    stages{
+        stage('checkout'){
+            steps{
+                cleanWs()
+                git branch: 'main', url: 'https://github.com/Siddeshg672/hello_world_public_war.git'
+                // sh "git clone https://github.com/Siddeshg672/hello_world_public_war.git -b main"
+            }
+        }
+        // stage('sonar scan'){
+        //     steps{
+        //         withSonarQubeEnv('sonar_nov') {
+        //             sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sonar"
+        //         }
+        //     }
+        // }
+        stage('compile'){
+            steps{
+                sh "mvn clean install"
+                sh "cp -R webapp/target/webapp.war ."                 
+                sh "mv webapp.war webapp-${BUILD_NUMBER}.war"
+            }
+        }
+        stage('upload war to jfrog'){
+            steps{
+                rtUpload (
+                    // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:                 
+                    serverId: "DemoNov",                     
+                    spec: """{                             
+                        "files": [                                     
+                                {                                         
+                                   "pattern": "webapp-${BUILD_NUMBER}.war",                                         
+                                   "target": "sample_demoNov"
+                                }                                 
+                            ]                             
+                    }"""                 
+                )             
+            }
+        }
+        stage('deploy on to tomcat'){
+            steps{
+                sshagent(credentials: ['jenkins_ssh'], ignoreMissing: true) {
+                    sh 'scp -o StrictHostKeyChecking=no webapp/target/webapp.war tomcat@18.204.196.153:/opt/tomcat/webapps'                 
+                    
+                }             
+                
+            }         
+            
+        }
+    }
+}

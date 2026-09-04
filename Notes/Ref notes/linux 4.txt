@@ -1,0 +1,18 @@
+
+
+87. mv old_name New_name
+88. mv file dir1/file
+89. mv dir2/f1 .
+90. cp file file2
+91. cp file dir1/dir2/file
+92. cp -i file file2
+93. cp -i test dir1/test
+94. cp -r dir2 dir3
+95. cp -r dir1 dir2/dir3/dir4
+96. cp -i dir1/file dir2/dir3/dir4/
+97. ls Devops*
+98. ls test*
+99. ls *
+100. grep -i "^Devops" file_name
+101. grep -i "^t" file_name
+102. grep -i "dev$" file_name

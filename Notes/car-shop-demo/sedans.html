@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus Auto | Sedans</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased bg-[#0f172a]">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-extrabold tracking-tighter">
+            <a href="index.html">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">NIMBUS</span> AUTO
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-300">
+            <a href="index.html" class="hover:text-white transition">Home</a>
+            <a href="suvs.html" class="hover:text-white transition">SUVs</a>
+            <a href="sedans.html" class="text-white">Sedans</a>
+            <a href="hatchbacks.html" class="hover:text-white transition">Hatchbacks</a>
+        </div>
+        <a href="index.html" class="bg-gray-700 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-gray-600 transition">Back to Home</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-24 px-6 md:px-20 page-transition">
+        <div class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Elegant <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Sedans</span></h1>
+            <p class="text-gray-400 text-lg">Experience comfort and style with our top-tier sedans.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-1 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/chevrolet_cruze.jpg" alt="Chevrolet Cruze" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Chevrolet Cruze</h4>
+                    <p class="text-gray-400 text-sm mb-4">FWD • Diesel • 5 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Chevrolet Cruze', 'Chevrolet • Executive Sedan', 'images/chevrolet_cruze.jpg', '2.0L VCDi Diesel', '6-Speed Automatic', '164 hp', '$20,000', 'The Chevy Cruze offers American muscle design in a sleek executive package. Renowned for its punchy diesel engine and excellent highway stability.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-2 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/honda_city.jpg" alt="Honda City" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Honda City</h4>
+                    <p class="text-gray-400 text-sm mb-4">i-VTEC • Petrol • 5 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Honda City', 'Honda • Mid-Size Sedan', 'images/honda_city.jpg', '1.5L i-VTEC Petrol', 'CVT Automatic', '119 hp', '$16,000', 'A legend in its segment. The Honda City delivers incredible refinement, spacious interiors, and the iconic rev-happy i-VTEC engine.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-3 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/hyundai_verna.jpg" alt="Hyundai Verna" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Hyundai Verna</h4>
+                    <p class="text-gray-400 text-sm mb-4">Turbo • Petrol • 5 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Hyundai Verna', 'Hyundai • Mid-Size Sedan', 'images/hyundai_verna.jpg', '1.5L Turbo GDi', '7-Speed DCT', '158 hp', '$17,500', 'Setting new benchmarks in design and technology, the Hyundai Verna comes fully loaded with ADAS features and a thrilling turbocharged engine.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-[#1e293b] rounded-2xl max-w-2xl w-full border border-[#334155] overflow-hidden shadow-2xl transform transition-all">
+            <div class="relative h-64 bg-gray-900">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black bg-opacity-50 hover:bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold transition">&times;</button>
+            </div>
+            <div class="p-8">
+                <h3 id="modal-title" class="text-3xl font-extrabold mb-2">Car Name</h3>
+                <p id="modal-subtitle" class="text-gray-400 text-sm mb-6 uppercase tracking-wider">Subtitle</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Engine</p>
+                        <p id="modal-engine" class="font-semibold text-sm">V8</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Trans</p>
+                        <p id="modal-trans" class="font-semibold text-sm">Auto</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Power</p>
+                        <p id="modal-power" class="font-semibold text-sm">300 hp</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Price</p>
+                        <p id="modal-price" class="font-semibold text-green-400 text-sm">$50,000</p>
+                    </div>
+                </div>
+                <p id="modal-desc" class="text-gray-300 leading-relaxed text-sm">Description goes here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openModal(title, subtitle, img, engine, trans, power, price, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-subtitle').innerText = subtitle;
+            document.getElementById('modal-img').src = img;
+            document.getElementById('modal-engine').innerText = engine;
+            document.getElementById('modal-trans').innerText = trans;
+            document.getElementById('modal-power').innerText = power;
+            document.getElementById('modal-price').innerText = price;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

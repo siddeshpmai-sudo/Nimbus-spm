@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Storage Solutions: EBS, EFS & S3</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg-color: #0f172a;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --accent-ebs: #f59e0b;
+            --accent-efs: #10b981;
+            --accent-s3: #3b82f6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 4rem 2rem;
+            background-image: radial-gradient(circle at top, #1e293b 0%, #0f172a 100%);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 4rem;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        p.subtitle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 1.5rem;
+            padding: 2.5rem;
+            backdrop-filter: blur(12px);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 1s ease-out backwards;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+        }
+
+        .card.ebs::before { background: var(--accent-ebs); }
+        .card.efs::before { background: var(--accent-efs); }
+        .card.s3::before { background: var(--accent-s3); }
+
+        .card:hover.ebs { box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2); }
+        .card:hover.efs { box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2); }
+        .card:hover.s3 { box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2); }
+
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.3s; }
+        .card:nth-child(3) { animation-delay: 0.5s; }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .ebs h2 { color: var(--accent-ebs); }
+        .efs h2 { color: var(--accent-efs); }
+        .s3 h2 { color: var(--accent-s3); }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 1.5rem;
+        }
+
+        .feature-list li {
+            margin-bottom: 0.75rem;
+            position: relative;
+            padding-left: 1.5rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .feature-list li::before {
+            content: '→';
+            position: absolute;
+            left: 0;
+            color: inherit;
+            opacity: 0.7;
+        }
+        
+        .use-case {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(0,0,0,0.2);
+            border-radius: 0.75rem;
+            font-size: 0.9rem;
+        }
+        
+        .use-case strong {
+            color: var(--text-main);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>AWS Storage Solutions</h1>
+        <p class="subtitle">A comprehensive comparison of Amazon Elastic Block Store (EBS), Elastic File System (EFS), and Simple Storage Service (S3) for our discussion tomorrow.</p>
+    </header>
+
+    <div class="container">
+        <!-- EBS Card -->
+        <div class="card ebs">
+            <h2>EBS</h2>
+            <p><strong>Elastic Block Store</strong></p>
+            <p style="margin-top:1rem; color:var(--text-muted);">High-performance block storage designed for use with Amazon EC2 instances for both throughput and transaction intensive workloads.</p>
+            
+            <ul class="feature-list">
+                <li><strong>Storage Type:</strong> Block storage</li>
+                <li><strong>Access:</strong> Single EC2 instance (Multi-Attach available).</li>
+                <li><strong>Performance:</strong> Ultra-low latency, high IOPS.</li>
+                <li><strong>Durability:</strong> 99.8% - 99.999% (depending on volume type).</li>
+                <li><strong>Scaling:</strong> Scale up volume size and change type on the fly.</li>
+            </ul>
+
+            <div class="use-case">
+                <strong>Ideal Use Cases:</strong>
+                Relational and NoSQL databases, enterprise applications, boot volumes, and workloads requiring sub-millisecond latency.
+            </div>
+        </div>
+
+        <!-- EFS Card -->
+        <div class="card efs">
+            <h2>EFS</h2>
+            <p><strong>Elastic File System</strong></p>
+            <p style="margin-top:1rem; color:var(--text-muted);">Serverless, fully elastic file storage that automatically grows and shrinks as you add and remove files.</p>
+            
+            <ul class="feature-list">
+                <li><strong>Storage Type:</strong> File storage (NFSv4).</li>
+                <li><strong>Access:</strong> Hundreds or thousands of EC2 instances concurrently.</li>
+                <li><strong>Performance:</strong> Low latency, high throughput that scales with size.</li>
+                <li><strong>Durability:</strong> Multi-AZ design for high availability.</li>
+                <li><strong>Scaling:</strong> Petabyte-scale, entirely automatic and transparent.</li>
+            </ul>
+
+            <div class="use-case">
+                <strong>Ideal Use Cases:</strong>
+                Content management systems (CMS), big data analytics, web serving, container storage, and shared enterprise applications.
+            </div>
+        </div>
+
+        <!-- S3 Card -->
+        <div class="card s3">
+            <h2>S3</h2>
+            <p><strong>Simple Storage Service</strong></p>
+            <p style="margin-top:1rem; color:var(--text-muted);">Object storage service offering industry-leading scalability, data availability, security, and performance.</p>
+            
+            <ul class="feature-list">
+                <li><strong>Storage Type:</strong> Object storage.</li>
+                <li><strong>Access:</strong> Accessible from anywhere via HTTP/HTTPS APIs.</li>
+                <li><strong>Performance:</strong> Massive parallel access, high throughput.</li>
+                <li><strong>Durability:</strong> 99.999999999% (11 9's) of durability.</li>
+                <li><strong>Scaling:</strong> Virtually infinite scalability.</li>
+            </ul>
+
+            <div class="use-case">
+                <strong>Ideal Use Cases:</strong>
+                Data lakes, backup and restore, archiving, static website hosting, and big data analytics.
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,83 @@
+pipeline {
+    agent any
+
+    // =========================================================
+    // ENVIRONMENT VARIABLES
+    // Update TOMCAT_IP with your actual Tomcat server's IP address.
+    // 'tomcat' refers to the SSH credential ID saved in Jenkins.
+    // =========================================================
+    environment {
+        TOMCAT_IP       = '18.60.154.214'       // <<< Replace with your Tomcat server IP
+        TOMCAT_USER     = 'ubuntu'
+        TOMCAT_WEBAPPS  = '/opt/tomcat/webapps'
+        WAR_NAME        = 'nimbus-webapp.war'   // Must match pom.xml <finalName>
+    }
+
+    stages {
+
+        // Stage 1: Checkout source code from Git
+        stage('Checkout Code') {
+            steps {
+                echo 'Cloning the repository...'
+                git branch: 'main', url: 'https://github.com/nimbuswiztech/maven_webapp.git'
+                // For private repos, use: git branch: 'main', credentialsId: 'your-cred-id', url: '...'
+            }
+        }
+
+        // Stage 2: Run Unit Tests
+        stage('Unit Test') {
+            steps {
+                echo 'Running unit tests...'
+                sh 'mvn test'
+            }
+        }
+
+        // Stage 3: Build the WAR file
+        // Output: target/nimbus-webapp.war
+        stage('Build WAR') {
+            steps {
+                echo 'Building the WAR file...'
+                sh 'mvn clean package -DskipTests'
+                echo "WAR file created at: target/${WAR_NAME}"
+            }
+        }
+
+        // Stage 4: Manual approval gate before deploying to production
+        stage('Approval') {
+            steps {
+                script {
+                    input message: 'Deploy to Tomcat? Review the build logs and click Approve.', ok: 'Approve & Deploy'
+                }
+            }
+        }
+
+        // Stage 5: Deploy the WAR file to the Tomcat server via SSH
+        stage('Deploy to Tomcat') {
+            steps {
+                echo "Deploying ${WAR_NAME} to Tomcat at ${TOMCAT_IP}..."
+                sshagent(['tomcat']) {
+                    // Step 1: Copy WAR to a staging location on the remote server
+                    sh "scp -o StrictHostKeyChecking=no target/${WAR_NAME} ${TOMCAT_USER}@${TOMCAT_IP}:/tmp/"
+
+                    // Step 2: Move WAR into Tomcat's webapps directory
+                    sh "ssh -o StrictHostKeyChecking=no ${TOMCAT_USER}@${TOMCAT_IP} 'sudo mv /tmp/${WAR_NAME} ${TOMCAT_WEBAPPS}/'"
+
+                    echo "Deployment complete! Tomcat will auto-deploy the WAR."
+                }
+            }
+        }
+    }
+
+    // Post-build actions based on the pipeline result
+    post {
+        success {
+            echo "✅ Pipeline SUCCESS! App available at: http://${TOMCAT_IP}:8080/nimbus-webapp"
+        }
+        failure {
+            echo "❌ Pipeline FAILED. Check the logs above for errors."
+        }
+        always {
+            cleanWs()
+        }
+    }
+}

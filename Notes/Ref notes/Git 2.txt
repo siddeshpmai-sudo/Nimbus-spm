@@ -1,0 +1,16 @@
+
+13. git merge branch_name
+14. Merging conflicts:
+
+	Solution:
+		
+15. git revert commit_id
+16. git reset --hard commit_id
+17. git clone
+	git clone https://git_url
+18. git push
+	git push git_url
+19. git pull
+	git pull git_url
+20. git rebase
+21. git fetch (fecth_HEAD)

@@ -1,0 +1,69 @@
+
+
+
+62. df -h .
+63. free -g or free -m
+64. unique file
+65. sort file
+66. sort file|uniq
+67. sort -r file|uniq
+68. chmod 777 filename
+69. chmod 777 directory
+70. chmod 644 directory1 directory2 directory3
+71. chmod 755 file1 file2 file3
+72. chmod -R 777 folder1
+73. chmod a+w file
+74. chmod a+rwx folder
+75. chmod u+rw file
+76. chmod g+w director
+77. chmod o+r file
+
+
+     owner grp othrs
+	rwx  rwx  rwx
+      421  421  421
+       7.   7.   7
+
+
+	rw-  r--   --x
+      420. 400.  001
+      6.   4.   1
+
+
+
+     rwx.  r-x  r--
+     421.  401.  400
+     7.    5.    4
+
+
+2^0=1
+2^1=2
+2^2=4
+
+78. umask 641
+	136
+     --x -wx rw-
+
+79. umask 777
+      000
+    --- --- ---
+80. umask 000
+     777
+    rwx rwx rwx
+
+81. rm filename
+82. rm -rf directory_name
+83. rm f1 f2 f3
+84. rm -rf folder1 folder2 folder3
+85. rm director/dir1/file
+86. rm -rf /dir1/dir2/dir3
+
+
+
+
+
+
+
+
+
+

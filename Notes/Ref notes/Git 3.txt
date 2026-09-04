@@ -1,0 +1,18 @@
+Linux commands:
+
+177. cat /etc/passwd
+178. sudo adduser user_name
+		password:
+179. sudo su test
+180. su user_name
+
+Git :
+
+22. git cherry-pick
+23. git squash
+24. git stash	
+	git stash pop
+25. Branching stratergy
+26. git hooks:
+		pre-commit hooks
+		post-commit hooks

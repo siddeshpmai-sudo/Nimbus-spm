@@ -1,0 +1,144 @@
+
+
+
+1. yum: redhat/centos
+2. apt: ubuntu/debian
+3. service: start/stop/status
+4. package: redhat/centos/debian/ubuntu
+5. copy: cm-tm
+6. file: create file/directory/links
+7. user: users
+8. git: oprn git
+9. template: role
+10. command: run commands
+11. shell: run commands
+12. script: run local script to tm
+13. fetch: copy tm-cm
+14. get_url: download 
+15. archive/unarchive: zip
+16. debug: print variable
+17. register: to store 
+18. lineinfile
+19. import_tasks:
+20. fail:
+21. firewalld:
+
+============================================================================
+
+
+
+- name: A List where multiple variables are passed in an item of list
+user:
+name: "{{ item.name }}"
+uid: "{{ item.uid }}"
+groups: "{{ item.groups }}"
+state: present
+with_items:
+- { name: sample1, uid: 2001, groups: "HR" }
+- { name: sample2, uid: 2002, groups: "Finance" }
+
+
+
+
+
+============================================================================
+
+tomcat-install.yaml
+
+
+---
+- hosts: test
+
+  become: yes
+  become_method: sudo
+  remote_user: ubuntu
+
+  tasks:
+  - name: Update and upgrade apt packages
+    apt:
+      upgrade: yes
+      update_cache: yes
+
+  - name: install JDK 11
+    apt:
+      name: openjdk-11-jdk
+      state: present
+
+  - name: add tomcat group
+    group:
+      name: tomcat
+
+  - name: add tomcat user
+    user:
+      name: tomcat
+      group: tomcat
+      home: /user/share/tomcat
+      createhome: no
+
+  - name: create /opt/tomcat directory
+    file:
+      path: /opt/tomcat
+      state: directory
+      mode: 0755
+
+  - name: download & unarchive
+    unarchive:
+      src: http://apache.cs.utah.edu/tomcat/tomcat-9/v9.0.56/bin/apache-tomcat-9.0.56.tar.gz
+      dest: /opt/tomcat
+      remote_src: yes
+      extra_opts: [--strip-components=1]
+
+  - name: Change ownership
+    file:
+      path: /opt/tomcat
+      owner: tomcat
+      group: tomcat
+      mode: "u+rwx,g+rx,o=rx"
+      recurse: yes
+      state: directory
+
+  - name: Copy Tomcat service from local to remote
+    copy:
+       src: tomcat.service
+       dest: /etc/systemd/system/
+       mode: 0755
+
+  - name: Start and enable Tomcat service
+    systemd:
+      name: tomcat
+      state: started
+      enabled: true
+      daemon_reload: true
+
+
+
+=============================================================================================
+
+tomcat.service
+
+
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+
+Environment=JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-amd64/jre
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

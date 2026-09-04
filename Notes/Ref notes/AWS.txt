@@ -1,0 +1,25 @@
+
+
+
+How will you add new volume to instance?
+
+1. First AWS dashboard , Create new volume with the size 50GB
+2. Attach the volume to instance
+3. Login to instance
+4. lsblk
+5. file -s /dev/xvdf
+6. mkfs -t xfs /dev/xvdf
+7. create new folder where you mount the volume
+8. mount /dev/xvdf /home/ubuntu/New_vol
+
+To make it permanent mount
+1. sudo cp /etc/fstab /etc/fstab_bak
+2. sudo vi /etc/fstab
+3. /dev/xvdf       /newvolume_path   ext4    defaults,nofail        0       0
+4. sudo mount -a
+
+
+Extending the existing Volume
+
+1. sudo xfs_growfs /dev/xvdf
+2. sudo resize2fs /dev/xvdf

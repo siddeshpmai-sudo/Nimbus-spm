@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus Auto | Hatchbacks</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased bg-[#0f172a]">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-extrabold tracking-tighter">
+            <a href="index.html">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">NIMBUS</span> AUTO
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-300">
+            <a href="index.html" class="hover:text-white transition">Home</a>
+            <a href="suvs.html" class="hover:text-white transition">SUVs</a>
+            <a href="sedans.html" class="hover:text-white transition">Sedans</a>
+            <a href="hatchbacks.html" class="text-white">Hatchbacks</a>
+        </div>
+        <a href="index.html" class="bg-gray-700 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-gray-600 transition">Back to Home</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-24 px-6 md:px-20 page-transition">
+        <div class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Agile <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">Hatchbacks</span></h1>
+            <p class="text-gray-400 text-lg">Perfect for the city. Discover our dynamic hatchbacks.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-1 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/hyundai_i20.jpg" alt="Hyundai i20" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Hyundai i20</h4>
+                    <p class="text-gray-400 text-sm mb-4">Premium • Petrol</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Hyundai i20', 'Hyundai • Premium Hatchback', 'images/hyundai_i20.jpg', '1.2L Kappa Petrol', 'IVT Automatic', '82 hp', '$10,000', 'A sharply styled, tech-heavy premium hatchback. The i20 rules the urban jungle with its smooth IVT transmission and rich feature list.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-2 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/suzuki_swift.jpg" alt="Maruti Suzuki Swift" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Maruti Suzuki Swift</h4>
+                    <p class="text-gray-400 text-sm mb-4">Sporty • Petrol</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Suzuki Swift', 'Maruti Suzuki • Hatchback', 'images/suzuki_swift.jpg', '1.2L DualJet', 'AMT', '89 hp', '$8,500', 'Fun to drive and extremely efficient, the Swift continues to be the best-selling hatchback for those wanting zippy performance on a budget.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-3 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/volkswagen_polo.jpg" alt="Volkswagen Polo" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Volkswagen Polo</h4>
+                    <p class="text-gray-400 text-sm mb-4">TSI • Automatic</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Volkswagen Polo', 'Volkswagen • Premium Hatchback', 'images/volkswagen_polo.jpg', '1.0L TSI', '6-Speed Automatic', '109 hp', '$11,500', 'German engineering at its finest. The Polo delivers a thrilling turbo punch and solid build quality that enthusiasts swear by.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-[#1e293b] rounded-2xl max-w-2xl w-full border border-[#334155] overflow-hidden shadow-2xl transform transition-all">
+            <div class="relative h-64 bg-gray-900">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black bg-opacity-50 hover:bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold transition">&times;</button>
+            </div>
+            <div class="p-8">
+                <h3 id="modal-title" class="text-3xl font-extrabold mb-2">Car Name</h3>
+                <p id="modal-subtitle" class="text-gray-400 text-sm mb-6 uppercase tracking-wider">Subtitle</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Engine</p>
+                        <p id="modal-engine" class="font-semibold text-sm">V8</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Trans</p>
+                        <p id="modal-trans" class="font-semibold text-sm">Auto</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Power</p>
+                        <p id="modal-power" class="font-semibold text-sm">300 hp</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Price</p>
+                        <p id="modal-price" class="font-semibold text-green-400 text-sm">$50,000</p>
+                    </div>
+                </div>
+                <p id="modal-desc" class="text-gray-300 leading-relaxed text-sm">Description goes here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openModal(title, subtitle, img, engine, trans, power, price, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-subtitle').innerText = subtitle;
+            document.getElementById('modal-img').src = img;
+            document.getElementById('modal-engine').innerText = engine;
+            document.getElementById('modal-trans').innerText = trans;
+            document.getElementById('modal-power').innerText = power;
+            document.getElementById('modal-price').innerText = price;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

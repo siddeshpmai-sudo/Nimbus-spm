@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS IAM – Complete Teaching Guide | 2-Hour Session</title>
+    <style>
+        :root {
+            --primary: #FF9900;
+            --primary-dark: #c77b00;
+            --secondary: #232F3E;
+            --accent: #1A9C3E;
+            --info: #2563EB;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --light-bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --code-bg: #1e1e2e;
+            --code-text: #cdd6f4;
+            --tag-green: #DCFCE7;
+            --tag-green-text: #166534;
+            --tag-blue: #DBEAFE;
+            --tag-blue-text: #1E40AF;
+            --tag-orange: #FEF3C7;
+            --tag-orange-text: #92400E;
+            --tag-red: #FEE2E2;
+            --tag-red-text: #991B1B;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.7; color: var(--text-main); background: var(--light-bg); padding: 0 20px 60px; }
+        .hero { background: linear-gradient(135deg, var(--secondary) 0%, #37475A 60%, var(--primary-dark) 100%); color: white; text-align: center; padding: 60px 40px 50px; margin: 0 -20px 40px; }
+        .hero-badge { display: inline-block; background: rgba(255,153,0,0.25); border: 1px solid rgba(255,153,0,0.5); color: var(--primary); padding: 5px 16px; border-radius: 50px; font-size: 0.8em; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 18px; }
+        .hero h1 { font-size: 2.8em; font-weight: 800; margin-bottom: 12px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.1em; opacity: 0.85; max-width: 600px; margin: 0 auto 24px; }
+        .hero-meta { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        .hero-meta span { background: rgba(255,255,255,0.12); padding: 6px 18px; border-radius: 6px; font-size: 0.88em; font-weight: 600; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .timetable { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 40px; }
+        .timetable-header { background: var(--secondary); color: white; padding: 20px 28px; font-size: 1.1em; font-weight: 700; }
+        .timetable table { width: 100%; border-collapse: collapse; }
+        .timetable th { background: #f1f5f9; color: var(--text-muted); text-transform: uppercase; font-size: 0.75em; letter-spacing: 1px; padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+        .timetable td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 0.95em; }
+        .timetable tr:last-child td { border-bottom: none; }
+        .timetable tr:hover td { background: #fafafa; }
+        .time-badge { background: var(--tag-orange); color: var(--tag-orange-text); padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.82em; white-space: nowrap; }
+        .topic-badge { background: var(--tag-blue); color: var(--tag-blue-text); padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+        .section-heading { display: flex; align-items: center; gap: 14px; margin: 50px 0 24px; }
+        .section-icon { width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0; box-shadow: 0 4px 12px rgba(255,153,0,0.35); }
+        .section-heading h2 { font-size: 1.7em; font-weight: 800; color: var(--secondary); }
+        .section-time { font-size: 0.78em; font-weight: 600; background: var(--tag-orange); color: var(--tag-orange-text); padding: 3px 10px; border-radius: 20px; margin-left: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+        .card h3 { font-size: 1.15em; font-weight: 700; color: var(--secondary); margin-bottom: 14px; }
+        .card h4 { font-size: 1em; font-weight: 700; color: var(--info); margin: 18px 0 8px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        @media(max-width: 768px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } .hero h1 { font-size: 1.9em; } }
+        .concept-card { background: var(--card-bg); border-radius: 10px; padding: 22px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+        .concept-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .concept-card .icon { font-size: 2em; margin-bottom: 10px; }
+        .concept-card h3 { font-size: 1.05em; font-weight: 700; color: var(--secondary); margin-bottom: 8px; }
+        .concept-card p { font-size: 0.9em; color: var(--text-muted); line-height: 1.6; }
+        .concept-card .tag { display: inline-block; font-size: 0.72em; font-weight: 700; padding: 2px 9px; border-radius: 20px; margin-top: 10px; }
+        .code-block { background: var(--code-bg); color: var(--code-text); padding: 20px 24px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', 'Cascadia Code', 'Courier New', monospace; font-size: 0.88em; line-height: 1.7; margin: 14px 0; }
+        .code-label { background: #313244; color: #cba6f7; font-size: 0.72em; font-weight: 700; padding: 4px 12px; border-radius: 6px 6px 0 0; display: inline-block; letter-spacing: 0.5px; }
+        .callout { padding: 16px 20px; border-radius: 8px; margin: 16px 0; font-size: 0.93em; display: flex; gap: 12px; align-items: flex-start; }
+        .callout .icon { font-size: 1.2em; flex-shrink: 0; margin-top: 1px; }
+        .callout-info { background: var(--tag-blue); border-left: 4px solid var(--info); }
+        .callout-warning { background: var(--tag-orange); border-left: 4px solid var(--warning); }
+        .callout-success { background: var(--tag-green); border-left: 4px solid var(--accent); }
+        .callout-danger { background: var(--tag-red); border-left: 4px solid var(--danger); }
+        .analogy { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+        .analogy .analogy-title { font-weight: 800; color: var(--accent); font-size: 0.85em; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin: 16px 0; }
+        .compare-table th { background: var(--secondary); color: white; padding: 12px 16px; text-align: left; }
+        .compare-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .compare-table tr:nth-child(even) td { background: #f8fafc; }
+        .compare-table tr:hover td { background: #f1f5f9; }
+        .compare-table td:first-child { font-weight: 700; color: var(--secondary); }
+        .checklist { list-style: none; }
+        .checklist li { padding: 5px 0; display: flex; gap: 8px; align-items: flex-start; }
+        .checklist li::before { content: "✅"; flex-shrink: 0; }
+        .step-item { display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+        .step-num { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85em; flex-shrink: 0; }
+        .step-content { padding-top: 4px; }
+        .step-content strong { display: block; margin-bottom: 3px; }
+        .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+        .flow-box { background: var(--secondary); color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.85em; font-weight: 600; }
+        .flow-box.green { background: var(--accent); }
+        .flow-box.blue { background: var(--info); }
+        .flow-box.orange { background: var(--primary-dark); }
+        .flow-arrow { color: var(--text-muted); font-size: 1.2em; font-weight: 700; }
+        .lab { background: linear-gradient(135deg, #1e1e2e, #181825); border-radius: 12px; padding: 28px; margin-bottom: 24px; color: #cdd6f4; }
+        .lab-title { color: #cba6f7; font-weight: 800; font-size: 1.05em; margin-bottom: 6px; }
+        .lab-desc { color: #a6adc8; font-size: 0.88em; margin-bottom: 16px; }
+        .lab ol { padding-left: 20px; color: #cdd6f4; font-size: 0.9em; line-height: 1.9; }
+        .lab code { background: #313244; color: #f9e2af; padding: 1px 6px; border-radius: 4px; font-family: monospace; }
+        .divider { border: none; height: 2px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 40px 0; }
+        .summary-card { background: linear-gradient(135deg, var(--secondary), #37475A); color: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+        .summary-card h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.4em; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .summary-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.1); }
+        .summary-item .si-label { font-size: 0.72em; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .summary-item .si-value { font-weight: 700; font-size: 0.95em; }
+        .arch-diagram { background: #1e1e2e; color: #89b4fa; border-radius: 10px; padding: 24px; font-family: monospace; font-size: 0.85em; line-height: 1.8; overflow-x: auto; white-space: pre; }
+        footer { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85em; border-top: 1px solid var(--border); margin-top: 60px; }
+        footer span { color: var(--primary); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-badge">☁️ AWS Teaching Series</div>
+    <h1>AWS <span>Identity &amp; Access Management</span></h1>
+    <p>Complete 2-Hour Teaching Guide — Users · Groups · Roles · Policies · MFA · STS · Best Practices</p>
+    <div class="hero-meta">
+        <span>⏱ Duration: 2 Hours</span>
+        <span>📚 Level: Beginner → Intermediate</span>
+        <span>🎯 Practical Labs Included</span>
+        <span>📅 August 29, 2026</span>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- LESSON PLAN -->
+<div class="timetable">
+    <div class="timetable-header">📋 2-Hour Lesson Plan — Time Breakdown</div>
+    <table>
+        <thead><tr><th>Time Slot</th><th>Duration</th><th>Topic</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td><span class="time-badge">0:00 – 0:10</span></td><td>10 min</td><td>Introduction — What is IAM? Why does it matter?</td><td><span class="topic-badge">Theory</span></td></tr>
+            <tr><td><span class="time-badge">0:10 – 0:25</span></td><td>15 min</td><td>IAM Core Concepts — Users, Groups, Roles, Policies Overview</td><td><span class="topic-badge">Theory</span></td></tr>
+            <tr><td><span class="time-badge">0:25 – 0:45</span></td><td>20 min</td><td>IAM Users &amp; Groups — Deep Dive + Demo</td><td><span class="topic-badge">Demo + Lab</span></td></tr>
+            <tr><td><span class="time-badge">0:45 – 1:05</span></td><td>20 min</td><td>IAM Policies — Managed, Inline, Resource-based, Conditions</td><td><span class="topic-badge">Theory + Lab</span></td></tr>
+            <tr><td><span class="time-badge">1:05 – 1:25</span></td><td>20 min</td><td>IAM Roles — EC2 Roles, Cross-Account, AssumeRole, STS</td><td><span class="topic-badge">Theory + Lab</span></td></tr>
+            <tr><td><span class="time-badge">1:25 – 1:40</span></td><td>15 min</td><td>MFA, Password Policy, STS, Permission Boundaries</td><td><span class="topic-badge">Theory</span></td></tr>
+            <tr><td><span class="time-badge">1:40 – 1:55</span></td><td>15 min</td><td>IAM Best Practices + Real-World Use Cases</td><td><span class="topic-badge">Discussion</span></td></tr>
+            <tr><td><span class="time-badge">1:55 – 2:00</span></td><td>5 min</td><td>Q&amp;A, Recap, and Next Steps</td><td><span class="topic-badge">Q&amp;A</span></td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- SECTION 1: INTRO -->
+<div class="section-heading">
+    <div class="section-icon">🔐</div>
+    <div>
+        <h2>Section 1 — Introduction to AWS IAM <span class="section-time">0:00 – 0:10</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🤔 What is AWS IAM?</h3>
+    <p><strong>AWS Identity and Access Management (IAM)</strong> is a <em>free</em> global AWS service that lets you control <strong>who</strong> (authentication) can do <strong>what</strong> (authorization) on which AWS resources, and under what conditions.</p>
+    <br>
+    <div class="grid-3">
+        <div class="concept-card">
+            <div class="icon">🙋</div>
+            <h3>Authentication — WHO?</h3>
+            <p>Verifying the identity of a person or service trying to access AWS resources. (Username + Password, Access Keys)</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Identity Verification</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🔑</div>
+            <h3>Authorization — WHAT?</h3>
+            <p>Determining which AWS services and resources an authenticated identity can access and what actions they can perform.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Permission Control</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">📝</div>
+            <h3>Auditing — WHAT DID?</h3>
+            <p>AWS CloudTrail records every API call made in your account — who did what, when, and from where.</p>
+            <span class="tag" style="background:var(--tag-orange); color:var(--tag-orange-text);">Activity Tracking</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🏢 Real-World Analogy — The Office Building</h3>
+    <div class="analogy">
+        <div class="analogy-title">🏙️ Think of AWS as a Corporate Office Building</div>
+        <ul style="padding-left: 20px; line-height: 2.2;">
+            <li><strong>AWS Account</strong> = The entire office building (you own it)</li>
+            <li><strong>Root User</strong> = The building owner with MASTER keys — lock it away, never use daily</li>
+            <li><strong>IAM User</strong> = An employee with a personal badge (username + password)</li>
+            <li><strong>IAM Group</strong> = A department (Engineering, Finance, HR) — all members share same access</li>
+            <li><strong>IAM Role</strong> = A temporary contractor badge — given for a specific job, expires after use</li>
+            <li><strong>IAM Policy</strong> = The access control rules — which floors, rooms, and equipment are accessible</li>
+            <li><strong>STS</strong> = The front desk that issues temporary visitor badges</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🌍 Key Characteristics of IAM</h3>
+    <div class="grid-2">
+        <ul class="checklist">
+            <li>IAM is a <strong>Global Service</strong> — not tied to any specific region</li>
+            <li>IAM is <strong>completely FREE</strong> — no additional charges ever</li>
+            <li>Supports <strong>Multi-Factor Authentication (MFA)</strong></li>
+            <li>Integrates with every single AWS service natively</li>
+            <li>Follows the <strong>Principle of Least Privilege</strong> by design</li>
+        </ul>
+        <ul class="checklist">
+            <li>Supports <strong>Identity Federation</strong> (Google, LDAP, SAML)</li>
+            <li>Uses <strong>JSON</strong> for all policy documents</li>
+            <li>Provides <strong>CloudTrail</strong> integration for full audit trails</li>
+            <li>Supports up to <strong>5,000 users</strong> per account</li>
+            <li>Integrates with <strong>AWS Organizations</strong> via SCPs</li>
+        </ul>
+    </div>
+    <div class="callout callout-warning" style="margin-top: 16px;">
+        <div class="icon">⚠️</div>
+        <div><strong>Critical Root Account Warning:</strong> The root account has UNLIMITED access to your entire AWS account and cannot be restricted by IAM policies. NEVER use it for daily tasks. Immediately after creating your account: (1) Enable MFA on root, (2) Create an IAM admin user, (3) Never create root access keys.</div>
+    </div>
+</div>
+
+
+<!-- SECTION 2: IAM USERS -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">👤</div>
+    <div>
+        <h2>Section 2 — IAM Users <span class="section-time">0:25 – 0:35</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>👤 What is an IAM User?</h3>
+    <p>An <strong>IAM User</strong> is an entity in AWS that represents a specific <em>person or application</em>. Each user has a unique name within the AWS account and their own set of security credentials that are <strong>permanent</strong> (unlike roles).</p>
+    <br>
+    <h4>Two Types of Access Credentials</h4>
+    <div class="grid-2">
+        <div class="concept-card">
+            <div class="icon">🖥️</div>
+            <h3>Console Access (Human Users)</h3>
+            <p>Uses a <strong>Username + Password</strong> to log into the AWS Management Console web interface. Can optionally be protected with MFA for extra security.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Human Users</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">⚙️</div>
+            <h3>Programmatic Access (Apps/Scripts)</h3>
+            <p>Uses <strong>Access Key ID</strong> + <strong>Secret Access Key</strong> pair for AWS CLI, SDK, and API calls. The Secret Key is only shown ONCE at creation time.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Applications / CI-CD</span>
+        </div>
+    </div>
+    <br>
+    <div class="callout callout-danger">
+        <div class="icon">🚨</div>
+        <div><strong>Never hardcode Access Keys!</strong> Never embed Access Key ID and Secret Access Key directly in code, scripts, or configuration files that get committed to version control. Use IAM Roles for applications running on AWS services.</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🧪 Creating an IAM User — Step by Step (Console)</h3>
+    <div class="step-item"><div class="step-num">1</div><div class="step-content"><strong>Navigate:</strong> AWS Console → IAM → Users → Click "Create User" button</div></div>
+    <div class="step-item"><div class="step-num">2</div><div class="step-content"><strong>User Name:</strong> Enter a descriptive name like <code style="background:#f1f5f9; padding:2px 6px; border-radius:4px;">devops-alice</code>. Name must be unique in the account.</div></div>
+    <div class="step-item"><div class="step-num">3</div><div class="step-content"><strong>Select AWS Access Type:</strong> Check "Provide user access to AWS Management Console" for console access, enable programmatic access for CLI/API</div></div>
+    <div class="step-item"><div class="step-num">4</div><div class="step-content"><strong>Set Permissions:</strong> Option A: Add to a Group | Option B: Copy from existing user | Option C: Attach policies directly</div></div>
+    <div class="step-item"><div class="step-num">5</div><div class="step-content"><strong>Tags (Optional):</strong> Add key-value tags like Department=DevOps, Project=Nimbus for organization</div></div>
+    <div class="step-item"><div class="step-num">6</div><div class="step-content"><strong>Review and Create:</strong> Download the CSV file — contains the access key credentials. <strong>This is the ONLY time you can view the secret access key!</strong></div></div>
+</div>
+
+<div class="card">
+    <h3>💻 IAM User Management via AWS CLI</h3>
+    <div class="code-label">BASH — User CRUD Operations</div>
+    <div class="code-block"># ──────────────────────────────────────────
+# CREATE USER
+# ──────────────────────────────────────────
+aws iam create-user --user-name devops-alice
+
+# Create console login profile (password)
+aws iam create-login-profile \
+  --user-name devops-alice \
+  --password "MyStr0ng@Password123" \
+  --password-reset-required
+
+# Create programmatic access keys
+aws iam create-access-key --user-name devops-alice
+# Output includes: AccessKeyId + SecretAccessKey (save it!)
+
+# ──────────────────────────────────────────
+# READ / LIST
+# ──────────────────────────────────────────
+aws iam list-users                              # All users in account
+aws iam get-user --user-name devops-alice      # Specific user details
+aws iam list-access-keys --user-name devops-alice  # User's access keys
+
+# ──────────────────────────────────────────
+# UPDATE
+# ──────────────────────────────────────────
+aws iam update-user --user-name devops-alice --new-user-name devops-alice-v2
+aws iam update-login-profile --user-name devops-alice --password "NewPass@456"
+
+# ──────────────────────────────────────────
+# DELETE
+# ──────────────────────────────────────────
+aws iam delete-access-key --user-name devops-alice --access-key-id AKIAIOSFODNN7EXAMPLE
+aws iam delete-login-profile --user-name devops-alice
+aws iam delete-user --user-name devops-alice   # Must delete keys first!</div>
+</div>
+
+
+<!-- SECTION 3: IAM GROUPS -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">👥</div>
+    <div>
+        <h2>Section 3 — IAM Groups <span class="section-time">0:35 – 0:45</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>👥 What is an IAM Group?</h3>
+    <p>An <strong>IAM Group</strong> is a collection of IAM users. Instead of attaching policies to each user individually, you attach policies to the group — all users in the group automatically inherit those permissions.</p>
+    <br>
+    <div class="analogy">
+        <div class="analogy-title">🏢 The Department / Team Analogy</div>
+        <p>Instead of programming each employee's keycard individually, you create a <em>"DevOps Team"</em> access template. Everyone in the DevOps team automatically gets EC2 + S3 + CloudWatch access. When Alice joins DevOps, add her to the group — she instantly gets all DevOps permissions. When Bob leaves DevOps, remove him — permissions are instantly revoked. No need to touch individual user policies!</p>
+    </div>
+    <br>
+    <div class="callout callout-warning">
+        <div class="icon">⚠️</div>
+        <div><strong>Groups CANNOT contain other groups.</strong> IAM does NOT support nested groups. A group can only contain users. However, one user CAN be a member of multiple groups (up to 10 groups per user). Permissions from all groups are combined.</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🏗️ Typical Group Structure in a Tech Organization</h3>
+    <div class="arch-diagram">AWS Account (Your Organization)
+├── 👥 Group: Admins
+│   ├── 📜 Policy: AdministratorAccess (Full AWS access)
+│   └── 👤 Users: alice (CTO), john (Cloud Architect)
+│
+├── 👥 Group: DevOps
+│   ├── 📜 Policy: AmazonEC2FullAccess
+│   ├── 📜 Policy: AmazonS3FullAccess
+│   ├── 📜 Policy: CloudWatchFullAccess
+│   └── 👤 Users: bob, carol, dave
+│
+├── 👥 Group: Developers
+│   ├── 📜 Policy: AWSLambdaFullAccess
+│   ├── 📜 Policy: AmazonDynamoDBFullAccess
+│   ├── 📜 Policy: AmazonS3ReadOnlyAccess
+│   └── 👤 Users: eve, frank, grace
+│
+└── 👥 Group: Finance
+    ├── 📜 Policy: AWSBillingReadOnlyAccess
+    └── 👤 Users: henry, iris</div>
+</div>
+
+<div class="card">
+    <h3>💻 IAM Group Management via AWS CLI</h3>
+    <div class="code-label">BASH — Group Operations</div>
+    <div class="code-block"># Create groups
+aws iam create-group --group-name Admins
+aws iam create-group --group-name DevOps
+aws iam create-group --group-name Developers
+
+# Attach AWS Managed Policy to a group
+aws iam attach-group-policy \
+  --group-name DevOps \
+  --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+
+aws iam attach-group-policy \
+  --group-name DevOps \
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
+
+# Add users to groups
+aws iam add-user-to-group --group-name DevOps --user-name bob
+aws iam add-user-to-group --group-name DevOps --user-name carol
+
+# List users in a group
+aws iam get-group --group-name DevOps
+
+# List all groups a user belongs to
+aws iam list-groups-for-user --user-name bob
+
+# List policies attached to a group
+aws iam list-attached-group-policies --group-name DevOps
+
+# Remove a user from a group
+aws iam remove-user-from-group --group-name DevOps --user-name bob
+
+# Delete a group (must remove all users and policies first)
+aws iam detach-group-policy --group-name DevOps --policy-arn arn:aws:iam::aws:policy/AmazonEC2FullAccess
+aws iam delete-group --group-name DevOps</div>
+</div>
+
+
+<!-- SECTION 4: IAM POLICIES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">📜</div>
+    <div>
+        <h2>Section 4 — IAM Policies <span class="section-time">0:45 – 1:05</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📜 What is an IAM Policy?</h3>
+    <p>An <strong>IAM Policy</strong> is a <strong>JSON document</strong> that formally defines permissions — what actions are allowed or denied on which AWS resources, and under what conditions. Policies are the language of authorization in AWS.</p>
+    <br>
+    <h4>The 6 Core Elements of a Policy</h4>
+    <table class="compare-table">
+        <thead><tr><th>Element</th><th>Description</th><th>Example</th><th>Required?</th></tr></thead>
+        <tbody>
+            <tr><td>Version</td><td>Policy language version. Always use 2012-10-17</td><td>"2012-10-17"</td><td>✅ Yes</td></tr>
+            <tr><td>Statement</td><td>Container for one or more permission statements (array)</td><td>[{...}, {...}]</td><td>✅ Yes</td></tr>
+            <tr><td>Effect</td><td>"Allow" or "Deny" — a Deny always overrides any Allow</td><td>"Allow"</td><td>✅ Yes</td></tr>
+            <tr><td>Action</td><td>Specific AWS API actions using service:action format</td><td>"s3:GetObject"</td><td>✅ Yes</td></tr>
+            <tr><td>Resource</td><td>The ARN of the AWS resource(s) the statement applies to</td><td>"arn:aws:s3:::my-bucket/*"</td><td>✅ Yes</td></tr>
+            <tr><td>Condition</td><td>Optional conditions that must be true for the statement to apply</td><td>{"StringEquals": {...}}</td><td>❌ Optional</td></tr>
+            <tr><td>Sid</td><td>Statement ID — optional human-readable label for the statement</td><td>"AllowS3ReadAccess"</td><td>❌ Optional</td></tr>
+            <tr><td>Principal</td><td>Entity the policy applies to (only in resource-based policies)</td><td>"arn:aws:iam::123:user/alice"</td><td>Resource-based only</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>📝 Complete Policy JSON Examples</h3>
+    <div class="grid-2">
+        <div>
+            <h4>Example 1: Basic S3 Read Policy</h4>
+            <div class="code-label">JSON</div>
+            <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowS3Read",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket",
+        "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my-company-bucket",
+        "arn:aws:s3:::my-company-bucket/*"
+      ]
+    }
+  ]
+}</div>
+        </div>
+        <div>
+            <h4>Example 2: EC2 Full + S3 ReadOnly</h4>
+            <div class="code-label">JSON</div>
+            <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "EC2FullAccess",
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*"
+    },
+    {
+      "Sid": "S3ReadOnly",
+      "Effect": "Allow",
+      "Action": [
+        "s3:Get*",
+        "s3:List*"
+      ],
+      "Resource": "*"
+    },
+    {
+      "Sid": "DenyS3Delete",
+      "Effect": "Deny",
+      "Action": "s3:Delete*",
+      "Resource": "*"
+    }
+  ]
+}</div>
+        </div>
+    </div>
+
+    <h4>Example 3: Conditional Policy — Region Restriction</h4>
+    <div class="code-label">JSON — Allow EC2 only in us-east-1</div>
+    <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowEC2InUSEast1Only",
+      "Effect": "Allow",
+      "Action": ["ec2:StartInstances", "ec2:StopInstances", "ec2:DescribeInstances"],
+      "Resource": "*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "us-east-1"
+        }
+      }
+    }
+  ]
+}</div>
+
+    <h4>Example 4: Deny if MFA Not Present (Force MFA Usage)</h4>
+    <div class="code-label">JSON — MFA Enforcement</div>
+    <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "DenyAllWithoutMFA",
+      "Effect": "Deny",
+      "NotAction": [
+        "iam:CreateVirtualMFADevice",
+        "iam:EnableMFADevice",
+        "iam:GetUser",
+        "iam:ListMFADevices",
+        "sts:GetSessionToken"
+      ],
+      "Resource": "*",
+      "Condition": {
+        "BoolIfExists": {
+          "aws:MultiFactorAuthPresent": "false"
+        }
+      }
+    }
+  ]
+}</div>
+
+    <h4>Example 5: S3 Access Only from Specific IP (VPN/Office IP)</h4>
+    <div class="code-label">JSON — IP Address Restriction</div>
+    <div class="code-block">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AllowOnlyFromOfficeIP",
+      "Effect": "Allow",
+      "Action": "s3:*",
+      "Resource": "arn:aws:s3:::secure-company-bucket/*",
+      "Condition": {
+        "IpAddress": {
+          "aws:SourceIp": ["203.0.113.0/24", "198.51.100.5/32"]
+        }
+      }
+    }
+  ]
+}</div>
+</div>
+
+<div class="card">
+    <h3>🗂️ Types of IAM Policies</h3>
+    <table class="compare-table">
+        <thead><tr><th>Policy Type</th><th>Created By</th><th>Reusable?</th><th>Lifecycle</th><th>Best For</th></tr></thead>
+        <tbody>
+            <tr><td>AWS Managed Policy</td><td>AWS</td><td>✅ Yes — across accounts</td><td>AWS manages updates</td><td>Common use cases (S3FullAccess, etc.)</td></tr>
+            <tr><td>Customer Managed Policy</td><td>You</td><td>✅ Yes — within your account</td><td>You manage it</td><td>Custom business requirements</td></tr>
+            <tr><td>Inline Policy</td><td>You</td><td>❌ No — 1:1 relationship</td><td>Deleted with identity</td><td>Special one-off exceptions</td></tr>
+            <tr><td>Resource-Based Policy</td><td>You</td><td>N/A — attached to resource</td><td>Lives with resource</td><td>S3, SQS, Lambda permissions</td></tr>
+            <tr><td>SCP (Org Policy)</td><td>AWS Org Admin</td><td>Applied to OUs/accounts</td><td>Org-level lifecycle</td><td>Guardrails across all accounts</td></tr>
+        </tbody>
+    </table>
+    <br>
+    <div class="callout callout-info">
+        <div class="icon">💡</div>
+        <div><strong>Resource-Based Policy Key Difference:</strong> Unlike identity-based policies, resource-based policies must include a <code style="background:rgba(37,99,235,0.15); padding:1px 5px; border-radius:3px;">Principal</code> element specifying WHO can perform the actions. They are attached TO resources like S3 buckets, SQS queues, Lambda functions, etc.</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>⚖️ Policy Evaluation Logic — The Decision Tree</h3>
+    <p>When an IAM principal makes an API call, AWS evaluates ALL applicable policies using this exact order:</p>
+    <br>
+    <div class="arch-diagram">Step 1: Is there an EXPLICIT DENY anywhere?
+         → YES → ❌ ACCESS DENIED (immediate, no further evaluation)
+         → NO  → Continue to Step 2
+
+Step 2: Is there an EXPLICIT ALLOW anywhere?
+         → YES → ✅ ACCESS GRANTED
+         → NO  → Continue to Step 3
+
+Step 3: IMPLICIT DENY (default)
+         → 🚫 ACCESS DENIED (no policy said yes)
+
+Policy types checked (in priority order):
+  1. SCPs (AWS Organizations — hard ceiling)
+  2. Resource-based policies
+  3. Identity-based policies (User/Group/Role)
+  4. IAM Permission Boundaries
+  5. Session Policies (STS session)</div>
+    <div class="callout callout-danger" style="margin-top:16px;">
+        <div class="icon">🚨</div>
+        <div><strong>Golden Rule:</strong> An explicit <code>Deny</code> always wins over any <code>Allow</code>, no matter what. AWS uses "default deny" — if no explicit Allow exists, the action is denied. This is the most tested IAM concept!</div>
+    </div>
+</div>
+
+
+<!-- SECTION 5: IAM ROLES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🎭</div>
+    <div>
+        <h2>Section 5 — IAM Roles <span class="section-time">1:05 – 1:25</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎭 What is an IAM Role?</h3>
+    <p>An <strong>IAM Role</strong> is an IAM identity that has specific permissions but <strong>no permanent credentials</strong>. Instead of a username/password or access keys, roles provide <em>temporary security credentials</em> through AWS STS when they are "assumed" by trusted entities.</p>
+    <br>
+    <div class="analogy">
+        <div class="analogy-title">🔑 The Temporary Contractor Badge</div>
+        <p>Imagine hiring a plumber to fix pipes in your office. You don't give them a permanent employee badge. Instead, you give them a <em>temporary contractor badge</em> that only allows access to utility rooms for 4 hours. Once 4 hours pass, the badge expires automatically and becomes useless. This is exactly what an IAM Role does — scoped, temporary, time-limited access with no permanent credentials.</p>
+    </div>
+    <br>
+    <h4>IAM Role vs IAM User — When to Use Which</h4>
+    <table class="compare-table">
+        <thead><tr><th>Scenario</th><th>IAM User</th><th>IAM Role</th></tr></thead>
+        <tbody>
+            <tr><td>Human logging into AWS Console</td><td>✅ Correct choice</td><td>❌ Not designed for this</td></tr>
+            <tr><td>EC2 instance needs to access S3</td><td>❌ NEVER hardcode credentials</td><td>✅ Always use a role</td></tr>
+            <tr><td>Lambda function accesses DynamoDB</td><td>❌ Not applicable</td><td>✅ Lambda Execution Role</td></tr>
+            <tr><td>Cross-account AWS access</td><td>❌ Doesn't scale, security risk</td><td>✅ Cross-Account Role</td></tr>
+            <tr><td>Corporate SSO / LDAP integration</td><td>❌ Not possible</td><td>✅ Identity Federation Role</td></tr>
+            <tr><td>GitHub Actions CI/CD deploying to AWS</td><td>⚠️ Possible but risky (keys in secrets)</td><td>✅ OIDC Role (no stored keys!)</td></tr>
+            <tr><td>ECS/EKS container accessing AWS services</td><td>❌ Bad practice</td><td>✅ Task/Service Account Role</td></tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="card">
+    <h3>🏗️ The Two Policies Inside Every Role</h3>
+    <div class="grid-2">
+        <div class="concept-card">
+            <div class="icon">🤝</div>
+            <h3>1. Trust Policy (Who Can Assume)</h3>
+            <p>A JSON policy that defines <strong>WHICH entities</strong> are allowed to assume this role. Must specify a <code>Principal</code>. Without this, nobody can use the role.</p>
+            <br>
+            <p><strong>Common Principals:</strong></p>
+            <ul style="padding-left:16px; font-size:0.88em; line-height:1.9;">
+                <li><code>ec2.amazonaws.com</code> — EC2 service</li>
+                <li><code>lambda.amazonaws.com</code> — Lambda</li>
+                <li><code>arn:aws:iam::ACCOUNT_ID:root</code> — Another AWS account</li>
+                <li><code>arn:aws:iam::ACCOUNT:user/alice</code> — Specific user</li>
+            </ul>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Controls sts:AssumeRole</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">📋</div>
+            <h3>2. Permission Policy (What Can Do)</h3>
+            <p>The standard IAM policy (Managed or Inline) that defines <strong>WHAT actions</strong> the role can perform once assumed. Works exactly like any other policy.</p>
+            <br>
+            <p><strong>Common examples:</strong></p>
+            <ul style="padding-left:16px; font-size:0.88em; line-height:1.9;">
+                <li>AmazonS3ReadOnlyAccess</li>
+                <li>AmazonDynamoDBFullAccess</li>
+                <li>CloudWatchLogsFullAccess</li>
+                <li>Custom customer-managed policies</li>
+            </ul>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Controls what the role can do</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🛠️ Creating and Using IAM Roles — Practical Examples</h3>
+
+    <h4>Use Case 1: EC2 Instance Role — Access S3 Without Hardcoded Keys</h4>
+    <div class="code-label">BASH — Complete EC2 Role Setup</div>
+    <div class="code-block"># ── STEP 1: Write Trust Policy JSON ─────────────────────────────
+cat > ec2-trust-policy.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "ec2.amazonaws.com" },
+    "Action": "sts:AssumeRole"
+  }]
+}
+EOF
+
+# ── STEP 2: Create the Role ──────────────────────────────────────
+aws iam create-role \
+  --role-name EC2-S3-ReadRole \
+  --assume-role-policy-document file://ec2-trust-policy.json \
+  --description "Allows EC2 instances to read from S3"
+
+# ── STEP 3: Attach Permissions Policy ───────────────────────────
+aws iam attach-role-policy \
+  --role-name EC2-S3-ReadRole \
+  --policy-arn arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess
+
+# ── STEP 4: Create Instance Profile (required wrapper for EC2) ───
+aws iam create-instance-profile \
+  --instance-profile-name EC2-S3-ReadProfile
+
+aws iam add-role-to-instance-profile \
+  --instance-profile-name EC2-S3-ReadProfile \
+  --role-name EC2-S3-ReadRole
+
+# ── STEP 5: Launch EC2 with the Role ────────────────────────────
+aws ec2 run-instances \
+  --image-id ami-0c02fb55956c7d316 \
+  --instance-type t2.micro \
+  --iam-instance-profile Name=EC2-S3-ReadProfile
+
+# On the EC2 instance — these will work WITHOUT aws configure!
+# aws s3 ls                    ← Works!
+# aws s3 cp s3://bucket/ .    ← Works!
+# aws s3 rm s3://bucket/file  ← DENIED (ReadOnly!)</div>
+
+    <h4>Use Case 2: Cross-Account Role (Account A accesses Account B)</h4>
+    <div class="code-label">BASH — Cross-Account Setup (run in Account B)</div>
+    <div class="code-block"># In ACCOUNT B (222222222222): Create role that trusts Account A
+cat > cross-account-trust.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": {
+      "AWS": "arn:aws:iam::111111111111:root"   // Trust entire Account A
+    },
+    "Action": "sts:AssumeRole",
+    "Condition": {
+      "Bool": { "aws:MultiFactorAuthPresent": "true" }   // Require MFA
+    }
+  }]
+}
+EOF
+
+aws iam create-role \
+  --role-name CrossAccountReadRole \
+  --assume-role-policy-document file://cross-account-trust.json
+
+aws iam attach-role-policy \
+  --role-name CrossAccountReadRole \
+  --policy-arn arn:aws:iam::aws:policy/ReadOnlyAccess
+
+# In ACCOUNT A (111111111111): User assumes the role
+aws sts assume-role \
+  --role-arn "arn:aws:iam::222222222222:role/CrossAccountReadRole" \
+  --role-session-name "alice-audit-session" \
+  --duration-seconds 3600
+
+# Export the returned temp credentials:
+export AWS_ACCESS_KEY_ID="ASIA..."
+export AWS_SECRET_ACCESS_KEY="xxxx..."
+export AWS_SESSION_TOKEN="IQoJb3JpZ2..."
+# Now commands run in Account B as the role!</div>
+
+    <h4>Use Case 3: Lambda Execution Role</h4>
+    <div class="code-label">BASH — Lambda Role Creation</div>
+    <div class="code-block"># Trust policy for Lambda
+cat > lambda-trust.json << 'EOF'
+{
+  "Version": "2012-10-17",
+  "Statement": [{
+    "Effect": "Allow",
+    "Principal": { "Service": "lambda.amazonaws.com" },
+    "Action": "sts:AssumeRole"
+  }]
+}
+EOF
+
+# Create the Lambda execution role
+aws iam create-role \
+  --role-name MyLambdaExecutionRole \
+  --assume-role-policy-document file://lambda-trust.json
+
+# All Lambda functions need this for CloudWatch Logs
+aws iam attach-role-policy \
+  --role-name MyLambdaExecutionRole \
+  --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+
+# Additional permissions your Lambda needs
+aws iam attach-role-policy \
+  --role-name MyLambdaExecutionRole \
+  --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess</div>
+</div>
+
+
+<!-- SECTION 6: MFA, STS, BOUNDARIES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🛡️</div>
+    <div>
+        <h2>Section 6 — MFA, Password Policy, STS &amp; Permission Boundaries <span class="section-time">1:25 – 1:40</span></h2>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h3>📱 Multi-Factor Authentication (MFA)</h3>
+        <p>MFA adds a second verification layer beyond username/password. Even if credentials are stolen, an attacker cannot log in without physical access to the MFA device.</p>
+        <br>
+        <h4>Available MFA Device Types</h4>
+        <table class="compare-table">
+            <thead><tr><th>Type</th><th>Example</th><th>How it Works</th></tr></thead>
+            <tbody>
+                <tr><td>Virtual MFA App</td><td>Google Authenticator, Authy</td><td>6-digit TOTP code, refreshes every 30s</td></tr>
+                <tr><td>Hardware TOTP Token</td><td>Gemalto token device</td><td>Physical token generating TOTP codes</td></tr>
+                <tr><td>FIDO2 Security Key</td><td>YubiKey (USB/NFC)</td><td>Tap/insert physical key — strongest option</td></tr>
+                <tr><td>Hardware Key Fob</td><td>AWS GovCloud specific</td><td>For government compliance requirements</td></tr>
+            </tbody>
+        </table>
+        <div class="callout callout-success" style="margin-top:14px;">
+            <div class="icon">✅</div>
+            <div>Enable MFA on: (1) Root account always, (2) All IAM admin users, (3) Any user with sensitive data access. This is the single most impactful security action.</div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h3>🔐 IAM Password Policy</h3>
+        <p>Define account-wide password complexity and rotation requirements for all IAM users. Set once, applies to everyone.</p>
+        <br>
+        <ul class="checklist" style="font-size:0.9em; line-height:2.2;">
+            <li>Minimum password length (8–128 characters)</li>
+            <li>Require uppercase and lowercase letters</li>
+            <li>Require at least one number</li>
+            <li>Require at least one special character (!@#$)</li>
+            <li>Password expiry (e.g., force change every 90 days)</li>
+            <li>Prevent password reuse (remember last 1–24 passwords)</li>
+            <li>Allow users to change their own password</li>
+            <li>Require admin reset after password expires</li>
+        </ul>
+        <div class="code-label" style="margin-top:12px;">BASH — Set Password Policy</div>
+        <div class="code-block" style="font-size:0.8em;">aws iam update-account-password-policy \
+  --minimum-password-length 14 \
+  --require-uppercase-characters \
+  --require-lowercase-characters \
+  --require-numbers \
+  --require-symbols \
+  --max-password-age 90 \
+  --password-reuse-prevention 12 \
+  --allow-users-to-change-password</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎫 AWS STS — Security Token Service</h3>
+    <p><strong>AWS STS</strong> is a global web service that creates <em>temporary, limited-privilege credentials</em> for IAM users and roles. It's the engine behind every role assumption in AWS.</p>
+    <br>
+    <div class="grid-3">
+        <div class="concept-card">
+            <div class="icon">🔄</div>
+            <h3>AssumeRole</h3>
+            <p>IAM users or services get temp credentials for a role. Duration: 15 minutes to 12 hours. Core mechanism for all role-based access.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Most common</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🌐</div>
+            <h3>AssumeRoleWithWebIdentity</h3>
+            <p>Web/mobile app users authenticated via Google, Facebook, Amazon, or Cognito get temporary AWS access. Used heavily with Cognito.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">OIDC / Social Login</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🏢</div>
+            <h3>AssumeRoleWithSAML</h3>
+            <p>Corporate SSO — employees login via Active Directory / LDAP and get AWS access without separate IAM users. Enterprise standard.</p>
+            <span class="tag" style="background:var(--tag-orange); color:var(--tag-orange-text);">Enterprise SSO</span>
+        </div>
+    </div>
+    <br>
+    <h4>STS Credentials — What You Get Back</h4>
+    <div class="code-label">JSON — STS AssumeRole Response</div>
+    <div class="code-block">{
+  "Credentials": {
+    "AccessKeyId": "ASIAIOSFODNN7EXAMPLE",      // Temporary (starts with ASIA)
+    "SecretAccessKey": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+    "SessionToken": "AQoDYXdzEJr...(very long)...",  // REQUIRED for temp creds
+    "Expiration": "2026-08-29T13:00:00Z"        // Auto-expires (max 12 hours)
+  },
+  "AssumedRoleUser": {
+    "AssumedRoleId": "AROAIOSFODNN7EXAMPLE:alice-session",
+    "Arn": "arn:aws:sts::123456789012:assumed-role/EC2-S3-ReadRole/alice-session"
+  }
+}</div>
+</div>
+
+<div class="card">
+    <h3>🚧 IAM Permission Boundaries</h3>
+    <p>A <strong>Permission Boundary</strong> is an advanced IAM feature. It is a managed policy attached to a user or role that sets the <em>maximum permissions</em> that user/role can ever have. The actual permissions are the INTERSECTION of identity policies and the boundary.</p>
+    <br>
+    <div class="analogy">
+        <div class="analogy-title">🏗️ The Construction Site Fence</div>
+        <p>A construction worker has permits to operate heavy machinery in the entire city. But the construction site has a <em>fence around it</em>. The worker can only operate machinery <strong>inside the fence</strong>, regardless of their city-wide permit. The fence is the Permission Boundary — it's the maximum possible working area, regardless of what other policies say.</p>
+    </div>
+    <br>
+    <div class="grid-2">
+        <div>
+            <h4>Effective Permissions Formula</h4>
+            <div class="arch-diagram">Effective Permissions =
+  Identity Policy (User/Group/Role)
+  ∩ (intersection with)
+  Permission Boundary
+
+BOTH must allow an action for it to succeed.
+If Boundary allows but Policy denies → DENIED
+If Policy allows but Boundary denies → DENIED
+If both allow → ALLOWED</div>
+        </div>
+        <div>
+            <h4>Primary Use Case</h4>
+            <div class="callout callout-info" style="margin-top:0;">
+                <div class="icon">💡</div>
+                <div><strong>Delegated Admin:</strong> Let a team lead create IAM users/roles for their team, but limit what permissions they can grant. The team lead can't create users with more permissions than the boundary allows — preventing privilege escalation.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SECTION 7: BEST PRACTICES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">⭐</div>
+    <div>
+        <h2>Section 7 — IAM Best Practices <span class="section-time">1:40 – 1:55</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🏆 AWS Official IAM Best Practices</h3>
+    <div class="grid-2">
+        <div>
+            <h4>🔒 Security</h4>
+            <ul class="checklist" style="font-size:0.92em; line-height:2.2;">
+                <li><strong>Lock root account</strong> — MFA on, no access keys, never use daily</li>
+                <li>Create <strong>individual IAM users</strong> — never share credentials</li>
+                <li>Use <strong>Groups to assign permissions</strong> (not individual users)</li>
+                <li>Apply <strong>Principle of Least Privilege</strong> — start with nothing, add as needed</li>
+                <li>Enable <strong>MFA for all privileged users</strong></li>
+                <li><strong>Never embed credentials in code</strong> — use Roles for AWS services</li>
+                <li>Rotate access keys regularly (every 90 days at most)</li>
+                <li>Use <strong>IAM Access Analyzer</strong> to detect overly broad permissions</li>
+                <li>Enable <strong>CloudTrail</strong> in all regions for full audit trail</li>
+            </ul>
+        </div>
+        <div>
+            <h4>🚀 Operations</h4>
+            <ul class="checklist" style="font-size:0.92em; line-height:2.2;">
+                <li>Prefer <strong>Customer Managed Policies</strong> over inline policies</li>
+                <li>Use <strong>Permission Boundaries</strong> for delegated administration</li>
+                <li>Tag all IAM entities (user, role, policy) for governance</li>
+                <li>Run <strong>Credential Reports</strong> monthly — audit inactive users</li>
+                <li>Use <strong>Access Advisor</strong> to identify and remove unused permissions</li>
+                <li>Remove <strong>unused users, roles, and access keys</strong> promptly</li>
+                <li>Use <strong>SCPs via AWS Organizations</strong> for guardrails across accounts</li>
+                <li>Automate IAM with <strong>Terraform / CloudFormation</strong> for consistency</li>
+                <li>Use <strong>OIDC roles for CI/CD</strong> — eliminate stored credentials entirely</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔍 IAM Auditing and Monitoring Tools</h3>
+    <div class="grid-3">
+        <div class="concept-card">
+            <div class="icon">📊</div>
+            <h3>IAM Credential Report</h3>
+            <p>CSV report of ALL users and their credential status: password age, access key usage dates, MFA status, last login. Essential for compliance audits.</p>
+            <div class="code-label" style="margin-top:10px;">CLI</div>
+            <div class="code-block" style="font-size:0.8em;">aws iam generate-credential-report
+aws iam get-credential-report \
+  --output text \
+  --query Content \
+  | base64 --decode</div>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🔎</div>
+            <h3>IAM Access Advisor</h3>
+            <p>Shows when each AWS service was LAST accessed by a user, role, group, or policy. Identify dormant permissions. Helps right-size access.</p>
+            <div class="code-label" style="margin-top:10px;">CLI</div>
+            <div class="code-block" style="font-size:0.8em;">aws iam generate-service-last-accessed-details \
+  --arn arn:aws:iam::123:user/alice</div>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🔬</div>
+            <h3>IAM Access Analyzer</h3>
+            <p>Uses automated reasoning to identify resources in your account that are shared with external entities. Detects unintended public or cross-account access.</p>
+            <div class="code-label" style="margin-top:10px;">CLI</div>
+            <div class="code-block" style="font-size:0.8em;">aws accessanalyzer create-analyzer \
+  --analyzer-name my-analyzer \
+  --type ACCOUNT</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SECTION 8: REAL-WORLD USE CASES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🌍</div>
+    <div>
+        <h2>Section 8 — Real-World Architecture Use Cases</h2>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h3>🏭 Use Case 1: Multi-Team Company Setup</h3>
+        <p>A software company with 50 engineers across 4 teams setting up AWS IAM from scratch.</p>
+        <br>
+        <div class="arch-diagram">AWS Account (nimbus-cloud)
+│
+├── 👥 Group: Admins (2 people)
+│   └── Policy: AdministratorAccess
+│
+├── 👥 Group: DevOps-Engineers (8 people)
+│   ├── Policy: EC2FullAccess
+│   ├── Policy: ECSFullAccess
+│   ├── Policy: CloudWatchFullAccess
+│   └── Policy: S3FullAccess
+│
+├── 👥 Group: Backend-Developers (20 people)
+│   ├── Policy: LambdaFullAccess
+│   ├── Policy: DynamoDBFullAccess
+│   └── Policy: S3ReadOnly (customer-managed)
+│
+├── 👥 Group: DataEngineers (10 people)
+│   ├── Policy: GlueFullAccess
+│   ├── Policy: AthenaFullAccess
+│   └── Policy: S3FullAccess
+│
+└── 👥 Group: Finance-Billing (5 people)
+    └── Policy: AWSBillingReadOnlyAccess</div>
+    </div>
+
+    <div class="card">
+        <h3>🔄 Use Case 2: GitHub Actions CI/CD with OIDC</h3>
+        <p>Deploy from GitHub to AWS S3/ECS without storing any AWS credentials in GitHub secrets.</p>
+        <br>
+        <div class="steps" style="font-size:0.88em;">
+            <div class="step-item">
+                <div class="step-num">1</div>
+                <div class="step-content"><strong>Create OIDC Provider</strong> in IAM for <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;">token.actions.githubusercontent.com</code> with thumbprint</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">2</div>
+                <div class="step-content"><strong>Create IAM Role</strong> with trust policy allowing GitHub repo <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;">myorg/myrepo:refs/heads/main</code> to assume it</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">3</div>
+                <div class="step-content"><strong>Attach deployment permissions</strong> (S3, ECR, ECS, etc.) to the role</div>
+            </div>
+            <div class="step-item">
+                <div class="step-num">4</div>
+                <div class="step-content"><strong>GitHub Actions workflow</strong> uses <code style="background:#f1f5f9;padding:1px 5px;border-radius:3px;">aws-actions/configure-aws-credentials@v4</code> with role ARN</div>
+            </div>
+        </div>
+        <div class="callout callout-success" style="margin-top:12px;">
+            <div class="icon">✅</div>
+            <div>Zero long-lived credentials! GitHub gets a short-lived OIDC token, exchanges it for temporary AWS credentials. No Access Keys stored anywhere.</div>
+        </div>
+    </div>
+</div>
+
+<div class="grid-2">
+    <div class="card">
+        <h3>🏦 Use Case 3: Multi-Account Strategy</h3>
+        <p>Enterprise using AWS Organizations with separate accounts per environment for blast radius isolation.</p>
+        <br>
+        <div class="arch-diagram">AWS Organizations (Root)
+│
+├── 📁 OU: Management
+│   └── Account: master-billing-account
+│       (SCPs defined here — guardrails for all)
+│
+├── 📁 OU: Development
+│   └── Account: dev-account-111111111111
+│       Developers can freely experiment
+│       SCP: Deny expensive services
+│
+├── 📁 OU: Staging
+│   └── Account: staging-account-222222222222
+│       DevOps team deploys here via CI/CD role
+│       SCP: Deny non-approved regions
+│
+└── 📁 OU: Production
+    └── Account: prod-account-333333333333
+        ONLY CD pipeline role can deploy
+        On-call: ReadOnly cross-account role
+        SCP: Deny risky actions (delete VPC etc)</div>
+    </div>
+
+    <div class="card">
+        <h3>📱 Use Case 4: Mobile App with Cognito + IAM</h3>
+        <p>Mobile app users upload photos to S3 directly — without a backend server — using temporary credentials.</p>
+        <br>
+        <div class="flow" style="flex-direction: column; gap:10px; align-items:flex-start; font-size:0.85em;">
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div class="flow-box">📱 Mobile App</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box blue">🔐 Sign in via Cognito</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div class="flow-box blue">Cognito Authenticated</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box">STS:AssumeRoleWithWebIdentity</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div class="flow-box">Temp Credentials (1hr)</div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-box green">✅ Direct S3 Upload</div>
+            </div>
+        </div>
+        <br>
+        <p style="font-size:0.88em; color:var(--text-muted);">S3 policy uses variable to scope access per user:</p>
+        <div class="code-block" style="font-size:0.8em; margin-top:8px;">"Resource": "arn:aws:s3:::app-photos/${cognito-identity.amazonaws.com:sub}/*"
+// Each user can ONLY access their own folder!</div>
+    </div>
+</div>
+
+
+<!-- LABS -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🧪</div>
+    <div><h2>Hands-On Lab Exercises</h2></div>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 1 — Create User, Group, and Assign Permissions</div>
+    <div class="lab-desc">⏱ 10 minutes | Beginner | Objective: Understand user and group permission inheritance</div>
+    <ol>
+        <li>Log into the AWS Console → Navigate to <code>IAM</code></li>
+        <li>Create a new group called <code>DevOps-Team</code></li>
+        <li>Attach the AWS managed policy <code>AmazonEC2FullAccess</code> to the group</li>
+        <li>Create a new IAM user <code>student-alice</code> with Console access</li>
+        <li>Add <code>student-alice</code> to the <code>DevOps-Team</code> group</li>
+        <li>Log into the console as <code>student-alice</code> — verify she can see EC2 instances</li>
+        <li>Try accessing S3 as alice — verify access is DENIED (no S3 policy!)</li>
+        <li>Add <code>AmazonS3ReadOnlyAccess</code> to the group — re-verify S3 access works</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 2 — Create a Custom IAM Policy (JSON Editor)</div>
+    <div class="lab-desc">⏱ 10 minutes | Beginner | Objective: Write and apply a custom JSON policy</div>
+    <ol>
+        <li>Go to <code>IAM → Policies → Create Policy → JSON tab</code></li>
+        <li>Paste this policy that allows S3 reads but explicitly blocks deletes:</li>
+        <li><code>{"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:GetObject","s3:ListBucket","s3:PutObject"],"Resource":"*"},{"Effect":"Deny","Action":["s3:DeleteObject","s3:DeleteBucket"],"Resource":"*"}]}</code></li>
+        <li>Name it <code>S3-ReadWrite-NoDelete</code> and add description</li>
+        <li>Create a test user, attach this policy directly</li>
+        <li>Test: Try PutObject (should work), try DeleteObject (should be DENIED)</li>
+        <li>Observe how the explicit Deny overrides anything else</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 3 — EC2 Instance Role (Zero Hardcoded Credentials)</div>
+    <div class="lab-desc">⏱ 15 minutes | Intermediate | Objective: Access S3 from EC2 without any credentials</div>
+    <ol>
+        <li>Create an IAM Role with <code>EC2</code> as trusted service</li>
+        <li>Attach <code>AmazonS3ReadOnlyAccess</code> to the role. Name it <code>EC2-Lab-Role</code></li>
+        <li>Launch a new EC2 instance → in Advanced Details → IAM Instance Profile, select <code>EC2-Lab-Role</code></li>
+        <li>SSH into the EC2 instance using your key pair</li>
+        <li>Run: <code>aws s3 ls</code> — it should work <strong>without running <code>aws configure</code>!</strong></li>
+        <li>Run: <code>curl http://169.254.169.254/latest/meta-data/iam/security-credentials/</code> — see the role name</li>
+        <li>Run: <code>curl http://169.254.169.254/latest/meta-data/iam/security-credentials/EC2-Lab-Role</code> — see the auto-rotating temp credentials</li>
+        <li>Try <code>aws s3 cp s3://somebucket/file.txt .</code> — observe it works without any stored credentials</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 4 — Enable MFA and Test Enforcement</div>
+    <div class="lab-desc">⏱ 5 minutes | Beginner | Objective: Set up and test MFA authentication</div>
+    <ol>
+        <li>Install <code>Google Authenticator</code> or <code>Authy</code> on your smartphone</li>
+        <li>In AWS Console: IAM → Users → Your User → Security Credentials tab</li>
+        <li>Click <code>Assign MFA Device</code> → Choose <code>Authenticator App (Virtual MFA)</code></li>
+        <li>Scan the QR code with your phone's authenticator app</li>
+        <li>Enter two consecutive 6-digit codes to verify (code 1, wait for refresh, enter code 2)</li>
+        <li>Click <code>Add MFA</code> to save</li>
+        <li>Sign out and sign back in — you should now be prompted for MFA code after password</li>
+        <li>Bonus: Try the MFA enforcement policy from Section 4 to deny all access without MFA</li>
+    </ol>
+</div>
+
+
+<!-- SUMMARY CHEAT SHEET -->
+<hr class="divider">
+<div class="summary-card">
+    <h2>📋 IAM Complete Cheat Sheet — Quick Reference</h2>
+    <div class="summary-grid">
+        <div class="summary-item"><div class="si-label">Root Account</div><div class="si-value">🔐 Lock it. MFA ON. No access keys. Never use daily.</div></div>
+        <div class="summary-item"><div class="si-label">IAM User</div><div class="si-value">👤 Person or app with PERMANENT credentials (password or access keys)</div></div>
+        <div class="summary-item"><div class="si-label">IAM Group</div><div class="si-value">👥 Collection of users. Attach policies to groups, not individual users.</div></div>
+        <div class="summary-item"><div class="si-label">IAM Role</div><div class="si-value">🎭 TEMPORARY credentials via STS. For services, cross-account, federation.</div></div>
+        <div class="summary-item"><div class="si-label">IAM Policy</div><div class="si-value">📜 JSON doc. Effect + Action + Resource [+ Condition]. Allow or Deny.</div></div>
+        <div class="summary-item"><div class="si-label">Explicit Deny</div><div class="si-value">🚫 ALWAYS wins. Overrides any Allow, in any policy, anywhere.</div></div>
+        <div class="summary-item"><div class="si-label">Default Deny</div><div class="si-value">🔒 No explicit Allow = Access Denied. IAM is deny-by-default.</div></div>
+        <div class="summary-item"><div class="si-label">STS</div><div class="si-value">🎫 Security Token Service. Issues temp creds. Max 12hr duration.</div></div>
+        <div class="summary-item"><div class="si-label">Trust Policy</div><div class="si-value">🤝 WHO can assume the role (Principal element in role's JSON)</div></div>
+        <div class="summary-item"><div class="si-label">Instance Profile</div><div class="si-value">🖥️ Wrapper for IAM Role. Required to attach a role to EC2.</div></div>
+        <div class="summary-item"><div class="si-label">Permission Boundary</div><div class="si-value">🚧 Maximum permission ceiling. Effective = Policy ∩ Boundary.</div></div>
+        <div class="summary-item"><div class="si-label">IAM Scope</div><div class="si-value">🌍 Global Service. Not region-specific. Same IAM everywhere.</div></div>
+        <div class="summary-item"><div class="si-label">IAM Cost</div><div class="si-value">✅ Completely FREE. No charges for IAM operations ever.</div></div>
+        <div class="summary-item"><div class="si-label">Max IAM Users</div><div class="si-value">5,000 per account (soft limit, can request increase)</div></div>
+        <div class="summary-item"><div class="si-label">Groups per User</div><div class="si-value">Max 10 groups per IAM user</div></div>
+        <div class="summary-item"><div class="si-label">Access Key Format</div><div class="si-value">Permanent: AKIA... | Temporary (STS): ASIA...</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎯 Exam Tips — Most Frequently Tested IAM Concepts</h3>
+    <div class="grid-2">
+        <div>
+            <h4>✅ Must Know Truths</h4>
+            <ul style="padding-left:20px; line-height:2.2; font-size:0.9em;">
+                <li>IAM is a <strong>Global</strong> service (not regional)</li>
+                <li>Explicit Deny <strong>always overrides</strong> explicit Allow</li>
+                <li>IAM is <strong>free</strong> of charge</li>
+                <li>Roles use <strong>STS</strong> for temporary credentials</li>
+                <li>EC2 needs an <strong>Instance Profile</strong> to use a role</li>
+                <li>Root account <strong>cannot</strong> be restricted by SCPs</li>
+                <li>New IAM users have <strong>NO permissions</strong> by default</li>
+                <li>SCPs from Organizations <strong>override</strong> IAM policies</li>
+            </ul>
+        </div>
+        <div>
+            <h4>⚠️ Common Gotchas &amp; Trick Questions</h4>
+            <ul style="padding-left:20px; line-height:2.2; font-size:0.9em;">
+                <li>Groups <strong>cannot be nested</strong> (no group of groups)</li>
+                <li>IAM roles are <strong>assumed</strong>, not attached to users</li>
+                <li>One user can be in <strong>multiple groups</strong> (max 10)</li>
+                <li>Permission Boundaries don't <strong>grant</strong> permissions — they <strong>limit</strong> them</li>
+                <li>Resource-based policies <strong>must have</strong> a Principal</li>
+                <li>Temporary access key IDs <strong>start with ASIA</strong> (not AKIA)</li>
+                <li>Session Token is <strong>required</strong> with temporary credentials</li>
+                <li>Access keys should <strong>never</strong> be stored in code or config files</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+    <p>📚 <span>AWS IAM Complete Teaching Notes</span> — Nimbus Cloud Academy</p>
+    <p style="margin-top:6px;">2-Hour Session &nbsp;·&nbsp; Topics: Users · Groups · Roles · Policies · MFA · STS · Permission Boundaries · Best Practices · Labs</p>
+    <p style="margin-top:6px; opacity:0.6;">Generated: August 29, 2026</p>
+</footer>
+
+</body>
+</html>

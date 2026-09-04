@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS VPC Demo – Step-by-Step Resource Creation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0b0e14;
+            --surface: #151921;
+            --surface-2: #1c2130;
+            --surface-3: #242a3a;
+            --border: #2a3146;
+            --text: #e1e4ed;
+            --text-muted: #7e849b;
+            --accent: #f97316;
+            --accent-light: #fb923c;
+            --accent-dim: #f9731612;
+            --purple: #a78bfa;
+            --purple-dim: #a78bfa15;
+            --green: #34d399;
+            --green-dim: #34d39915;
+            --red: #f87171;
+            --red-dim: #f8717115;
+            --blue: #60a5fa;
+            --blue-dim: #60a5fa12;
+            --cyan: #22d3ee;
+            --yellow: #fbbf24;
+            --yellow-dim: #fbbf2412;
+            --gradient: linear-gradient(135deg, #f97316, #fb923c, #fbbf24);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+
+        /* ── Header ────────────────────────────── */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 2.5rem 2rem 2rem;
+            text-align: center;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient);
+        }
+        .badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #000;
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.25rem 0.9rem;
+            border-radius: 50px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 0.75rem;
+        }
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.4rem;
+        }
+        .header .sub { color: var(--text-muted); font-size: 0.95rem; }
+        .meta-row {
+            display: flex; justify-content: center; gap: 2rem; margin-top: 1rem; flex-wrap: wrap;
+        }
+        .meta-row span { color: var(--text-muted); font-size: 0.82rem; }
+        .meta-row strong { color: var(--text); }
+
+        /* ── Container ─────────────────────────── */
+        .container { max-width: 880px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+        /* ── Architecture Box ──────────────────── */
+        .arch-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .arch-box h2 { font-size: 1.05rem; color: var(--accent-light); margin-bottom: 1rem; }
+        .diagram-wrap {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            overflow-x: auto;
+        }
+        .diagram-wrap pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            line-height: 1.5;
+            color: var(--green);
+            white-space: pre;
+        }
+
+        /* ── IP Plan ───────────────────────────── */
+        .ip-plan {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .ip-plan h2 { font-size: 1.05rem; color: var(--purple); margin-bottom: 0.75rem; }
+        .ip-plan pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+        }
+        .ip-plan pre .cidr { color: var(--cyan); }
+        .ip-plan pre .label { color: var(--yellow); }
+
+        /* ── Order Table ───────────────────────── */
+        .order-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .order-card h2 { font-size: 1.05rem; color: var(--accent-light); margin-bottom: 1rem; }
+        table.order {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        table.order th {
+            text-align: left;
+            padding: 0.6rem 0.8rem;
+            background: var(--surface-2);
+            color: var(--accent-light);
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        table.order td {
+            padding: 0.5rem 0.8rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        table.order td:nth-child(1) { color: var(--text-muted); font-weight: 600; width: 30px; text-align: center; }
+        table.order td:nth-child(3) { color: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+        table.order tr:last-child td { border-bottom: none; }
+
+        /* ── Step Cards ────────────────────────── */
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+        .step:hover { border-color: var(--accent); }
+        .step-tag {
+            position: absolute;
+            top: -12px; left: 24px;
+            background: var(--gradient);
+            color: #000;
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.2rem 0.9rem;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+        }
+        .step h3 { font-size: 1.1rem; font-weight: 700; margin-bottom: 0.25rem; padding-top: 0.2rem; }
+        .step .where {
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            margin-bottom: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Settings table inside step */
+        table.settings {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+            margin: 0.75rem 0;
+        }
+        table.settings th {
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            background: var(--surface-2);
+            color: var(--text-muted);
+            font-weight: 600;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        table.settings td {
+            padding: 0.45rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+        table.settings td:first-child { color: var(--text-muted); }
+        table.settings tr:last-child td { border-bottom: none; }
+
+        /* Code blocks */
+        .code-block {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin: 0.75rem 0;
+            overflow: hidden;
+        }
+        .code-label {
+            background: var(--surface-3);
+            padding: 0.4rem 0.85rem;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-bottom: 1px solid var(--border);
+        }
+        .code-block pre {
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            line-height: 1.6;
+            color: var(--text);
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .code-block pre .comment { color: var(--text-muted); }
+        .code-block pre .cmd { color: var(--green); }
+        .code-block pre .flag { color: var(--cyan); }
+
+        /* Tip/warning boxes */
+        .tip {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.6rem;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            font-size: 0.82rem;
+            margin-top: 0.75rem;
+        }
+        .tip .icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+        .tip.info { background: var(--blue-dim); border: 1px solid #60a5fa25; color: var(--blue); }
+        .tip.warn { background: var(--yellow-dim); border: 1px solid #fbbf2425; color: var(--yellow); }
+        .tip.danger { background: var(--red-dim); border: 1px solid #f8717125; color: var(--red); }
+        .tip.success { background: var(--green-dim); border: 1px solid #34d39925; color: var(--green); }
+
+        /* Subnet cards grid */
+        .subnet-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin: 0.75rem 0;
+        }
+        .subnet-card {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 0.85rem 1rem;
+        }
+        .subnet-card .sname { font-weight: 600; font-size: 0.85rem; margin-bottom: 0.3rem; }
+        .subnet-card .sdetail { font-size: 0.78rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+        .subnet-card.pub { border-left: 3px solid var(--green); }
+        .subnet-card.priv { border-left: 3px solid var(--purple); }
+
+        /* ── Test Section ──────────────────────── */
+        .test {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .test h2 { font-size: 1.1rem; font-weight: 700; margin-bottom: 1.25rem; }
+        .test-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.85rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+        .test-item:last-child { border-bottom: none; }
+        .test-icon { font-size: 1.1rem; flex-shrink: 0; margin-top: 2px; }
+        .test-body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.25rem; }
+        .test-body p { font-size: 0.82rem; color: var(--text-muted); }
+        .test-body code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            padding: 0.1rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.78rem;
+            color: var(--cyan);
+        }
+
+        /* ── Troubleshooting ───────────────────── */
+        .troubleshoot {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .troubleshoot h2 { font-size: 1.05rem; color: var(--yellow); margin-bottom: 1rem; }
+        details {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+        }
+        details summary {
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            font-size: 0.88rem;
+            font-weight: 500;
+            color: var(--text);
+            list-style: none;
+        }
+        details summary::-webkit-details-marker { display: none; }
+        details summary::before { content: '▸ '; color: var(--accent); }
+        details[open] summary::before { content: '▾ '; }
+        details .content {
+            padding: 0 1rem 1rem;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+        }
+        details .content ul { padding-left: 1.25rem; margin-top: 0.25rem; }
+        details .content li { margin-bottom: 0.25rem; }
+
+        /* ── Cost & Cleanup ────────────────────── */
+        .cost-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .cost-card h2 { font-size: 1.05rem; margin-bottom: 0.75rem; }
+        table.cost {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+        table.cost td {
+            padding: 0.45rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+        table.cost td:first-child { color: var(--text-muted); }
+        table.cost td:last-child { color: var(--text); text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; }
+        table.cost tr:last-child td { border-bottom: none; }
+        .free { color: var(--green) !important; }
+        .paid { color: var(--red) !important; }
+
+        /* ── Footer ────────────────────────────── */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+            border-top: 1px solid var(--border);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            padding: 0.12rem 0.4rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--cyan);
+        }
+        .step ol, .step ul { padding-left: 1.5rem; }
+        .step li { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.35rem; }
+        .step li strong { color: var(--text); }
+        @media(max-width:650px) {
+            .subnet-grid { grid-template-columns: 1fr; }
+            .header h1 { font-size: 1.4rem; }
+            .meta-row { flex-direction: column; gap: 0.4rem; }
+            .arch-azs { flex-direction: column; }
+        }
+
+        /* ── Architecture Visual ──────────────── */
+        .arch-visual {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+        }
+        .arch-internet {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+        }
+        .arch-internet span {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-muted);
+        }
+        .arch-icon-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .internet-icon {
+            background: linear-gradient(135deg, #1e3a5f, #2563eb);
+            box-shadow: 0 0 20px #2563eb40;
+        }
+        .arch-connector {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 32px;
+        }
+        .arch-line {
+            width: 2px;
+            flex: 1;
+            background: linear-gradient(to bottom, #60a5fa, #fbbf24);
+        }
+        .arch-arrow {
+            color: var(--yellow);
+            font-size: 0.7rem;
+            line-height: 1;
+        }
+
+        /* IGW */
+        .arch-igw {
+            width: 100%;
+            max-width: 380px;
+            margin-bottom: 6px;
+        }
+        .arch-igw-inner {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: linear-gradient(135deg, #422006, #713f12);
+            border: 1px solid #fbbf2440;
+            border-radius: 10px;
+            padding: 0.65rem 1.25rem;
+            box-shadow: 0 0 15px #fbbf2415;
+        }
+        .arch-igw-inner strong {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--yellow);
+        }
+        .arch-igw-inner span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* VPC Container */
+        .arch-vpc {
+            width: 100%;
+            background: var(--surface-2);
+            border: 2px solid var(--accent);
+            border-radius: 14px;
+            padding: 0;
+            overflow: hidden;
+            box-shadow: 0 0 25px #f9731618;
+        }
+        .arch-vpc-header {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: linear-gradient(135deg, #431407, #7c2d12);
+            padding: 0.65rem 1.25rem;
+            border-bottom: 1px solid #f9731630;
+        }
+        .arch-vpc-header span {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--accent-light);
+        }
+
+        /* AZ Grid */
+        .arch-azs {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .arch-az {
+            flex: 1;
+            background: var(--bg);
+            border: 1px dashed var(--border);
+            border-radius: 10px;
+            padding: 0.75rem;
+        }
+        .arch-az-label {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.6rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border);
+        }
+        .arch-az-name {
+            font-weight: 400;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+        }
+
+        /* Subnet blocks */
+        .arch-subnet {
+            border-radius: 8px;
+            margin-bottom: 0.6rem;
+            overflow: hidden;
+            transition: transform 0.15s;
+        }
+        .arch-subnet:last-child { margin-bottom: 0; }
+        .arch-subnet:hover { transform: translateY(-1px); }
+        .arch-subnet.pub {
+            border: 1px solid #34d39935;
+            background: #34d39908;
+        }
+        .arch-subnet.priv {
+            border: 1px solid #a78bfa30;
+            background: #a78bfa08;
+        }
+        .arch-subnet-header {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.45rem 0.7rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .pub-header {
+            background: linear-gradient(135deg, #064e3b, #065f46);
+            color: var(--green);
+        }
+        .priv-header {
+            background: linear-gradient(135deg, #2e1065, #3b0764);
+            color: var(--purple);
+        }
+        .arch-subnet-header code {
+            margin-left: auto;
+            background: none;
+            padding: 0;
+            font-size: 0.68rem;
+            color: inherit;
+            opacity: 0.7;
+        }
+        .arch-subnet-resources {
+            padding: 0.5rem 0.7rem;
+        }
+        .arch-resource {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            padding: 0.2rem 0;
+        }
+        .arch-resource span {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+        }
+        .arch-res-icon {
+            width: 24px;
+            height: 24px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .ec2-icon { background: #60a5fa15; }
+        .nat-icon { background: #a78bfa15; }
+        .rt-icon { background: transparent; }
+        .db-icon { background: #f8717115; }
+
+        /* Legend */
+        .arch-legend {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            border-top: 1px solid var(--border);
+        }
+        .arch-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .arch-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <span class="badge">Live Demo</span>
+    <h1>☁️ AWS VPC – Complete Resource Creation</h1>
+    <p class="sub">Build a production-grade 2-tier VPC with public &amp; private subnets across 2 AZs</p>
+    <div class="meta-row">
+        <span><strong>Batch:</strong> Nimbus DevOps Training</span>
+        <span><strong>Duration:</strong> 90–120 min</span>
+        <span><strong>Region:</strong> ap-south-1 (Mumbai)</span>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- Architecture -->
+    <div class="arch-box">
+        <h2>🏗️ Architecture We Are Building</h2>
+        <div class="arch-visual">
+
+            <!-- Internet -->
+            <div class="arch-internet">
+                <div class="arch-icon-circle internet-icon">🌐</div>
+                <span>Internet</span>
+            </div>
+            <div class="arch-connector"><div class="arch-line"></div><span class="arch-arrow">▼</span></div>
+
+            <!-- IGW -->
+            <div class="arch-igw">
+                <div class="arch-igw-inner">
+                    <svg class="arch-aws-icon" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fbbf24" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M2 12h20"/><circle cx="7" cy="9" r="1" fill="#fbbf24"/><circle cx="7" cy="15" r="1" fill="#fbbf24"/><circle cx="17" cy="9" r="1" fill="#fbbf24"/><circle cx="17" cy="15" r="1" fill="#fbbf24"/></svg>
+                    <div>
+                        <strong>Internet Gateway</strong>
+                        <span>Production-IGW</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VPC Container -->
+            <div class="arch-vpc">
+                <div class="arch-vpc-header">
+                    <svg class="arch-aws-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#f97316" stroke-width="2"><rect x="1" y="3" width="22" height="18" rx="3"/><path d="M1 9h22"/></svg>
+                    <span>VPC &nbsp;·&nbsp; <code style="color:var(--cyan);background:none;padding:0;">10.0.0.0/16</code> &nbsp;·&nbsp; Production-VPC</span>
+                </div>
+
+                <div class="arch-azs">
+                    <!-- AZ-A -->
+                    <div class="arch-az">
+                        <div class="arch-az-label">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 3v18"/></svg>
+                            AZ-A &nbsp;<span class="arch-az-name">ap-south-1a</span>
+                        </div>
+
+                        <!-- Public Subnet A -->
+                        <div class="arch-subnet pub">
+                            <div class="arch-subnet-header pub-header">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                                <span>Public Subnet A</span>
+                                <code>10.0.1.0/24</code>
+                            </div>
+                            <div class="arch-subnet-resources">
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon ec2-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg>
+                                    </div>
+                                    <span>EC2 Web Server</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon nat-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#a78bfa" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M14 8l4 4-4 4"/></svg>
+                                    </div>
+                                    <span>NAT Gateway A</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon rt-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#34d399" stroke-width="2"><path d="M3 12h18M15 6l6 6-6 6"/></svg>
+                                    </div>
+                                    <span>Route → IGW</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Private Subnet A -->
+                        <div class="arch-subnet priv">
+                            <div class="arch-subnet-header priv-header">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                                <span>Private Subnet A</span>
+                                <code>10.0.2.0/24</code>
+                            </div>
+                            <div class="arch-subnet-resources">
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon ec2-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg>
+                                    </div>
+                                    <span>EC2 App Server</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon db-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f87171" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+                                    </div>
+                                    <span>RDS Database</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon rt-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M3 12h18M15 6l6 6-6 6"/></svg>
+                                    </div>
+                                    <span>Route → NAT-A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AZ-B -->
+                    <div class="arch-az">
+                        <div class="arch-az-label">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 3v18"/></svg>
+                            AZ-B &nbsp;<span class="arch-az-name">ap-south-1b</span>
+                        </div>
+
+                        <!-- Public Subnet B -->
+                        <div class="arch-subnet pub">
+                            <div class="arch-subnet-header pub-header">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#34d399" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                                <span>Public Subnet B</span>
+                                <code>10.0.3.0/24</code>
+                            </div>
+                            <div class="arch-subnet-resources">
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon ec2-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg>
+                                    </div>
+                                    <span>EC2 Web Server</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon nat-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#a78bfa" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M14 8l4 4-4 4"/></svg>
+                                    </div>
+                                    <span>NAT Gateway B</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon rt-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#34d399" stroke-width="2"><path d="M3 12h18M15 6l6 6-6 6"/></svg>
+                                    </div>
+                                    <span>Route → IGW</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Private Subnet B -->
+                        <div class="arch-subnet priv">
+                            <div class="arch-subnet-header priv-header">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#a78bfa" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M2 10h20"/></svg>
+                                <span>Private Subnet B</span>
+                                <code>10.0.4.0/24</code>
+                            </div>
+                            <div class="arch-subnet-resources">
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon ec2-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#60a5fa" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 4v16M15 4v16M4 9h16M4 15h16"/></svg>
+                                    </div>
+                                    <span>EC2 App Server</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon db-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#f87171" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.66 3.58 3 8 3s8-1.34 8-3V6"/><path d="M4 12c0 1.66 3.58 3 8 3s8-1.34 8-3"/></svg>
+                                    </div>
+                                    <span>RDS Database</span>
+                                </div>
+                                <div class="arch-resource">
+                                    <div class="arch-res-icon rt-icon">
+                                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#a78bfa" stroke-width="2"><path d="M3 12h18M15 6l6 6-6 6"/></svg>
+                                    </div>
+                                    <span>Route → NAT-B</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Group Legend -->
+                <div class="arch-legend">
+                    <div class="arch-legend-item"><span class="arch-dot" style="background:var(--green)"></span> Public Subnet</div>
+                    <div class="arch-legend-item"><span class="arch-dot" style="background:var(--purple)"></span> Private Subnet</div>
+                    <div class="arch-legend-item"><span class="arch-dot" style="background:var(--blue)"></span> EC2 Instance</div>
+                    <div class="arch-legend-item"><span class="arch-dot" style="background:var(--red)"></span> RDS Database</div>
+                    <div class="arch-legend-item"><span class="arch-dot" style="background:var(--yellow)"></span> Internet Gateway</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IP Plan -->
+    <div class="ip-plan">
+        <h2>📋 IP Allocation Plan</h2>
+<pre><span class="label">VPC:</span> <span class="cidr">10.0.0.0/16</span>  (65,536 IPs)
+
+<span class="label">AZ-A (ap-south-1a):</span>
+├── Public-Subnet-A:   <span class="cidr">10.0.1.0/24</span>   (251 usable)
+└── Private-Subnet-A:  <span class="cidr">10.0.2.0/24</span>   (251 usable)
+
+<span class="label">AZ-B (ap-south-1b):</span>
+├── Public-Subnet-B:   <span class="cidr">10.0.3.0/24</span>   (251 usable)
+└── Private-Subnet-B:  <span class="cidr">10.0.4.0/24</span>   (251 usable)</pre>
+    </div>
+
+    <!-- Resource Creation Order -->
+    <div class="order-card">
+        <h2>📑 Resource Creation Order</h2>
+        <table class="order">
+            <thead><tr><th>#</th><th>Resource</th><th>Name</th><th>Config</th></tr></thead>
+            <tbody>
+                <tr><td>1</td><td>VPC</td><td><code>Production-VPC</code></td><td>10.0.0.0/16</td></tr>
+                <tr><td>2</td><td>Internet Gateway</td><td><code>Production-IGW</code></td><td>Attach to VPC</td></tr>
+                <tr><td>3–6</td><td>Subnets (×4)</td><td><code>Public/Private A & B</code></td><td>Across 2 AZs</td></tr>
+                <tr><td>7–8</td><td>Elastic IPs (×2)</td><td><code>NAT-GW-A/B-EIP</code></td><td>For NAT Gateways</td></tr>
+                <tr><td>9–10</td><td>NAT Gateways (×2)</td><td><code>NAT-GW-A & B</code></td><td>In public subnets</td></tr>
+                <tr><td>11–13</td><td>Route Tables (×3)</td><td><code>Public-RTB, Private-RTB-A/B</code></td><td>IGW & NAT routes</td></tr>
+                <tr><td>14</td><td>Subnet Associations</td><td>—</td><td>Link subnets to RTBs</td></tr>
+                <tr><td>15</td><td>Auto-Assign Public IP</td><td>—</td><td>On public subnets</td></tr>
+                <tr><td>16–17</td><td>Security Groups (×2)</td><td><code>Web-SG, Private-SG</code></td><td>Firewall rules</td></tr>
+                <tr><td>18–19</td><td>EC2 Instances (×2)</td><td><code>Web + App Server</code></td><td>Public + Private</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ── STEP 1 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 1</span>
+        <h3>Create the VPC</h3>
+        <p class="where">VPC Dashboard → Your VPCs → Create VPC</p>
+        <table class="settings">
+            <tr><td>Name tag</td><td><code>Production-VPC</code></td></tr>
+            <tr><td>IPv4 CIDR block</td><td><code>10.0.0.0/16</code></td></tr>
+            <tr><td>IPv6</td><td>No</td></tr>
+            <tr><td>Tenancy</td><td>Default</td></tr>
+        </table>
+        <div class="code-block">
+            <div class="code-label">CLI</div>
+<pre>aws ec2 create-vpc \
+  --cidr-block 10.0.0.0/16 \
+  --tag-specifications 'ResourceType=vpc,Tags=[{Key=Name,Value=Production-VPC}]'</pre>
+        </div>
+        <div class="tip info"><span class="icon">💡</span><span><strong>Explain:</strong> /16 gives 65,536 IPs. A Main Route Table is auto-created with the VPC.</span></div>
+    </div>
+
+    <!-- ── STEP 2 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 2</span>
+        <h3>Create &amp; Attach Internet Gateway</h3>
+        <p class="where">VPC Dashboard → Internet Gateways → Create Internet Gateway</p>
+        <table class="settings">
+            <tr><td>Name tag</td><td><code>Production-IGW</code></td></tr>
+        </table>
+        <p style="font-size:0.88rem;color:var(--text-muted);margin:0.5rem 0;">After creating → <strong>Actions → Attach to VPC</strong> → Select <code>Production-VPC</code></p>
+        <div class="code-block">
+            <div class="code-label">CLI</div>
+<pre><span class="comment"># Create</span>
+aws ec2 create-internet-gateway \
+  --tag-specifications 'ResourceType=internet-gateway,Tags=[{Key=Name,Value=Production-IGW}]'
+
+<span class="comment"># Attach to VPC</span>
+aws ec2 attach-internet-gateway \
+  --internet-gateway-id igw-xxxxx --vpc-id vpc-xxxxx</pre>
+        </div>
+        <div class="tip info"><span class="icon">💡</span><span><strong>Explain:</strong> One IGW per VPC. Without it, nothing can reach the internet.</span></div>
+    </div>
+
+    <!-- ── STEP 3 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 3</span>
+        <h3>Create 4 Subnets (2 Public + 2 Private)</h3>
+        <p class="where">VPC Dashboard → Subnets → Create Subnet → VPC: Production-VPC</p>
+        <div class="subnet-grid">
+            <div class="subnet-card pub">
+                <div class="sname">Public-Subnet-A</div>
+                <div class="sdetail">AZ: ap-south-1a<br>CIDR: 10.0.1.0/24</div>
+            </div>
+            <div class="subnet-card pub">
+                <div class="sname">Public-Subnet-B</div>
+                <div class="sdetail">AZ: ap-south-1b<br>CIDR: 10.0.3.0/24</div>
+            </div>
+            <div class="subnet-card priv">
+                <div class="sname">Private-Subnet-A</div>
+                <div class="sdetail">AZ: ap-south-1a<br>CIDR: 10.0.2.0/24</div>
+            </div>
+            <div class="subnet-card priv">
+                <div class="sname">Private-Subnet-B</div>
+                <div class="sdetail">AZ: ap-south-1b<br>CIDR: 10.0.4.0/24</div>
+            </div>
+        </div>
+        <div class="code-block">
+            <div class="code-label">CLI (example for 2 subnets)</div>
+<pre><span class="comment"># Public Subnet A</span>
+aws ec2 create-subnet --vpc-id vpc-xxxxx --cidr-block 10.0.1.0/24 \
+  --availability-zone ap-south-1a \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Public-Subnet-A}]'
+
+<span class="comment"># Private Subnet A</span>
+aws ec2 create-subnet --vpc-id vpc-xxxxx --cidr-block 10.0.2.0/24 \
+  --availability-zone ap-south-1a \
+  --tag-specifications 'ResourceType=subnet,Tags=[{Key=Name,Value=Private-Subnet-A}]'</pre>
+        </div>
+        <div class="tip info"><span class="icon">💡</span><span><strong>Explain:</strong> /24 = 256 IPs, AWS reserves 5, so 251 usable. Always use 2+ AZs for HA.</span></div>
+    </div>
+
+    <!-- ── STEP 4 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 4</span>
+        <h3>Allocate Elastic IPs for NAT Gateways</h3>
+        <p class="where">EC2 Dashboard → Elastic IPs → Allocate Elastic IP address (×2)</p>
+        <ul>
+            <li>Name: <code>NAT-GW-A-EIP</code></li>
+            <li>Name: <code>NAT-GW-B-EIP</code></li>
+        </ul>
+        <div class="code-block">
+            <div class="code-label">CLI</div>
+<pre>aws ec2 allocate-address --domain vpc \
+  --tag-specifications 'ResourceType=elastic-ip,Tags=[{Key=Name,Value=NAT-GW-A-EIP}]'
+
+aws ec2 allocate-address --domain vpc \
+  --tag-specifications 'ResourceType=elastic-ip,Tags=[{Key=Name,Value=NAT-GW-B-EIP}]'</pre>
+        </div>
+        <div class="tip warn"><span class="icon">⚠️</span><span>Unused EIPs cost ~$3.65/month. Release them after the demo.</span></div>
+    </div>
+
+    <!-- ── STEP 5 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 5</span>
+        <h3>Create NAT Gateways (One per AZ)</h3>
+        <p class="where">VPC Dashboard → NAT Gateways → Create NAT Gateway</p>
+        <table class="settings">
+            <thead><tr><th style="background:var(--surface-2)">Setting</th><th style="background:var(--surface-2)">NAT-GW-A</th><th style="background:var(--surface-2)">NAT-GW-B</th></tr></thead>
+            <tr><td>Subnet</td><td><strong>Public-Subnet-A</strong></td><td><strong>Public-Subnet-B</strong></td></tr>
+            <tr><td>Elastic IP</td><td>NAT-GW-A-EIP</td><td>NAT-GW-B-EIP</td></tr>
+        </table>
+        <p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0;">Wait for status: <strong>Pending → Available</strong> (~1–2 min)</p>
+        <div class="tip danger"><span class="icon">🔴</span><span><strong>Critical:</strong> NAT Gateway MUST be in a <strong>public</strong> subnet. One per AZ = High Availability.</span></div>
+    </div>
+
+    <!-- ── STEP 6 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 6</span>
+        <h3>Create &amp; Configure Route Tables</h3>
+        <p class="where">VPC Dashboard → Route Tables → Create Route Table</p>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--green);">Public-RTB</h4>
+        <table class="settings">
+            <tr><td>Destination</td><td>Target</td></tr>
+            <tr><td><code>10.0.0.0/16</code></td><td>local (auto)</td></tr>
+            <tr><td><code>0.0.0.0/0</code></td><td><strong>Production-IGW</strong></td></tr>
+        </table>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--purple);">Private-RTB-A</h4>
+        <table class="settings">
+            <tr><td>Destination</td><td>Target</td></tr>
+            <tr><td><code>10.0.0.0/16</code></td><td>local (auto)</td></tr>
+            <tr><td><code>0.0.0.0/0</code></td><td><strong>NAT-GW-A</strong></td></tr>
+        </table>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--purple);">Private-RTB-B</h4>
+        <table class="settings">
+            <tr><td>Destination</td><td>Target</td></tr>
+            <tr><td><code>10.0.0.0/16</code></td><td>local (auto)</td></tr>
+            <tr><td><code>0.0.0.0/0</code></td><td><strong>NAT-GW-B</strong></td></tr>
+        </table>
+
+        <div class="tip info"><span class="icon">💡</span><span><strong>Explain:</strong> <code>0.0.0.0/0</code> = "all traffic not matching other routes". Public → IGW, Private → NAT.</span></div>
+    </div>
+
+    <!-- ── STEP 7 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 7</span>
+        <h3>Associate Subnets with Route Tables</h3>
+        <p class="where">Select Route Table → Subnet Associations → Edit</p>
+        <table class="settings">
+            <tr><td><strong>Public-RTB</strong></td><td>Public-Subnet-A + Public-Subnet-B</td></tr>
+            <tr><td><strong>Private-RTB-A</strong></td><td>Private-Subnet-A</td></tr>
+            <tr><td><strong>Private-RTB-B</strong></td><td>Private-Subnet-B</td></tr>
+        </table>
+        <div class="tip info"><span class="icon">💡</span><span>Unassociated subnets use the Main Route Table (no IGW = private by default).</span></div>
+    </div>
+
+    <!-- ── STEP 8 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 8</span>
+        <h3>Enable Auto-Assign Public IP</h3>
+        <p class="where">VPC → Subnets → Select public subnet → Actions → Edit subnet settings</p>
+        <ul>
+            <li>✅ Enable auto-assign public IPv4 on <strong>Public-Subnet-A</strong></li>
+            <li>✅ Enable auto-assign public IPv4 on <strong>Public-Subnet-B</strong></li>
+        </ul>
+        <div class="tip info"><span class="icon">💡</span><span>Without this, EC2 in public subnets won't get public IPs and can't be reached from internet.</span></div>
+    </div>
+
+    <!-- ── STEP 9 ──────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 9</span>
+        <h3>Create Security Groups</h3>
+        <p class="where">VPC Dashboard → Security Groups → Create security group</p>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--green);">Web-SG (for public instances)</h4>
+        <table class="settings">
+            <thead><tr><th style="background:var(--surface-2)">Type</th><th style="background:var(--surface-2)">Port</th><th style="background:var(--surface-2)">Source</th></tr></thead>
+            <tr><td>SSH</td><td>22</td><td>My IP</td></tr>
+            <tr><td>HTTP</td><td>80</td><td>0.0.0.0/0</td></tr>
+            <tr><td>HTTPS</td><td>443</td><td>0.0.0.0/0</td></tr>
+        </table>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--purple);">Private-SG (for private instances)</h4>
+        <table class="settings">
+            <thead><tr><th style="background:var(--surface-2)">Type</th><th style="background:var(--surface-2)">Port</th><th style="background:var(--surface-2)">Source</th></tr></thead>
+            <tr><td>SSH</td><td>22</td><td>Web-SG (select SG)</td></tr>
+            <tr><td>All ICMP</td><td>—</td><td>10.0.0.0/16</td></tr>
+        </table>
+    </div>
+
+    <!-- ── STEP 10 ─────────────────────────────── -->
+    <div class="step">
+        <span class="step-tag">STEP 10</span>
+        <h3>Launch EC2 Instances</h3>
+        <p class="where">EC2 → Launch Instances</p>
+
+        <h4 style="font-size:0.9rem;margin:0.75rem 0 0.4rem;color:var(--green);">Web-Server-Public</h4>
+        <table class="settings">
+            <tr><td>AMI</td><td>Amazon Linux 2023</td></tr>
+            <tr><td>Type</td><td>t2.micro (Free Tier)</td></tr>
+            <tr><td>VPC / Subnet</td><td>Production-VPC / Public-Subnet-A</td></tr>
+            <tr><td>Public IP</td><td>Enable</td></tr>
+            <tr><td>Security Group</td><td>Web-SG</td></tr>
+        </table>
+        <div class="code-block">
+            <div class="code-label">User Data</div>
+<pre>#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd &amp;&amp; systemctl enable httpd
+AZ=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
+echo "&lt;h1&gt;Web Server – Public Subnet&lt;/h1&gt;&lt;p&gt;AZ: $AZ&lt;/p&gt;" &gt; /var/www/html/index.html</pre>
+        </div>
+
+        <h4 style="font-size:0.9rem;margin:1rem 0 0.4rem;color:var(--purple);">App-Server-Private</h4>
+        <table class="settings">
+            <tr><td>AMI</td><td>Amazon Linux 2023</td></tr>
+            <tr><td>Type</td><td>t2.micro</td></tr>
+            <tr><td>VPC / Subnet</td><td>Production-VPC / Private-Subnet-A</td></tr>
+            <tr><td>Public IP</td><td><strong>Disable</strong></td></tr>
+            <tr><td>Security Group</td><td>Private-SG</td></tr>
+        </table>
+    </div>
+
+    <!-- ── TESTING ─────────────────────────────── -->
+    <div class="test">
+        <h2>🧪 Verify &amp; Test Everything</h2>
+
+        <div class="test-item">
+            <span class="test-icon">✅</span>
+            <div class="test-body">
+                <h4>Test 1 – Web Server Reachable</h4>
+                <p>Open browser → <code>http://&lt;PUBLIC_IP&gt;</code> → Should see "Web Server – Public Subnet"</p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <span class="test-icon">✅</span>
+            <div class="test-body">
+                <h4>Test 2 – SSH into Public Instance</h4>
+                <p><code>ssh -i "key.pem" ec2-user@&lt;PUBLIC_IP&gt;</code></p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <span class="test-icon">✅</span>
+            <div class="test-body">
+                <h4>Test 3 – Public Instance Has Internet</h4>
+                <p>Inside instance: <code>ping google.com -c 3</code> → proves IGW works</p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <span class="test-icon">✅</span>
+            <div class="test-body">
+                <h4>Test 4 – SSH to Private via Jump</h4>
+                <p><code>ssh -i "key.pem" -J ec2-user@&lt;PUBLIC_IP&gt; ec2-user@&lt;PRIVATE_IP&gt;</code></p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <span class="test-icon">✅</span>
+            <div class="test-body">
+                <h4>Test 5 – Private Has Outbound (NAT)</h4>
+                <p>Inside private: <code>curl https://ifconfig.me</code> → Should show NAT Gateway's Elastic IP</p>
+            </div>
+        </div>
+
+        <div class="test-item">
+            <span class="test-icon">❌</span>
+            <div class="test-body">
+                <h4>Test 6 – Private NOT Directly Reachable</h4>
+                <p>From laptop: <code>ssh ec2-user@&lt;PRIVATE_IP&gt;</code> → Should <strong>timeout</strong> (proves isolation)</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── TROUBLESHOOTING ─────────────────────── -->
+    <div class="troubleshoot">
+        <h2>🔧 Troubleshooting</h2>
+
+        <details>
+            <summary>Public instance can't reach internet</summary>
+            <div class="content">
+                <ul>
+                    <li>Instance has a public IP?</li>
+                    <li>Security Group allows outbound?</li>
+                    <li>Route Table has <code>0.0.0.0/0 → IGW</code>?</li>
+                    <li>IGW is attached to the VPC?</li>
+                    <li>Subnet is associated with the correct Route Table?</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>Private instance can't reach internet</summary>
+            <div class="content">
+                <ul>
+                    <li>Route Table has <code>0.0.0.0/0 → NAT Gateway</code>?</li>
+                    <li>NAT Gateway status is <strong>Available</strong>?</li>
+                    <li>NAT Gateway has an Elastic IP?</li>
+                    <li>NAT Gateway is in a <strong>public</strong> subnet?</li>
+                    <li>NAT's public subnet has route to IGW?</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>Can't SSH from public to private instance</summary>
+            <div class="content">
+                <ul>
+                    <li>Private-SG allows SSH (22) from <code>Web-SG</code>?</li>
+                    <li>Both instances in same VPC?</li>
+                    <li>Using correct private IP (10.0.x.x)?</li>
+                    <li>Key pair available on the public instance?</li>
+                </ul>
+            </div>
+        </details>
+    </div>
+
+    <!-- ── COST ────────────────────────────────── -->
+    <div class="cost-card">
+        <h2>💰 Cost Summary</h2>
+        <table class="cost">
+            <tr><td>VPC, IGW, Subnets, Route Tables, SGs</td><td class="free">Free</td></tr>
+            <tr><td>NAT Gateway (×2)</td><td class="paid">~$32/month each</td></tr>
+            <tr><td>NAT Data Transfer</td><td class="paid">$0.045/GB</td></tr>
+            <tr><td>Elastic IP (associated)</td><td class="free">Free</td></tr>
+            <tr><td>Elastic IP (unassociated)</td><td class="paid">~$3.65/month</td></tr>
+            <tr><td>EC2 t2.micro</td><td class="free">Free Tier</td></tr>
+        </table>
+        <div class="tip danger" style="margin-top:1rem"><span class="icon">⚠️</span><span><strong>After demo:</strong> Delete NAT Gateways &amp; release Elastic IPs to avoid charges!</span></div>
+    </div>
+
+    <!-- ── CLEANUP ─────────────────────────────── -->
+    <div class="cost-card">
+        <h2>🧹 Cleanup Order</h2>
+        <ol style="padding-left:1.5rem;">
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Terminate EC2 instances</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Delete NAT Gateways (wait ~2 min for Deleted status)</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Release Elastic IPs</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Delete Subnets</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Delete custom Route Tables</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Detach &amp; Delete Internet Gateway</li>
+            <li style="font-size:0.88rem;color:var(--text-muted);margin-bottom:0.3rem;">Delete VPC</li>
+        </ol>
+    </div>
+
+</div>
+
+<div class="footer">
+    <strong>Nimbus DevOps Training</strong> · AWS VPC Demo · Good luck! ☁️
+</div>
+
+</body>
+</html>

@@ -1,0 +1,140 @@
+https://developer.hashicorp.com/terraform/downloads
+
+
+https://registry.terraform.io/?product_intent=terraform
+
+
+https://developer.hashicorp.com/terraform/cli/commands
+
+
+IAC - Infrastructure as code
+
+applicabel for cloud and on-perm 
+
+
+hasi corp configuration language(HCL)
+
+resource "aws_ec2_instace" "tes"{
+
+}
+
+
+
+files in terraform
+	main.tf
+	variables.tf	
+	output.tf
+	version.tf
+
+types of variables
+	* variables.tf
+	* export TF_VAR_FILENAME
+	* terrfaorm.tfvars
+	
+
+terrforn stats:
+	terraform init
+	terraform plan
+	terraform apply
+	terraform show
+	terraform update
+	terraform destory
+
+
+life cycle rules
+	create_before_destory
+	prevent_destory
+	ignore_changes
+
+terraform statefile -- terraform.tfstate
+		state locking
+
+
+terrform commands
+	terraform taint
+	terraform untaint
+	terraform fmt
+	terraform show
+	terraform output
+
+
+======================================================
+s3
+======================================================
+
+provider "aws" {
+    region = "ap-south-1"
+    access_key = ""
+    secret_key = ""
+}
+resource "aws_s3_bucket" "finance" {
+    bucket = "terraform-finance-1234"
+    tags = {
+        Description = "finance and payroll"
+    }
+}
+resource "aws_s3_bucket_object" "finance-2020" {
+    content = "/home/ubuntu/finance-2023.doc"
+    key = "finance-2023.doc"
+    bucket = aws_s3_bucket.finance.id
+}
+data "aws_iam_group" "finance-data" {
+    group_name = "finance-analysts"
+}
+resource "aws_s3_bucket_policy" "finance-policy" {
+    bucket = aws_s3_bucket.finance.id
+    policy = <<EOF
+    {
+        "version": "2012-10-17",
+        "statement": [
+            {
+                "Action": "*",
+                "Effect": "Allow",
+                "Resource": "arn:aws:s3:::${aws_s3_bucket.finance.id}/*",
+                "Prinicple": {
+                    "AWS":[
+                        "${data.aws_iam_group.finance-data.arn}"
+                    ]
+                }
+            }
+        ]
+    }
+    EOF
+}
+
+
+=================================================================================
+EC2
+=================================================================================
+
+provider "aws" {
+    region = "us-east-1"
+    access_key = ""
+    secret_key = ""
+}
+resource "aws_instance" "webserver" {
+    ami             = "ami-0a6b2839d44d781b2"
+    instance_type   = "t2.micro"
+    tags = {
+        Name        = "webserver"
+        Description = "an nginx webserve on ubuntu"
+    }
+    key_name = aws_key_pair.web.id
+    vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
+}
+resource "aws_key_pair" "web" {
+    public_key = file("/root/.ssh/id_rsa.pub")
+}
+resource "aws_security_group" "ssh-access" {
+    name        = "ssh-access"
+    description = "Allow ssh accesss from internet"
+    ingress {
+        from_port   = 22
+        to_port     = 22
+        protocol    = "tcp"
+        cidr_blocks = ["172.168.1.0/32"]
+    }
+}
+output publicip {
+    value           = aws_instance.webserver.public_ip
+}

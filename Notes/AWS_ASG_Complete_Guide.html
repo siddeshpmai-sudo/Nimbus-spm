@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Auto Scaling Groups (ASG) – Complete Teaching Guide | 2-Hour Session</title>
+    <style>
+        :root {
+            --primary: #FF9900;
+            --primary-dark: #c77b00;
+            --secondary: #232F3E;
+            --accent: #1A9C3E;
+            --info: #2563EB;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --light-bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --border: #E2E8F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --code-bg: #1e1e2e;
+            --code-text: #cdd6f4;
+            --tag-green: #DCFCE7;
+            --tag-green-text: #166534;
+            --tag-blue: #DBEAFE;
+            --tag-blue-text: #1E40AF;
+            --tag-orange: #FEF3C7;
+            --tag-orange-text: #92400E;
+            --tag-red: #FEE2E2;
+            --tag-red-text: #991B1B;
+            --tag-purple: #F3E8FF;
+            --tag-purple-text: #6B21A8;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; line-height: 1.7; color: var(--text-main); background: var(--light-bg); padding: 0 20px 60px; }
+        .hero { background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #1a6b3a 100%); color: white; text-align: center; padding: 60px 40px 50px; margin: 0 -20px 40px; }
+        .hero-badge { display: inline-block; background: rgba(255,153,0,0.25); border: 1px solid rgba(255,153,0,0.5); color: var(--primary); padding: 5px 16px; border-radius: 50px; font-size: 0.8em; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 18px; }
+        .hero h1 { font-size: 2.8em; font-weight: 800; margin-bottom: 12px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.1em; opacity: 0.85; max-width: 650px; margin: 0 auto 24px; }
+        .hero-meta { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; }
+        .hero-meta span { background: rgba(255,255,255,0.12); padding: 6px 18px; border-radius: 6px; font-size: 0.88em; font-weight: 600; }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .timetable { background: var(--card-bg); border-radius: 12px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.08); margin-bottom: 40px; }
+        .timetable-header { background: var(--secondary); color: white; padding: 20px 28px; font-size: 1.1em; font-weight: 700; }
+        .timetable table { width: 100%; border-collapse: collapse; }
+        .timetable th { background: #f1f5f9; color: var(--text-muted); text-transform: uppercase; font-size: 0.75em; letter-spacing: 1px; padding: 12px 20px; text-align: left; border-bottom: 1px solid var(--border); }
+        .timetable td { padding: 14px 20px; border-bottom: 1px solid var(--border); font-size: 0.95em; }
+        .timetable tr:last-child td { border-bottom: none; }
+        .timetable tr:hover td { background: #fafafa; }
+        .time-badge { background: var(--tag-orange); color: var(--tag-orange-text); padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.82em; white-space: nowrap; }
+        .topic-badge { background: var(--tag-blue); color: var(--tag-blue-text); padding: 2px 8px; border-radius: 4px; font-size: 0.8em; font-weight: 600; }
+        .section-heading { display: flex; align-items: center; gap: 14px; margin: 50px 0 24px; }
+        .section-icon { width: 50px; height: 50px; border-radius: 12px; background: linear-gradient(135deg, #1A9C3E, #0f6b28); display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0; box-shadow: 0 4px 12px rgba(26,156,62,0.35); }
+        .section-heading h2 { font-size: 1.7em; font-weight: 800; color: var(--secondary); }
+        .section-time { font-size: 0.78em; font-weight: 600; background: var(--tag-orange); color: var(--tag-orange-text); padding: 3px 10px; border-radius: 20px; margin-left: 10px; }
+        .card { background: var(--card-bg); border-radius: 12px; padding: 28px; margin-bottom: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+        .card h3 { font-size: 1.15em; font-weight: 700; color: var(--secondary); margin-bottom: 14px; }
+        .card h4 { font-size: 1em; font-weight: 700; color: var(--info); margin: 18px 0 8px; }
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        @media(max-width: 768px) { .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; } .hero h1 { font-size: 1.9em; } }
+        .concept-card { background: var(--card-bg); border-radius: 10px; padding: 22px; border: 1px solid var(--border); box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: transform 0.2s, box-shadow 0.2s; }
+        .concept-card:hover { transform: translateY(-3px); box-shadow: 0 8px 24px rgba(0,0,0,0.1); }
+        .concept-card .icon { font-size: 2em; margin-bottom: 10px; }
+        .concept-card h3 { font-size: 1.05em; font-weight: 700; color: var(--secondary); margin-bottom: 8px; }
+        .concept-card p { font-size: 0.9em; color: var(--text-muted); line-height: 1.6; }
+        .concept-card .tag { display: inline-block; font-size: 0.72em; font-weight: 700; padding: 2px 9px; border-radius: 20px; margin-top: 10px; }
+        .code-block { background: var(--code-bg); color: var(--code-text); padding: 20px 24px; border-radius: 10px; overflow-x: auto; font-family: 'Consolas', 'Cascadia Code', 'Courier New', monospace; font-size: 0.88em; line-height: 1.7; margin: 14px 0; white-space: pre; }
+        .code-label { background: #313244; color: #cba6f7; font-size: 0.72em; font-weight: 700; padding: 4px 12px; border-radius: 6px 6px 0 0; display: inline-block; letter-spacing: 0.5px; }
+        .callout { padding: 16px 20px; border-radius: 8px; margin: 16px 0; font-size: 0.93em; display: flex; gap: 12px; align-items: flex-start; }
+        .callout .icon { font-size: 1.2em; flex-shrink: 0; margin-top: 1px; }
+        .callout-info { background: var(--tag-blue); border-left: 4px solid var(--info); }
+        .callout-warning { background: var(--tag-orange); border-left: 4px solid var(--warning); }
+        .callout-success { background: var(--tag-green); border-left: 4px solid var(--accent); }
+        .callout-danger { background: var(--tag-red); border-left: 4px solid var(--danger); }
+        .callout-purple { background: var(--tag-purple); border-left: 4px solid #7C3AED; }
+        .analogy { background: linear-gradient(135deg, #f0fdf4, #dcfce7); border: 1px solid #86efac; border-radius: 10px; padding: 20px 24px; margin: 16px 0; }
+        .analogy .analogy-title { font-weight: 800; color: var(--accent); font-size: 0.85em; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+        .compare-table { width: 100%; border-collapse: collapse; font-size: 0.9em; margin: 16px 0; }
+        .compare-table th { background: var(--secondary); color: white; padding: 12px 16px; text-align: left; }
+        .compare-table td { padding: 11px 16px; border-bottom: 1px solid var(--border); vertical-align: top; }
+        .compare-table tr:nth-child(even) td { background: #f8fafc; }
+        .compare-table tr:hover td { background: #f1f5f9; }
+        .compare-table td:first-child { font-weight: 700; color: var(--secondary); }
+        .checklist { list-style: none; }
+        .checklist li { padding: 5px 0; display: flex; gap: 8px; align-items: flex-start; }
+        .checklist li::before { content: "✅"; flex-shrink: 0; }
+        .step-item { display: flex; gap: 16px; margin-bottom: 16px; align-items: flex-start; }
+        .step-num { background: var(--accent); color: white; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85em; flex-shrink: 0; }
+        .step-content { padding-top: 4px; }
+        .step-content strong { display: block; margin-bottom: 3px; }
+        .flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 16px 0; }
+        .flow-box { background: var(--secondary); color: white; padding: 8px 16px; border-radius: 8px; font-size: 0.85em; font-weight: 600; }
+        .flow-box.green { background: var(--accent); }
+        .flow-box.blue { background: var(--info); }
+        .flow-box.orange { background: var(--primary-dark); }
+        .flow-box.red { background: var(--danger); }
+        .flow-arrow { color: var(--text-muted); font-size: 1.2em; font-weight: 700; }
+        .lab { background: linear-gradient(135deg, #1e1e2e, #181825); border-radius: 12px; padding: 28px; margin-bottom: 24px; color: #cdd6f4; }
+        .lab-title { color: #cba6f7; font-weight: 800; font-size: 1.05em; margin-bottom: 6px; }
+        .lab-desc { color: #a6adc8; font-size: 0.88em; margin-bottom: 16px; }
+        .lab ol { padding-left: 20px; color: #cdd6f4; font-size: 0.9em; line-height: 1.9; }
+        .lab code { background: #313244; color: #f9e2af; padding: 1px 6px; border-radius: 4px; font-family: monospace; }
+        .divider { border: none; height: 2px; background: linear-gradient(to right, transparent, var(--border), transparent); margin: 40px 0; }
+        .summary-card { background: linear-gradient(135deg, var(--secondary), #1a3a28); color: white; border-radius: 12px; padding: 32px; margin-bottom: 24px; }
+        .summary-card h2 { color: var(--primary); margin-bottom: 16px; font-size: 1.4em; }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+        .summary-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 12px 16px; border: 1px solid rgba(255,255,255,0.1); }
+        .summary-item .si-label { font-size: 0.72em; opacity: 0.6; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .summary-item .si-value { font-weight: 700; font-size: 0.95em; }
+        .arch-diagram { background: #1e1e2e; color: #89b4fa; border-radius: 10px; padding: 24px; font-family: monospace; font-size: 0.85em; line-height: 1.8; overflow-x: auto; white-space: pre; }
+        .scaling-viz { background: linear-gradient(135deg, #0f2027, #203a43); border-radius: 12px; padding: 28px; margin: 16px 0; color: white; font-family: monospace; }
+        .scaling-viz h4 { color: var(--primary); margin-bottom: 16px; font-family: 'Segoe UI', sans-serif; }
+        .bar-row { display: flex; align-items: center; gap: 12px; margin: 8px 0; }
+        .bar-label { width: 80px; font-size: 0.8em; color: #a6adc8; text-align: right; }
+        .bar { height: 28px; border-radius: 4px; display: flex; align-items: center; padding-left: 8px; font-size: 0.78em; font-weight: 700; transition: width 0.3s; }
+        .bar.green { background: linear-gradient(90deg, #1A9C3E, #22c55e); color: white; }
+        .bar.orange { background: linear-gradient(90deg, #c77b00, #FF9900); color: white; }
+        .bar.red { background: linear-gradient(90deg, #991b1b, #dc2626); color: white; }
+        .policy-card { border-radius: 10px; padding: 20px; border: 2px solid; margin-bottom: 16px; }
+        .policy-card.target { border-color: #2563EB; background: #eff6ff; }
+        .policy-card.simple { border-color: #1A9C3E; background: #f0fdf4; }
+        .policy-card.step { border-color: #D97706; background: #fffbeb; }
+        .policy-card.scheduled { border-color: #7C3AED; background: #faf5ff; }
+        .policy-card h3 { margin-bottom: 8px; font-size: 1em; }
+        .policy-card.target h3 { color: #2563EB; }
+        .policy-card.simple h3 { color: #1A9C3E; }
+        .policy-card.step h3 { color: #D97706; }
+        .policy-card.scheduled h3 { color: #7C3AED; }
+        footer { text-align: center; padding: 30px; color: var(--text-muted); font-size: 0.85em; border-top: 1px solid var(--border); margin-top: 60px; }
+        footer span { color: var(--primary); font-weight: 700; }
+    </style>
+</head>
+<body>
+
+<div class="hero">
+    <div class="hero-badge">☁️ AWS Teaching Series</div>
+    <h1>AWS <span>Auto Scaling Groups</span></h1>
+    <p>Complete 2-Hour Teaching Guide — Launch Templates · Scaling Policies · Health Checks · ALB Integration · Lifecycle Hooks · Best Practices</p>
+    <div class="hero-meta">
+        <span>⏱ Duration: 2 Hours</span>
+        <span>📚 Level: Beginner → Intermediate</span>
+        <span>🎯 Practical Labs Included</span>
+        <span>📅 August 29, 2026</span>
+    </div>
+</div>
+
+<div class="container">
+
+<!-- LESSON PLAN -->
+<div class="timetable">
+    <div class="timetable-header">📋 2-Hour Lesson Plan — Time Breakdown</div>
+    <table>
+        <thead><tr><th>Time Slot</th><th>Duration</th><th>Topic</th><th>Type</th></tr></thead>
+        <tbody>
+            <tr><td><span class="time-badge">0:00 – 0:10</span></td><td>10 min</td><td>Introduction — What is Auto Scaling? The Problem it Solves</td><td><span class="topic-badge">Theory</span></td></tr>
+            <tr><td><span class="time-badge">0:10 – 0:25</span></td><td>15 min</td><td>Launch Templates vs Launch Configurations — Deep Dive</td><td><span class="topic-badge">Theory + Demo</span></td></tr>
+            <tr><td><span class="time-badge">0:25 – 0:45</span></td><td>20 min</td><td>Creating an ASG — Min, Max, Desired, AZs, Health Checks</td><td><span class="topic-badge">Demo + Lab</span></td></tr>
+            <tr><td><span class="time-badge">0:45 – 1:10</span></td><td>25 min</td><td>Scaling Policies — Target Tracking, Step, Simple, Scheduled</td><td><span class="topic-badge">Theory + Lab</span></td></tr>
+            <tr><td><span class="time-badge">1:10 – 1:25</span></td><td>15 min</td><td>ASG + ALB Integration — Target Groups, Health Checks</td><td><span class="topic-badge">Demo</span></td></tr>
+            <tr><td><span class="time-badge">1:25 – 1:40</span></td><td>15 min</td><td>Lifecycle Hooks, Instance Warmup, Termination Policies</td><td><span class="topic-badge">Theory</span></td></tr>
+            <tr><td><span class="time-badge">1:40 – 1:55</span></td><td>15 min</td><td>Real-World Patterns, Cost Optimization, Best Practices</td><td><span class="topic-badge">Discussion</span></td></tr>
+            <tr><td><span class="time-badge">1:55 – 2:00</span></td><td>5 min</td><td>Q&amp;A, Recap, and Next Steps</td><td><span class="topic-badge">Q&amp;A</span></td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- SECTION 1: INTRODUCTION -->
+<div class="section-heading">
+    <div class="section-icon">📈</div>
+    <div>
+        <h2>Section 1 — Introduction to AWS Auto Scaling <span class="section-time">0:00 – 0:10</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🤔 What Problem Does Auto Scaling Solve?</h3>
+    <p>Traditional infrastructure is provisioned for <em>peak load</em> — which means you are either over-provisioned (paying for capacity you don't use) or under-provisioned (your application crashes during traffic spikes).</p>
+    <br>
+    <div class="scaling-viz">
+        <h4>📊 The Capacity vs. Demand Problem</h4>
+        <div class="bar-row"><div class="bar-label">3 AM</div><div class="bar green" style="width:80px;">2 servers</div><div style="font-size:0.75em; color:#a6adc8;">Low traffic — paying for idle servers</div></div>
+        <div class="bar-row"><div class="bar-label">9 AM</div><div class="bar green" style="width:160px;">5 servers</div><div style="font-size:0.75em; color:#a6adc8;">Morning traffic — moderate load</div></div>
+        <div class="bar-row"><div class="bar-label">12 PM</div><div class="bar orange" style="width:280px;">9 servers</div><div style="font-size:0.75em; color:#a6adc8;">Lunch peak — high demand</div></div>
+        <div class="bar-row"><div class="bar-label">Flash Sale</div><div class="bar red" style="width:380px;">12 servers ⚡</div><div style="font-size:0.75em; color:#f38ba8;">Spike! ASG auto-scales OUT → no downtime</div></div>
+        <div class="bar-row"><div class="bar-label">After Sale</div><div class="bar green" style="width:120px;">4 servers ↓</div><div style="font-size:0.75em; color:#a6adc8;">ASG scales IN → saves cost automatically</div></div>
+    </div>
+    <br>
+    <div class="grid-3">
+        <div class="concept-card">
+            <div class="icon">📈</div>
+            <h3>Scale Out (Add)</h3>
+            <p>Automatically launch MORE EC2 instances when demand increases. Users never experience slowdowns or outages.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Horizontal Scale Out</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">📉</div>
+            <h3>Scale In (Remove)</h3>
+            <p>Automatically terminate EXTRA EC2 instances when demand drops. You only pay for what you actually use.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Cost Optimization</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🔁</div>
+            <h3>Self Healing</h3>
+            <p>Automatically replace unhealthy or terminated instances to maintain the desired number of healthy instances at all times.</p>
+            <span class="tag" style="background:var(--tag-orange); color:var(--tag-orange-text);">High Availability</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🏢 Real-World Analogy — The Taxi Fleet</h3>
+    <div class="analogy">
+        <div class="analogy-title">🚖 Think of ASG as a Smart Taxi Dispatcher</div>
+        <ul style="padding-left: 20px; line-height: 2.2;">
+            <li><strong>ASG</strong> = The fleet management system (dispatcher)</li>
+            <li><strong>EC2 Instances</strong> = The individual taxi cabs</li>
+            <li><strong>Launch Template</strong> = The standard taxi specification (model, equipment, color)</li>
+            <li><strong>Min Capacity</strong> = Always keep at least N taxis available (even at 3 AM)</li>
+            <li><strong>Max Capacity</strong> = Never operate more than N taxis (company limit)</li>
+            <li><strong>Desired Capacity</strong> = How many taxis you want RIGHT NOW</li>
+            <li><strong>Scaling Policy</strong> = The rules — "if wait time &gt; 5 min, dispatch 3 more taxis"</li>
+            <li><strong>Health Check</strong> = "Is this taxi responding to rides?" — Replace broken ones</li>
+            <li><strong>ALB</strong> = The central booking system that sends ride requests to available cabs</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🌟 Key ASG Features at a Glance</h3>
+    <div class="grid-4">
+        <div class="concept-card" style="text-align:center; padding:16px;">
+            <div class="icon">🆓</div>
+            <h3 style="font-size:0.9em;">Free Service</h3>
+            <p style="font-size:0.82em;">ASG itself is FREE. You only pay for the EC2 instances it launches.</p>
+        </div>
+        <div class="concept-card" style="text-align:center; padding:16px;">
+            <div class="icon">🌍</div>
+            <h3 style="font-size:0.9em;">Multi-AZ</h3>
+            <p style="font-size:0.82em;">Spread instances across multiple Availability Zones for resilience.</p>
+        </div>
+        <div class="concept-card" style="text-align:center; padding:16px;">
+            <div class="icon">🔗</div>
+            <h3 style="font-size:0.9em;">ALB Integration</h3>
+            <p style="font-size:0.82em;">Automatically register/deregister instances with ALB target groups.</p>
+        </div>
+        <div class="concept-card" style="text-align:center; padding:16px;">
+            <div class="icon">💰</div>
+            <h3 style="font-size:0.9em;">Cost Savings</h3>
+            <p style="font-size:0.82em;">Use Spot instances in ASG to cut EC2 costs by up to 90%.</p>
+        </div>
+    </div>
+</div>
+
+
+<!-- SECTION 2: LAUNCH TEMPLATES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">📋</div>
+    <div>
+        <h2>Section 2 — Launch Templates &amp; Launch Configurations <span class="section-time">0:10 – 0:25</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>📋 What is a Launch Template?</h3>
+    <p>A <strong>Launch Template (LT)</strong> is a blueprint that defines the EC2 instance configuration. When ASG needs to launch a new instance, it uses the Launch Template to know exactly what kind of instance to create.</p>
+    <br>
+    <h4>What a Launch Template Defines</h4>
+    <div class="grid-2">
+        <ul style="padding-left:20px; line-height:2.2; font-size:0.92em;">
+            <li><strong>AMI ID</strong> — Which OS image to use (Amazon Linux, Ubuntu, custom AMI)</li>
+            <li><strong>Instance Type</strong> — t3.micro, t3.medium, m5.large, etc.</li>
+            <li><strong>Key Pair</strong> — For SSH access to instances</li>
+            <li><strong>Security Groups</strong> — Firewall rules (port 80, 22, 443)</li>
+            <li><strong>IAM Instance Profile</strong> — Role for the EC2 instance</li>
+        </ul>
+        <ul style="padding-left:20px; line-height:2.2; font-size:0.92em;">
+            <li><strong>User Data Script</strong> — Bootstrap script run on first launch</li>
+            <li><strong>EBS Volume Configuration</strong> — Size, type (gp3, io2), encryption</li>
+            <li><strong>Network Interfaces</strong> — VPC, subnet settings</li>
+            <li><strong>Tags</strong> — Metadata applied to launched instances</li>
+            <li><strong>Placement Group</strong> — HPC cluster, spread, partition</li>
+        </ul>
+    </div>
+</div>
+
+<div class="card">
+    <h3>⚔️ Launch Template vs Launch Configuration — What's the Difference?</h3>
+    <table class="compare-table">
+        <thead><tr><th>Feature</th><th>Launch Template ✅ (Modern)</th><th>Launch Configuration ❌ (Legacy)</th></tr></thead>
+        <tbody>
+            <tr><td>AWS Recommendation</td><td>✅ Recommended — use this</td><td>❌ Deprecated — avoid</td></tr>
+            <tr><td>Versioning</td><td>✅ Supports multiple versions</td><td>❌ Immutable — must create new one</td></tr>
+            <tr><td>Spot + On-Demand Mix</td><td>✅ Supported (Mixed Instances Policy)</td><td>❌ Not supported</td></tr>
+            <tr><td>Multiple Instance Types</td><td>✅ Supported</td><td>❌ Only one instance type</td></tr>
+            <tr><td>T2/T3 Unlimited CPU</td><td>✅ Supported</td><td>❌ Not supported</td></tr>
+            <tr><td>Dedicated Hosts</td><td>✅ Supported</td><td>❌ Not supported</td></tr>
+            <tr><td>Latest EC2 Features</td><td>✅ Always supported</td><td>❌ Not updated anymore</td></tr>
+        </tbody>
+    </table>
+    <div class="callout callout-warning">
+        <div class="icon">⚠️</div>
+        <div><strong>Always use Launch Templates!</strong> AWS has stopped adding new features to Launch Configurations. For all new ASGs, use Launch Templates. Migrate existing Launch Configurations to Launch Templates as soon as possible.</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>💻 Creating a Launch Template via CLI</h3>
+    <div class="code-label">BASH — Launch Template Creation</div>
+    <div class="code-block">
+# ── Create a Launch Template ─────────────────────────────────────────
+aws ec2 create-launch-template \
+  --launch-template-name "WebServer-LT" \
+  --version-description "v1 - Amazon Linux 2 Web Server" \
+  --launch-template-data '{
+    "ImageId": "ami-0c02fb55956c7d316",
+    "InstanceType": "t3.micro",
+    "KeyName": "my-key-pair",
+    "SecurityGroupIds": ["sg-0123456789abcdef0"],
+    "IamInstanceProfile": {
+      "Name": "EC2-S3-ReadProfile"
+    },
+    "UserData": "IyEvYmluL2Jhc2gKeXVtIHVwZGF0ZSAteQp5dW0gaW5zdGFsbCAteSBodHRwZAoK",
+    "BlockDeviceMappings": [{
+      "DeviceName": "/dev/xvda",
+      "Ebs": {
+        "VolumeSize": 20,
+        "VolumeType": "gp3",
+        "DeleteOnTermination": true,
+        "Encrypted": true
+      }
+    }],
+    "TagSpecifications": [{
+      "ResourceType": "instance",
+      "Tags": [
+        {"Key": "Name", "Value": "WebServer-ASG"},
+        {"Key": "Environment", "Value": "Production"},
+        {"Key": "Project", "Value": "Nimbus"}
+      ]
+    }],
+    "Monitoring": {"Enabled": true}
+  }'
+
+# ── List Launch Templates ─────────────────────────────────────────────
+aws ec2 describe-launch-templates
+
+# ── Create a new version of existing template ─────────────────────────
+aws ec2 create-launch-template-version \
+  --launch-template-name "WebServer-LT" \
+  --source-version 1 \
+  --version-description "v2 - Updated instance type to t3.small" \
+  --launch-template-data '{"InstanceType": "t3.small"}'
+
+# ── Set default version ───────────────────────────────────────────────
+aws ec2 modify-launch-template \
+  --launch-template-name "WebServer-LT" \
+  --default-version 2</div>
+
+    <h4>User Data Script (Base64 Encoded in LT)</h4>
+    <div class="code-label">BASH — User Data Script (before encoding)</div>
+    <div class="code-block">
+#!/bin/bash
+# This runs automatically when each new ASG instance starts
+yum update -y
+yum install -y httpd
+
+# Start Apache web server
+systemctl start httpd
+systemctl enable httpd
+
+# Create a custom index page showing instance info
+TOKEN=$(curl -s -X PUT "http://169.254.169.254/latest/api/token" \
+  -H "X-aws-ec2-metadata-token-ttl-seconds: 21600")
+INSTANCE_ID=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/instance-id)
+AZ=$(curl -s -H "X-aws-ec2-metadata-token: $TOKEN" \
+  http://169.254.169.254/latest/meta-data/placement/availability-zone)
+
+echo "<h1>Hello from ASG Instance!</h1>
+<p>Instance ID: $INSTANCE_ID</p>
+<p>Availability Zone: $AZ</p>" > /var/www/html/index.html
+
+# To encode for Launch Template:
+# cat userdata.sh | base64</div>
+</div>
+
+
+<!-- SECTION 3: CREATING ASG -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">⚙️</div>
+    <div>
+        <h2>Section 3 — Creating an Auto Scaling Group <span class="section-time">0:25 – 0:45</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔢 The Three Capacity Settings — MIN, MAX, DESIRED</h3>
+    <div class="arch-diagram">
+ASG Capacity Settings Explained:
+
+  ┌──────────────────────────────────────────────────────────┐
+  │                                                          │
+  │  MIN = 2    ←── NEVER go below this                     │
+  │  MAX = 10   ←── NEVER go above this                     │
+  │  DESIRED = 4 ←── Target right now (adjustable by policies)│
+  │                                                          │
+  │  Scaling OUT: DESIRED increases (up to MAX)              │
+  │  Scaling IN:  DESIRED decreases (down to MIN)            │
+  │                                                          │
+  │  ▓▓ [Instance 1] AZ-1a   (always running: MIN=2)        │
+  │  ▓▓ [Instance 2] AZ-1b   (always running: MIN=2)        │
+  │  ▒▒ [Instance 3] AZ-1a   (DESIRED=4, currently up)      │
+  │  ▒▒ [Instance 4] AZ-1b   (DESIRED=4, currently up)      │
+  │  ░░ [Slot 5-10]           (available if MAX allows)      │
+  │                                                          │
+  └──────────────────────────────────────────────────────────┘
+
+Rule: MIN <= DESIRED <= MAX   (always true)</div>
+    <br>
+    <div class="grid-3">
+        <div class="concept-card">
+            <div class="icon">🔒</div>
+            <h3>Minimum Capacity</h3>
+            <p>The <strong>floor</strong>. ASG will never have fewer instances than this, even at zero demand. Set to the minimum needed for high availability (usually 2+ for prod).</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Safety Floor</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🔝</div>
+            <h3>Maximum Capacity</h3>
+            <p>The <strong>ceiling</strong>. ASG will never launch more instances than this. Prevents runaway scaling (and runaway costs!) from bugs or attacks.</p>
+            <span class="tag" style="background:var(--tag-red); color:var(--tag-red-text);">Cost Guard</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🎯</div>
+            <h3>Desired Capacity</h3>
+            <p>The <strong>target right now</strong>. ASG actively maintains this number. Scaling policies adjust desired capacity up or down within min/max limits.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Current Target</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🌍 Multi-AZ Configuration — High Availability by Design</h3>
+    <div class="grid-2">
+        <div>
+            <p>ASG distributes instances <strong>evenly across multiple Availability Zones</strong>. If one AZ goes down, instances in other AZs keep serving traffic.</p>
+            <br>
+            <div class="arch-diagram" style="font-size:0.78em;">
+Region: ap-south-1
+
+┌──────────────────────────────────────┐
+│  ASG: WebServer-ASG (Desired: 6)    │
+│                                      │
+│  ┌───────────────┐ ┌───────────────┐ ┌───────────────┐│
+│  │   AZ: 1a      │ │   AZ: 1b      │ │   AZ: 1c      ││
+│  │               │ │               │ │               ││
+│  │ [Instance 1] │ │ [Instance 2] │ │ [Instance 3] ││
+│  │ [Instance 4] │ │ [Instance 5] │ │ [Instance 6] ││
+│  │               │ │               │ │               ││
+│  └───────────────┘ └───────────────┘ └───────────────┘│
+│                                      │
+│  If AZ-1a FAILS → ASG launches      │
+│  2 more in AZ-1b and AZ-1c          │
+└──────────────────────────────────────┘</div>
+        </div>
+        <div>
+            <div class="callout callout-info">
+                <div class="icon">ℹ️</div>
+                <div><strong>AZ Rebalancing:</strong> When an AZ comes back online after an outage, ASG performs <em>rebalancing</em> — launching instances in the recovered AZ and terminating excess instances in overloaded AZs to maintain even distribution.</div>
+            </div>
+            <div class="callout callout-success">
+                <div class="icon">✅</div>
+                <div><strong>Best Practice:</strong> Always span at least 3 AZs for production workloads. Use private subnets for the ASG instances and let ALB in public subnets handle incoming traffic.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>💻 Creating an ASG via CLI</h3>
+    <div class="code-label">BASH — Complete ASG Creation</div>
+    <div class="code-block">
+# ── Create the Auto Scaling Group ────────────────────────────────────
+aws autoscaling create-auto-scaling-group \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --launch-template "LaunchTemplateName=WebServer-LT,Version=\$Latest" \
+  --min-size 2 \
+  --max-size 10 \
+  --desired-capacity 4 \
+  --vpc-zone-identifier "subnet-abc123,subnet-def456,subnet-ghi789" \
+  --health-check-type ELB \
+  --health-check-grace-period 300 \
+  --target-group-arns "arn:aws:elasticloadbalancing:us-east-1:123:targetgroup/my-tg/abc123" \
+  --tags "Key=Name,Value=WebServer-ASG,PropagateAtLaunch=true" \
+         "Key=Environment,Value=Production,PropagateAtLaunch=true"
+
+# ── Describe the ASG ──────────────────────────────────────────────────
+aws autoscaling describe-auto-scaling-groups \
+  --auto-scaling-group-names "WebServer-ASG"
+
+# ── Manually adjust desired capacity ──────────────────────────────────
+aws autoscaling set-desired-capacity \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --desired-capacity 6
+
+# ── List all instances in the ASG ────────────────────────────────────
+aws autoscaling describe-auto-scaling-instances \
+  --query 'AutoScalingInstances[?AutoScalingGroupName==`WebServer-ASG`]'
+
+# ── Delete the ASG ────────────────────────────────────────────────────
+aws autoscaling delete-auto-scaling-group \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --force-delete   # Terminates all running instances first</div>
+</div>
+
+<div class="card">
+    <h3>🏥 Health Checks — How ASG Monitors Instance Health</h3>
+    <table class="compare-table">
+        <thead><tr><th>Health Check Type</th><th>What It Checks</th><th>When to Use</th><th>Frequency</th></tr></thead>
+        <tbody>
+            <tr><td>EC2 (Default)</td><td>Is the EC2 instance in "running" state? Are hardware/hypervisor checks passing?</td><td>Simple setups without a load balancer</td><td>Every ~5 minutes</td></tr>
+            <tr><td>ELB (ALB/NLB)</td><td>Is the instance passing the ALB health check endpoint? (e.g., HTTP 200 from /health)</td><td>Web applications with an ALB in front</td><td>Configurable (e.g., 30s)</td></tr>
+            <tr><td>Custom (VPC Lattice)</td><td>Custom health probe via VPC Lattice service</td><td>Service mesh architectures</td><td>Configurable</td></tr>
+        </tbody>
+    </table>
+    <br>
+    <div class="grid-2">
+        <div class="callout callout-info">
+            <div class="icon">ℹ️</div>
+            <div><strong>Health Check Grace Period:</strong> After a new instance launches, ASG waits this many seconds before starting health checks. Set it long enough for your app to fully start (e.g., 300 seconds for Spring Boot apps). Too short = instances killed before they're ready!</div>
+        </div>
+        <div class="callout callout-warning">
+            <div class="icon">⚠️</div>
+            <div><strong>Unhealthy Instance Flow:</strong> Instance fails health check → ASG marks it unhealthy → ASG launches a replacement → After replacement is healthy → Unhealthy instance is terminated automatically.</div>
+        </div>
+    </div>
+</div>
+
+
+<!-- SECTION 4: SCALING POLICIES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">📊</div>
+    <div>
+        <h2>Section 4 — Scaling Policies <span class="section-time">0:45 – 1:10</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎛️ Overview — The 4 Types of Scaling Policies</h3>
+    <div class="grid-2">
+        <div class="policy-card target">
+            <h3>🎯 1. Target Tracking Scaling</h3>
+            <p style="font-size:0.9em; color:#374151;">The <strong>easiest and most recommended</strong> policy. You set a target metric value and ASG automatically adjusts capacity to keep the metric at that target.</p>
+            <br>
+            <p style="font-size:0.85em;"><strong>Example:</strong> "Keep average CPU at 50%"</p>
+            <p style="font-size:0.85em;">ASG = Like a thermostat — it adds/removes capacity automatically to maintain the target.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text); margin-top:10px;">Recommended for most cases</span>
+        </div>
+        <div class="policy-card simple">
+            <h3>📶 2. Simple Scaling</h3>
+            <p style="font-size:0.9em; color:#374151;">A CloudWatch alarm triggers a single scaling action. After the action, there's a cooldown period before the next action can occur.</p>
+            <br>
+            <p style="font-size:0.85em;"><strong>Example:</strong> "If CPU &gt; 80% for 5 min, add 2 instances, cooldown 300s"</p>
+            <p style="font-size:0.85em;">Reactive and simple, but can be slow to respond during fast spikes.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text); margin-top:10px;">Simple / legacy workloads</span>
+        </div>
+        <div class="policy-card step">
+            <h3>📏 3. Step Scaling</h3>
+            <p style="font-size:0.9em; color:#374151;">Like simple scaling but smarter — scale by <strong>different amounts</strong> based on how much the metric is breached. No cooldown between steps.</p>
+            <br>
+            <p style="font-size:0.85em;"><strong>Example:</strong> CPU 70-80% → add 1, CPU 80-90% → add 3, CPU &gt;90% → add 5</p>
+            <p style="font-size:0.85em;">Responds more aggressively to severe breaches.</p>
+            <span class="tag" style="background:var(--tag-orange); color:var(--tag-orange-text); margin-top:10px;">Variable load patterns</span>
+        </div>
+        <div class="policy-card scheduled">
+            <h3>📅 4. Scheduled Scaling</h3>
+            <p style="font-size:0.9em; color:#374151;">Scale at <strong>specific dates and times</strong>. Use when you know in advance when load will increase or decrease.</p>
+            <br>
+            <p style="font-size:0.85em;"><strong>Example:</strong> "Every Monday 9 AM, scale to 10 instances. Every Friday 6 PM, scale down to 2"</p>
+            <p style="font-size:0.85em;">Perfect for predictable patterns — business hours, weekly reports, etc.</p>
+            <span class="tag" style="background:var(--tag-purple); color:var(--tag-purple-text); margin-top:10px;">Predictable schedules</span>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎯 Target Tracking Scaling — Deep Dive</h3>
+    <p>Target Tracking is like a cruise control system for your infrastructure. You set the speed (metric target), and ASG adjusts the "throttle" (instance count) automatically.</p>
+    <br>
+    <h4>Available Predefined Metrics</h4>
+    <table class="compare-table">
+        <thead><tr><th>Metric</th><th>Description</th><th>Typical Target</th><th>Use Case</th></tr></thead>
+        <tbody>
+            <tr><td>ASGAverageCPUUtilization</td><td>Average CPU % across all instances in the ASG</td><td>40–70%</td><td>CPU-intensive apps (web servers, APIs)</td></tr>
+            <tr><td>ASGAverageNetworkIn</td><td>Average network bytes received per instance</td><td>App-specific</td><td>Network-heavy apps (media streaming)</td></tr>
+            <tr><td>ASGAverageNetworkOut</td><td>Average network bytes sent per instance</td><td>App-specific</td><td>Content delivery, uploads</td></tr>
+            <tr><td>ALBRequestCountPerTarget</td><td>Requests per second per target in ALB Target Group</td><td>100–1000 req/s</td><td>Web apps with ALB in front</td></tr>
+        </tbody>
+    </table>
+    <div class="callout callout-info">
+        <div class="icon">💡</div>
+        <div>You can also use <strong>custom CloudWatch metrics</strong> with Target Tracking. For example, track SQS queue depth to scale workers, or a custom latency metric from your application.</div>
+    </div>
+    <br>
+    <div class="code-label">BASH — Create Target Tracking Policy</div>
+    <div class="code-block">
+# ── Target Tracking: Keep CPU at 50% ─────────────────────────────────
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --policy-name "CPU-Target-50-Percent" \
+  --policy-type TargetTrackingScaling \
+  --target-tracking-configuration '{
+    "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ASGAverageCPUUtilization"
+    },
+    "TargetValue": 50.0,
+    "ScaleInCooldown": 300,
+    "ScaleOutCooldown": 60,
+    "DisableScaleIn": false
+  }'
+
+# ── Target Tracking: ALB Request Count (500 requests/target) ──────────
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --policy-name "ALB-Request-Count-Policy" \
+  --policy-type TargetTrackingScaling \
+  --target-tracking-configuration '{
+    "PredefinedMetricSpecification": {
+      "PredefinedMetricType": "ALBRequestCountPerTarget",
+      "ResourceLabel": "app/my-alb/abc123/targetgroup/my-tg/def456"
+    },
+    "TargetValue": 500.0,
+    "ScaleOutCooldown": 60,
+    "ScaleInCooldown": 300
+  }'
+
+# ── Target Tracking: Custom Metric (SQS Queue Depth) ──────────────────
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name "Worker-ASG" \
+  --policy-name "SQS-Queue-Depth-Policy" \
+  --policy-type TargetTrackingScaling \
+  --target-tracking-configuration '{
+    "CustomizedMetricSpecification": {
+      "MetricName": "ApproximateNumberOfMessagesVisible",
+      "Namespace": "AWS/SQS",
+      "Dimensions": [{"Name": "QueueName", "Value": "my-job-queue"}],
+      "Statistic": "Average"
+    },
+    "TargetValue": 100.0
+  }'</div>
+</div>
+
+<div class="card">
+    <h3>📏 Step Scaling — Deep Dive</h3>
+    <div class="arch-diagram">
+Step Scaling Configuration Example:
+──────────────────────────────────────────────────────────────
+  SCALE OUT (Add instances when CPU is HIGH):
+  ┌─────────────────────────────┬────────────────────────────┐
+  │ Metric Breach               │ Action                     │
+  ├─────────────────────────────┼────────────────────────────┤
+  │ CPU >= 60% and < 70%        │ Add 1 instance             │
+  │ CPU >= 70% and < 85%        │ Add 2 instances            │
+  │ CPU >= 85%                  │ Add 4 instances (URGENT!)  │
+  └─────────────────────────────┴────────────────────────────┘
+
+  SCALE IN (Remove instances when CPU is LOW):
+  ┌─────────────────────────────┬────────────────────────────┐
+  │ Metric Breach               │ Action                     │
+  ├─────────────────────────────┼────────────────────────────┤
+  │ CPU <= 30% and > 20%        │ Remove 1 instance          │
+  │ CPU <= 20%                  │ Remove 2 instances         │
+  └─────────────────────────────┴────────────────────────────┘
+
+  Key: No cooldown between steps — responds faster!</div>
+    <br>
+    <div class="code-label">BASH — Step Scaling Policy</div>
+    <div class="code-block">
+# Step 1: Create a CloudWatch alarm for high CPU
+aws cloudwatch put-metric-alarm \
+  --alarm-name "WebServer-HighCPU" \
+  --metric-name CPUUtilization \
+  --namespace AWS/EC2 \
+  --statistic Average \
+  --period 60 \
+  --evaluation-periods 2 \
+  --threshold 60 \
+  --comparison-operator GreaterThanOrEqualToThreshold \
+  --dimensions Name=AutoScalingGroupName,Value=WebServer-ASG \
+  --alarm-actions "arn:aws:autoscaling:us-east-1:123:scalingPolicy:abc:autoScalingGroupName/WebServer-ASG:policyName/ScaleOut-Step"
+
+# Step 2: Create the Step Scaling Policy (Scale Out)
+aws autoscaling put-scaling-policy \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --policy-name "ScaleOut-Step" \
+  --policy-type StepScaling \
+  --adjustment-type ChangeInCapacity \
+  --step-adjustments '[
+    {"MetricIntervalLowerBound": 0,  "MetricIntervalUpperBound": 10, "ScalingAdjustment": 1},
+    {"MetricIntervalLowerBound": 10, "MetricIntervalUpperBound": 25, "ScalingAdjustment": 2},
+    {"MetricIntervalLowerBound": 25, "ScalingAdjustment": 4}
+  ]'</div>
+</div>
+
+<div class="card">
+    <h3>📅 Scheduled Scaling — Deep Dive</h3>
+    <div class="analogy">
+        <div class="analogy-title">🏢 Business Hours Example</div>
+        <p>An e-commerce company knows traffic follows a predictable pattern: high during business hours (9 AM–9 PM) and low overnight. Instead of waiting for auto-scaling to react, they <strong>pre-scale</strong> at scheduled times — faster response, guaranteed capacity.</p>
+    </div>
+    <br>
+    <div class="code-label">BASH — Scheduled Scaling Actions</div>
+    <div class="code-block">
+# ── Scale UP every Monday-Friday at 8:30 AM (before business opens) ──
+aws autoscaling put-scheduled-update-group-action \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --scheduled-action-name "Scale-Up-Business-Hours" \
+  --recurrence "30 3 * * 1-5" \
+  --min-size 4 \
+  --max-size 20 \
+  --desired-capacity 8
+
+# ── Scale DOWN every day at 10 PM (after business closes) ─────────────
+aws autoscaling put-scheduled-update-group-action \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --scheduled-action-name "Scale-Down-Overnight" \
+  --recurrence "30 16 * * *" \
+  --min-size 2 \
+  --max-size 6 \
+  --desired-capacity 2
+
+# ── One-time scale for a product launch event ──────────────────────────
+aws autoscaling put-scheduled-update-group-action \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --scheduled-action-name "ProductLaunch-Scale" \
+  --start-time "2026-09-01T00:00:00Z" \
+  --min-size 20 \
+  --desired-capacity 20 \
+  --max-size 50
+
+# Note: Times are in UTC. 
+# IST is UTC+5:30, so 8:30 AM IST = 03:00 UTC</div>
+</div>
+
+<div class="card">
+    <h3>❄️ Cooldown Periods — Preventing Thrashing</h3>
+    <p>A <strong>cooldown period</strong> is a pause after a scaling activity, during which ASG does not launch or terminate additional instances. This gives the system time to stabilize before another scaling action occurs.</p>
+    <br>
+    <div class="arch-diagram">
+Cooldown Visualization:
+─────────────────────────────────────────────────────────────
+
+TIME:  0s        60s       120s      180s      240s      300s
+       │         │         │         │         │         │
+       ▼         ▼         ▼         ▼         ▼         ▼
+CPU:   88% ──── 65% ──── 55% ──── 48% ──── 52% ──── 45%
+
+       ◀─Scale Out!─▶ ◀─── 300s Cooldown Period ───────▶ ◀─ OK to scale again
+
+Without cooldown: ASG would scale out MULTIPLE times during the spike!
+With cooldown:    One scale-out, then wait and observe — much more stable.
+
+Recommended Cooldown Values:
+  - Scale OUT cooldown: 60-120 seconds (respond fast to spikes)
+  - Scale IN  cooldown: 300-600 seconds (be conservative, don't scale in too fast)</div>
+</div>
+
+
+<!-- SECTION 5: ALB INTEGRATION -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🔗</div>
+    <div>
+        <h2>Section 5 — ASG + ALB Integration <span class="section-time">1:10 – 1:25</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔗 How ASG Works with Application Load Balancer</h3>
+    <p>ASG and ALB work together to provide a fully elastic, highly available architecture. ASG controls the fleet of EC2 instances, while ALB distributes traffic intelligently across them.</p>
+    <br>
+    <div class="arch-diagram">
+Internet Traffic Architecture with ASG + ALB:
+
+Internet Users
+      │
+      ▼
+┌─────────────────────────────────────────────────────────────┐
+│          Application Load Balancer (ALB)                    │
+│          Public Subnets  |  Multi-AZ  |  Port 80/443       │
+│                                                             │
+│  Listener: HTTP:80 → Redirect to HTTPS                     │
+│  Listener: HTTPS:443 → Forward to Target Group             │
+└─────────────────┬───────────────┬───────────────────────────┘
+                  │               │
+         ┌────────┘               └────────┐
+         ▼                                 ▼
+┌─────────────────┐               ┌─────────────────┐
+│   AZ: 1a        │               │   AZ: 1b        │
+│  Private Subnet │               │  Private Subnet │
+│                 │               │                 │
+│ [Instance 1] ←─┼─ Registered   │ [Instance 2] ←─┼─ Registered
+│ [Instance 3] ←─┼─ in Target    │ [Instance 4] ←─┼─ in Target
+│                 │   Group       │                 │   Group
+│ Launching...    │               │ Launching...    │
+│ [Instance 5] ──►│─ Registering  │ [Instance 6] ──►│─ Registering
+└─────────────────┘               └─────────────────┘
+
+  ↑ ASG auto-registers new instances with ALB Target Group
+  ↑ ASG auto-deregisters terminated instances before shutdown</div>
+    <br>
+    <div class="grid-2">
+        <div class="callout callout-success">
+            <div class="icon">✅</div>
+            <div><strong>Auto Registration:</strong> When ASG launches a new instance, it automatically registers it with the ALB Target Group. No manual intervention needed. The ALB starts sending traffic only after the health check passes.</div>
+        </div>
+        <div class="callout callout-info">
+            <div class="icon">ℹ️</div>
+            <div><strong>Connection Draining (Deregistration Delay):</strong> Before terminating an instance, ALB waits for existing connections to complete (default: 300 seconds). This ensures no requests are dropped during scale-in.</div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>💻 ASG + ALB Setup via CLI</h3>
+    <div class="code-label">BASH — Complete ALB + ASG Integration</div>
+    <div class="code-block">
+# ── Step 1: Create Target Group ───────────────────────────────────────
+aws elbv2 create-target-group \
+  --name "WebServer-TG" \
+  --protocol HTTP \
+  --port 80 \
+  --vpc-id "vpc-0abc123456" \
+  --health-check-protocol HTTP \
+  --health-check-path "/health" \
+  --health-check-interval-seconds 30 \
+  --health-check-timeout-seconds 5 \
+  --healthy-threshold-count 2 \
+  --unhealthy-threshold-count 3 \
+  --target-type instance
+
+# ── Step 2: Create ALB ────────────────────────────────────────────────
+aws elbv2 create-load-balancer \
+  --name "WebServer-ALB" \
+  --subnets subnet-public-1a subnet-public-1b \
+  --security-groups sg-alb-123 \
+  --scheme internet-facing \
+  --type application
+
+# ── Step 3: Create ALB Listener ───────────────────────────────────────
+aws elbv2 create-listener \
+  --load-balancer-arn arn:aws:elasticloadbalancing:...:loadbalancer/app/WebServer-ALB/... \
+  --protocol HTTP \
+  --port 80 \
+  --default-actions Type=forward,TargetGroupArn=arn:aws:...targetgroup/WebServer-TG/...
+
+# ── Step 4: Create ASG attached to Target Group ───────────────────────
+aws autoscaling create-auto-scaling-group \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --launch-template "LaunchTemplateName=WebServer-LT,Version=\$Latest" \
+  --min-size 2 \
+  --max-size 10 \
+  --desired-capacity 4 \
+  --vpc-zone-identifier "subnet-private-1a,subnet-private-1b" \
+  --target-group-arns "arn:aws:...targetgroup/WebServer-TG/..." \
+  --health-check-type ELB \
+  --health-check-grace-period 300
+
+# ── Set deregistration delay (connection draining) ────────────────────
+aws elbv2 modify-target-group-attributes \
+  --target-group-arn arn:aws:...targetgroup/WebServer-TG/... \
+  --attributes Key=deregistration_delay.timeout_seconds,Value=60</div>
+</div>
+
+
+<!-- SECTION 6: LIFECYCLE HOOKS -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🔄</div>
+    <div>
+        <h2>Section 6 — Lifecycle Hooks, Warmup &amp; Termination Policies <span class="section-time">1:25 – 1:40</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🔄 ASG Instance Lifecycle — Full State Machine</h3>
+    <div class="arch-diagram">
+Instance Launch Lifecycle:
+──────────────────────────────────────────────────────────────────
+
+  Pending ──────────────► Pending:Wait ──────────────► Pending:Proceed
+     │                        │                              │
+     │ (No hook)              │ (Lifecycle Hook active)      │
+     │                        │ Run: install agents,         │
+     │                        │ configure monitoring,        │
+     │                        │ pre-warm caches              │
+     │                        │                              │
+     └────────────────────────┴──────────────────────────────┘
+                                          │
+                                          ▼
+                                    InService ◄────── ALB health check passes
+                                          │
+                         ┌────────────────┘
+                         │ (Scale-in / health check failure)
+                         ▼
+  Terminating ──────► Terminating:Wait ──────────► Terminating:Proceed
+                          │                              │
+                          │ (Lifecycle Hook active)      │
+                          │ Run: drain connections,       │
+                          │ flush logs, deregister,       │
+                          │ backup state                  │
+                          │                              │
+                          └──────────────────────────────┘
+                                          │
+                                          ▼
+                                      Terminated</div>
+</div>
+
+<div class="card">
+    <h3>⚓ Lifecycle Hooks — Custom Actions During Launch/Termination</h3>
+    <p>Lifecycle Hooks <strong>pause</strong> the instance in a wait state, giving you time to run custom scripts or logic before the instance becomes active or gets terminated.</p>
+    <br>
+    <div class="grid-2">
+        <div class="concept-card">
+            <div class="icon">🚀</div>
+            <h3>Launch Hook (Pending:Wait)</h3>
+            <p>Run BEFORE instance starts serving traffic. Use to:</p>
+            <ul style="padding-left:16px; font-size:0.85em; line-height:1.9; margin-top:8px;">
+                <li>Install monitoring agents (Datadog, NewRelic)</li>
+                <li>Pull and warm up application caches</li>
+                <li>Register with service discovery (Consul)</li>
+                <li>Run security compliance checks</li>
+                <li>Pull latest config from Parameter Store</li>
+            </ul>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Max wait: 48 hours</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🛑</div>
+            <h3>Terminate Hook (Terminating:Wait)</h3>
+            <p>Run BEFORE instance is deleted. Use to:</p>
+            <ul style="padding-left:16px; font-size:0.85em; line-height:1.9; margin-top:8px;">
+                <li>Gracefully drain active connections</li>
+                <li>Flush application logs to S3</li>
+                <li>Deregister from service discovery</li>
+                <li>Backup in-memory state / session data</li>
+                <li>Send notifications to monitoring systems</li>
+            </ul>
+            <span class="tag" style="background:var(--tag-red); color:var(--tag-red-text);">Max wait: 48 hours</span>
+        </div>
+    </div>
+    <br>
+    <div class="code-label">BASH — Create Lifecycle Hook</div>
+    <div class="code-block">
+# ── Create a Launch Lifecycle Hook ────────────────────────────────────
+aws autoscaling put-lifecycle-hook \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --lifecycle-hook-name "install-agents-hook" \
+  --lifecycle-transition "autoscaling:EC2_INSTANCE_LAUNCHING" \
+  --default-result ABANDON \
+  --heartbeat-timeout 300 \
+  --notification-metadata '{"action": "install-monitoring-agent"}'
+
+# ── Create a Termination Lifecycle Hook ───────────────────────────────
+aws autoscaling put-lifecycle-hook \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --lifecycle-hook-name "drain-connections-hook" \
+  --lifecycle-transition "autoscaling:EC2_INSTANCE_TERMINATING" \
+  --default-result CONTINUE \
+  --heartbeat-timeout 120
+
+# ── Complete the hook from the instance (signal success) ──────────────
+aws autoscaling complete-lifecycle-action \
+  --auto-scaling-group-name "WebServer-ASG" \
+  --lifecycle-hook-name "install-agents-hook" \
+  --instance-id i-1234567890abcdef0 \
+  --lifecycle-action-result CONTINUE</div>
+</div>
+
+<div class="card">
+    <h3>🌡️ Instance Warmup Period</h3>
+    <p>The <strong>Instance Warmup</strong> period tells ASG how long to wait after launching a new instance before considering it for scaling metrics. During warmup, the new instance is excluded from scaling calculations.</p>
+    <br>
+    <div class="analogy">
+        <div class="analogy-title">☕ The New Hire Analogy</div>
+        <p>When a new developer joins the team, you don't immediately measure their productivity on Day 1. You give them a ramp-up period (warmup) to learn the codebase. Only after they're fully up to speed do you include them in team velocity metrics. ASG warmup works the same way — don't count new instances in metrics until they're ready.</p>
+    </div>
+    <div class="callout callout-warning" style="margin-top:16px;">
+        <div class="icon">⚠️</div>
+        <div><strong>Set warmup correctly!</strong> If warmup is too short, ASG may see high CPU from new instances that are still initializing and launch even MORE instances unnecessarily (a scaling "storm"). Default is 300s. Adjust based on your app's startup time.</div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🗑️ Termination Policies — Which Instance Gets Killed First?</h3>
+    <p>When ASG scales in, it must decide which instances to terminate. Termination policies control this selection order.</p>
+    <br>
+    <table class="compare-table">
+        <thead><tr><th>Policy</th><th>Behavior</th><th>Best For</th></tr></thead>
+        <tbody>
+            <tr><td>Default</td><td>AWS's built-in algorithm: balance AZs first, then use OldestLaunchTemplate, then OldestInstance</td><td>Most workloads</td></tr>
+            <tr><td>OldestInstance</td><td>Terminate the instance that has been running longest</td><td>When you want fresh instances regularly</td></tr>
+            <tr><td>NewestInstance</td><td>Terminate the most recently launched instance</td><td>Rolling back a bad deployment</td></tr>
+            <tr><td>OldestLaunchTemplate</td><td>Terminate instances using the oldest Launch Template version</td><td>After a template update — clean up old instances</td></tr>
+            <tr><td>ClosestToNextInstanceHour</td><td>Terminate instance closest to its next billing hour (saves money)</td><td>Cost-sensitive workloads</td></tr>
+            <tr><td>AllocationStrategy</td><td>Align with Spot allocation strategy to optimize cost/availability</td><td>Mixed On-Demand + Spot ASGs</td></tr>
+        </tbody>
+    </table>
+    <div class="callout callout-info" style="margin-top:16px;">
+        <div class="icon">ℹ️</div>
+        <div><strong>Instance Protection:</strong> You can mark specific instances as "protected from scale in" using <code>aws autoscaling set-instance-protection</code>. Useful for instances running long-running jobs that must complete before termination.</div>
+    </div>
+</div>
+
+
+<!-- SECTION 7: BEST PRACTICES -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">⭐</div>
+    <div>
+        <h2>Section 7 — Real-World Patterns &amp; Best Practices <span class="section-time">1:40 – 1:55</span></h2>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🏆 ASG Best Practices</h3>
+    <div class="grid-2">
+        <div>
+            <h4>🏗️ Architecture</h4>
+            <ul class="checklist" style="font-size:0.92em; line-height:2.2;">
+                <li>Span ASG across <strong>at least 3 AZs</strong> in production</li>
+                <li>Use <strong>Launch Templates</strong> — never Launch Configurations</li>
+                <li>Make instances <strong>stateless</strong> — store state in RDS/DynamoDB/S3</li>
+                <li>Use <strong>ALB health checks</strong> (not EC2) when behind a load balancer</li>
+                <li>Set a <strong>health check grace period</strong> longer than app startup time</li>
+                <li>Use <strong>private subnets</strong> for ASG instances, ALB in public subnets</li>
+                <li>Bake AMIs with pre-installed app (faster launch vs userdata)</li>
+            </ul>
+        </div>
+        <div>
+            <h4>💰 Cost Optimization</h4>
+            <ul class="checklist" style="font-size:0.92em; line-height:2.2;">
+                <li>Use <strong>Spot Instances</strong> in Mixed Instance Policy (up to 90% savings)</li>
+                <li>Set conservative scale-in cooldowns to avoid thrashing</li>
+                <li>Use <strong>Scheduled Scaling</strong> for predictable patterns</li>
+                <li>Use <strong>Target Tracking</strong> for automatic right-sizing</li>
+                <li>Enable <strong>detailed monitoring</strong> (1-min intervals) for faster scaling</li>
+                <li>Set appropriate <strong>minimum capacity</strong> — don't over-provision the floor</li>
+                <li>Use <strong>AWS Compute Optimizer</strong> for right-sizing recommendations</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🚀 Mixed Instances Policy — Spot + On-Demand</h3>
+    <p>Use a combination of On-Demand and Spot instances within a single ASG to optimize for cost while maintaining availability.</p>
+    <br>
+    <div class="arch-diagram">
+Mixed Instances Policy Example:
+─────────────────────────────────────────────────────────────────
+  ASG Config:
+  ├── On-Demand Base Capacity: 2  (always guaranteed, no interruptions)
+  ├── On-Demand Percentage: 20%   (of instances above base)
+  └── Spot Percentage: 80%        (cost savings! potentially interrupted)
+
+  Example with 10 total instances:
+  ├── 2 On-Demand instances (base)
+  ├── 2 On-Demand instances (20% of remaining 8)
+  └── 6 Spot instances      (80% of remaining 8) ← Up to 90% cheaper!
+
+  Multiple Instance Types (Spot Pool Diversity):
+  ├── t3.large        (primary)
+  ├── t3a.large       (alternative)
+  ├── m5.large        (alternative)
+  └── m5a.large       (alternative)
+  → If one Spot type is unavailable/interrupted, use another pool!</div>
+    <br>
+    <div class="code-label">BASH — Mixed Instance ASG</div>
+    <div class="code-block">
+aws autoscaling create-auto-scaling-group \
+  --auto-scaling-group-name "MixedInstance-ASG" \
+  --min-size 2 \
+  --max-size 20 \
+  --desired-capacity 6 \
+  --vpc-zone-identifier "subnet-1a,subnet-1b,subnet-1c" \
+  --mixed-instances-policy '{
+    "LaunchTemplate": {
+      "LaunchTemplateSpecification": {
+        "LaunchTemplateName": "WebServer-LT",
+        "Version": "$Latest"
+      },
+      "Overrides": [
+        {"InstanceType": "t3.large"},
+        {"InstanceType": "t3a.large"},
+        {"InstanceType": "m5.large"},
+        {"InstanceType": "m5a.large"}
+      ]
+    },
+    "InstancesDistribution": {
+      "OnDemandBaseCapacity": 2,
+      "OnDemandPercentageAboveBaseCapacity": 20,
+      "SpotAllocationStrategy": "capacity-optimized"
+    }
+  }'</div>
+</div>
+
+<div class="card">
+    <h3>🌍 Real-World Use Cases</h3>
+    <div class="grid-2">
+        <div class="concept-card">
+            <div class="icon">🛒</div>
+            <h3>E-Commerce Flash Sales</h3>
+            <p>Schedule scale-up 30 minutes before a flash sale starts. Use step scaling during the sale to handle unpredictable spike patterns. Scale back down automatically when sale ends. Estimated savings: 60% vs always-on peak capacity.</p>
+            <span class="tag" style="background:var(--tag-orange); color:var(--tag-orange-text);">Scheduled + Step</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🎬</div>
+            <h3>Video Processing Workers</h3>
+            <p>SQS queue depth drives scaling of EC2 video encoding workers. Workers pull jobs from SQS. Target tracking on queue depth — automatically process more videos as uploads increase. Scale to zero at night.</p>
+            <span class="tag" style="background:var(--tag-blue); color:var(--tag-blue-text);">Target Tracking + SQS</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🌐</div>
+            <h3>Global Web Application</h3>
+            <p>Multi-region ASG deployment. CloudFront CDN in front. ALB per region. Target tracking on CPU + ALB request count. Lifecycle hooks install security agents on launch. 99.99% uptime achieved.</p>
+            <span class="tag" style="background:var(--tag-green); color:var(--tag-green-text);">Multi-Region HA</span>
+        </div>
+        <div class="concept-card">
+            <div class="icon">🤖</div>
+            <h3>ML Training Cluster</h3>
+            <p>Spot instances for GPU training jobs (90% cheaper). Lifecycle terminate hook saves model checkpoints to S3 before shutdown. Jobs resume from checkpoint if Spot is interrupted. 85% cost reduction.</p>
+            <span class="tag" style="background:var(--tag-purple); color:var(--tag-purple-text);">Spot + Lifecycle Hooks</span>
+        </div>
+    </div>
+</div>
+
+
+<!-- HANDS-ON LABS -->
+<hr class="divider">
+<div class="section-heading">
+    <div class="section-icon">🧪</div>
+    <div><h2>Hands-On Lab Exercises</h2></div>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 1 — Create a Launch Template and Basic ASG</div>
+    <div class="lab-desc">⏱ 15 minutes | Beginner | Objective: Understand the core ASG workflow end-to-end</div>
+    <ol>
+        <li>Go to <code>EC2 → Launch Templates → Create Launch Template</code></li>
+        <li>Name it <code>Lab-WebServer-LT</code>. Select Amazon Linux 2 AMI, t2.micro, select your key pair</li>
+        <li>In User Data, paste: <code>#!/bin/bash; yum update -y; yum install -y httpd; echo "Hello from ASG!" &gt; /var/www/html/index.html; systemctl start httpd; systemctl enable httpd</code></li>
+        <li>Ensure port 80 is allowed in the security group</li>
+        <li>Go to <code>EC2 → Auto Scaling Groups → Create Auto Scaling group</code></li>
+        <li>Select <code>Lab-WebServer-LT</code>. Choose your VPC and at least 2 subnets (different AZs)</li>
+        <li>Set Min=1, Max=4, Desired=2. No scaling policy for now.</li>
+        <li>Wait 2-3 minutes → Verify 2 instances appear in EC2 Console</li>
+        <li>Terminate one instance manually → Watch ASG automatically launch a replacement!</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 2 — Add Target Tracking Scaling Policy</div>
+    <div class="lab-desc">⏱ 15 minutes | Intermediate | Objective: Watch ASG auto-scale based on CPU</div>
+    <ol>
+        <li>Select your ASG from Lab 1 → go to <code>Automatic Scaling</code> tab</li>
+        <li>Click <code>Create dynamic scaling policy</code> → Choose <code>Target tracking scaling</code></li>
+        <li>Metric type: <code>Average CPU utilization</code>. Target value: <code>30</code> (low for demo purposes)</li>
+        <li>Enable detailed EC2 monitoring: <code>EC2 → Instances → select instance → Monitoring → Enable Detailed Monitoring</code></li>
+        <li>SSH into one of the ASG instances</li>
+        <li>Generate CPU load: <code>stress --cpu 4 --timeout 300</code> (install with: <code>sudo amazon-linux-extras install epel -y && sudo yum install stress -y</code>)</li>
+        <li>Watch CloudWatch → EC2 → CPUUtilization. After 2-3 minutes, observe ASG launching new instances!</li>
+        <li>Stop the stress test. Wait 5-10 minutes. Observe ASG scaling back IN (terminating extra instances)</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 3 — ASG + ALB Integration with Health Checks</div>
+    <div class="lab-desc">⏱ 20 minutes | Intermediate | Objective: Route traffic through ALB, test health-based replacement</div>
+    <ol>
+        <li>Create an <code>Application Load Balancer</code> in public subnets, port 80</li>
+        <li>Create a <code>Target Group</code> (type: instance, port 80, health check path: <code>/</code>)</li>
+        <li>Add ALB listener: HTTP:80 → forward to your Target Group</li>
+        <li>Update your ASG → Edit → set <code>Target Groups</code> to your new Target Group</li>
+        <li>Change <code>Health check type</code> to <code>ELB</code>. Grace period: <code>120</code></li>
+        <li>Wait for instances to register and pass health checks. Access the ALB DNS name — see the web page</li>
+        <li>Refresh the page repeatedly — notice different instance IDs serving requests (round-robin!)</li>
+        <li>Stop httpd on one instance: <code>sudo systemctl stop httpd</code></li>
+        <li>Watch ALB mark it unhealthy → ASG launches a replacement → new instance serves traffic again!</li>
+    </ol>
+</div>
+
+<div class="lab">
+    <div class="lab-title">🧪 Lab 4 — Scheduled Scaling Action</div>
+    <div class="lab-desc">⏱ 10 minutes | Beginner | Objective: Pre-scale for anticipated traffic</div>
+    <ol>
+        <li>In your ASG → <code>Automatic Scaling</code> → <code>Scheduled actions</code> → <code>Create scheduled action</code></li>
+        <li>Name: <code>Scale-Up-Test</code>. Set the time to 5 minutes from now (in UTC!)</li>
+        <li>Min: 3, Max: 10, Desired: 5</li>
+        <li>Create another action for 15 minutes from now: <code>Scale-Down-Test</code>. Min: 1, Desired: 1, Max: 4</li>
+        <li>Watch the ASG Activity Log for the automatic scaling events at the scheduled times</li>
+        <li>Verify instance count changes without any CPU spike or trigger</li>
+        <li>This simulates pre-scaling for a planned event or business hours</li>
+    </ol>
+</div>
+
+
+<!-- SUMMARY CHEAT SHEET -->
+<hr class="divider">
+<div class="summary-card">
+    <h2>📋 ASG Complete Cheat Sheet — Quick Reference</h2>
+    <div class="summary-grid">
+        <div class="summary-item"><div class="si-label">ASG Cost</div><div class="si-value">✅ FREE — only pay for EC2 instances it launches</div></div>
+        <div class="summary-item"><div class="si-label">Launch Template</div><div class="si-value">📋 EC2 blueprint: AMI, type, SG, key pair, user data</div></div>
+        <div class="summary-item"><div class="si-label">Minimum</div><div class="si-value">🔒 Floor — never go below this instance count</div></div>
+        <div class="summary-item"><div class="si-label">Maximum</div><div class="si-value">🔝 Ceiling — never go above this (cost guard)</div></div>
+        <div class="summary-item"><div class="si-label">Desired</div><div class="si-value">🎯 Current target — what ASG tries to maintain right now</div></div>
+        <div class="summary-item"><div class="si-label">Scale OUT</div><div class="si-value">📈 Add instances → Desired increases (up to Max)</div></div>
+        <div class="summary-item"><div class="si-label">Scale IN</div><div class="si-value">📉 Remove instances → Desired decreases (down to Min)</div></div>
+        <div class="summary-item"><div class="si-label">Target Tracking</div><div class="si-value">🎯 Set metric target (e.g., 50% CPU). ASG auto-adjusts.</div></div>
+        <div class="summary-item"><div class="si-label">Step Scaling</div><div class="si-value">📏 Scale different amounts based on how bad the breach is</div></div>
+        <div class="summary-item"><div class="si-label">Scheduled Scaling</div><div class="si-value">📅 Pre-scale at known times (cron). No metric needed.</div></div>
+        <div class="summary-item"><div class="si-label">Cooldown</div><div class="si-value">❄️ Wait period after scaling. Prevents thrashing. (Default 300s)</div></div>
+        <div class="summary-item"><div class="si-label">Warmup</div><div class="si-value">🌡️ Time before new instance metrics count for scaling.</div></div>
+        <div class="summary-item"><div class="si-label">Health Check Types</div><div class="si-value">EC2 (default) or ELB. Use ELB when behind ALB.</div></div>
+        <div class="summary-item"><div class="si-label">Grace Period</div><div class="si-value">⏳ Delay before health checks start. Set > app startup time.</div></div>
+        <div class="summary-item"><div class="si-label">Lifecycle Hook</div><div class="si-value">⚓ Pause instance in wait state. Run custom scripts.</div></div>
+        <div class="summary-item"><div class="si-label">ALB Integration</div><div class="si-value">🔗 ASG auto-registers/deregisters with ALB target groups.</div></div>
+        <div class="summary-item"><div class="si-label">Connection Draining</div><div class="si-value">🚰 ALB waits for existing connections before termination.</div></div>
+        <div class="summary-item"><div class="si-label">Mixed Instances</div><div class="si-value">💰 On-Demand + Spot in one ASG. Up to 90% cost savings.</div></div>
+        <div class="summary-item"><div class="si-label">AZ Rebalancing</div><div class="si-value">🌍 ASG auto-balances instances evenly across AZs.</div></div>
+        <div class="summary-item"><div class="si-label">Stateless Instances</div><div class="si-value">📦 Instances must be replaceable anytime. No local state.</div></div>
+    </div>
+</div>
+
+<div class="card">
+    <h3>🎯 Exam Tips — Most Frequently Tested ASG Concepts</h3>
+    <div class="grid-2">
+        <div>
+            <h4>✅ Must Know Facts</h4>
+            <ul style="padding-left:20px; line-height:2.2; font-size:0.9em;">
+                <li>ASG is <strong>free</strong> — charges are for EC2 instances only</li>
+                <li>Always use <strong>Launch Templates</strong>, not Launch Configurations</li>
+                <li><strong>Target Tracking</strong> is simplest and most recommended</li>
+                <li>Health check grace period = time before checks begin</li>
+                <li>Instance warmup = time before metrics are counted</li>
+                <li>Use <strong>ELB health check</strong> when behind an ALB</li>
+                <li>Lifecycle hooks <strong>pause</strong> the instance lifecycle</li>
+                <li>Spot + On-Demand Mix achieves up to <strong>90% cost savings</strong></li>
+            </ul>
+        </div>
+        <div>
+            <h4>⚠️ Common Gotchas</h4>
+            <ul style="padding-left:20px; line-height:2.2; font-size:0.9em;">
+                <li>MIN &lt;= DESIRED &lt;= MAX — always maintain this rule</li>
+                <li>Instances must be <strong>stateless</strong> — local data lost on termination</li>
+                <li>Cooldown prevents scaling; Warmup excludes from metrics</li>
+                <li>Default health check is <strong>EC2</strong> — change to ELB for web apps</li>
+                <li>Launch Configuration is <strong>immutable</strong> — must create new one</li>
+                <li>Scheduled scaling uses <strong>UTC time</strong>, not local time</li>
+                <li>ASG spans <strong>multiple AZs</strong> but lives in one Region</li>
+                <li>Scale-in protection prevents individual instances from being terminated</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+</div><!-- /container -->
+
+<footer>
+    <p>📚 <span>AWS Auto Scaling Groups Complete Teaching Notes</span> — Nimbus Cloud Academy</p>
+    <p style="margin-top:6px;">2-Hour Session · Launch Templates · Scaling Policies · ALB Integration · Lifecycle Hooks · Cost Optimization</p>
+    <p style="margin-top:6px; opacity:0.6;">Generated: August 29, 2026</p>
+</footer>
+
+</body>
+</html>

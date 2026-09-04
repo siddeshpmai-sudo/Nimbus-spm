@@ -1,0 +1,23 @@
+
+
+Linux commands:
+1. pwd
+2. ls
+3. ls -l
+4. ls -lt
+5. ls -lrt
+6. cd ..
+7. cd ../..
+8. cd /home/user/path
+9. mkdir <directory_name>
+10. mkdir dir1 dir2 dir3
+11. mkdir -p d3/dir1/dir2
+12. touch <file_name>
+13. touch f1 f2 f3
+14. touch directory_name/filename
+15. mkdir -p d3/dir1/dir2
+16. vi file_name
+	press 'i' for insert
+	Esc :wq! --> save
+	Esc :q! --> unsave
+17. cat filename

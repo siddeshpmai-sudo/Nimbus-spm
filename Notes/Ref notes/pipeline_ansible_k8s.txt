@@ -1,0 +1,67 @@
+//aws eks cluster creation
+
+pipeline{
+    agent any
+    stages{
+        stage('create cluster'){
+            steps{
+                sh "eksctl create cluster --name ${clusterName} --nodegroup-name {nodeGroupName} --node-type ${instanceType} --nodes {noOfNodes} --managed"
+            }
+        }
+    }
+}
+
+
+//ansible playbook deployment
+
+
+pipeline {
+    agent any
+    stages {
+        stage('checkout') {
+            steps {
+                cleanWs()
+                git branch: 'main', url: 'https://github.com/Siddeshg672/hello_world_public_war.git'
+            }
+        }
+         stage('compile source code'){
+             when{ expression { pr_status == 'opened' }}
+             steps{
+                 sh "mvn clean install"
+             }
+         }
+        stage('create and push docker image') {  
+            // when{ expression { pr_status == 'closed' }}
+            steps{
+                sh "mvn clean install"
+                sh "docker build -t siddeshg672/devopsapp:latest ."
+                sh "docker tag siddeshg672/devopsapp:latest siddeshg672/devopsapp:test-deploy_${BUILD_NUMBER}"
+                withCredentials([usernamePassword(credentialsId: 'docker_pass', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh "docker login -u ${user} -p ${pass}"
+                    sh "docker push siddeshg672/devopsapp:test-deploy_${BUILD_NUMBER}"
+                }
+            }
+        }
+         stage('ansible_playbook'){
+             when{ expression { pr_status == 'closed' }}
+             steps{
+                 sh """
+                     ansible-playbook -i hosts.ini containerDeploywithansible.yml -e "ansible_user=test ansible_password=1234" -e "docker_password=Siddu@9880" -e "BUILD_NUMBER=${BUILD_NUMBER}"
+                 """
+             }
+         }
+        stage('update manifest file'){
+            steps{
+                sh """
+                    sed -i "s/test-deploy_.*/test-deploy_$BUILD_NUMBER/" nginx-deploymeny.yaml
+                """
+                // withKubeConfig(caCertificate: '', clusterName: 'jenkins-eks-cluster', contextName: '', credentialsId: 'k8sDeploy', namespace: 'default', serverUrl: 'https://037BA7ECEAFF16FF55CFC8588A64129F.gr7.us-west-2.eks.amazonaws.com') {
+                    sh "kubectl get all"
+                    sh "kubectl apply -f nginx-deploymeny.yaml"
+                    sleep 20
+                     sh "kubectl get all"
+                // }
+            }
+        }
+    }
+}

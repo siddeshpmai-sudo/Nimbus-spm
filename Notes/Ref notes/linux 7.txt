@@ -1,0 +1,52 @@
+
+
+
+153. xargs:
+154. find . -type f -mtime +2|xargs rm
+155. find . -type f -mtime +365|xargs rm
+156. find . -type f -iname "test" -maxdepth 1
+157. find . -type d -iname "test" -maxdepth 2
+158. find . -iname "test" -maxdepth 1
+159. links: 
+		softlink or symbolic link or sym link:
+		ln -s test1 softlink
+		ln -s /home/test/test1 softlink
+		
+		hardlink:
+			'i-node'
+		ln /home/test/test1 hardlink
+160. uname -a
+161. cat /etc/os-release
+162. hostname
+163. who|wc -l
+164. whoami
+165. nohup: [no hang up]
+	nohup ./script.sh &
+166. top
+167. ssh [secure shell]
+	port 22
+	
+	ssh username@server
+	password:
+	
+	ssh -i demo.pem user@server
+	ssh -i demo.pem ubuntu@54.26.118.12 
+168. scp file_name user@server:/tmp
+169. scp file_name user@server:/home/ubuntu
+170. scp -r directory user@server:/path
+171. rsync file user@server:/home/temp
+172. ping ip_address or ping hostname or ping google.com
+173. telnet ip or telnet dns_name [port 23]
+174. netstat -na|grep 8080
+
+
+
+
+
+
+
+
+
+
+
+

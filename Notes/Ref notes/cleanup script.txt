@@ -1,0 +1,37 @@
+# clean up script
+
+#!/bin/bash
+		total=`ls | wc -l`
+		delete_num=`expr $total-20`
+		if [ $delete_num -gt 0 ]
+			then
+			ls -lrt | head -$delete_num | xargs rm -rf
+		fi
+
+
+# service1 stopped it should send email notification
+
+#!/bin/bash
+	services="serv1 serv2 serv3"
+	echo "Please take the appropriate action for the stopped services" > log  #save in log
+	for i in $services
+	do
+	ps -ef | grep -i "$i"
+	if [ $? -ne 0 ]                           #check status of last executed command stat,
+	then
+	cat log | mail -s "service is not running" -c  abc.com group.com
+	sudo service "$i" restart
+	fi
+	done
+
+
+memorycheck.sh
+	
+#!/bin/bash
+	space=`df -h .| tail -1| awk -F " " '{print $(NF-1)}'| sed 's/%/ /g'`
+	echo "Consumed memory is $space"
+	if [ $space -ge 90 ] 
+	then
+	echo "Disk space is more than 90% please take appropriate action" | mail -s "disk space is execding more then 90%"  -c  "abc@gmail.com" "abc@gmail.com"
+	fi
+

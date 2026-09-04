@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Route 53 (DNS) – Complete Teaching Guide</title>
+    <style>
+        :root{--primary:#FF9900;--primary-dark:#c77b00;--secondary:#232F3E;--accent:#1A9C3E;--info:#2563EB;--warning:#D97706;--danger:#DC2626;--light-bg:#F8FAFC;--card-bg:#FFFFFF;--border:#E2E8F0;--text-main:#1E293B;--text-muted:#64748B;--code-bg:#1e1e2e;--code-text:#cdd6f4}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;color:var(--text-main);background:var(--light-bg);padding:0 20px 60px}
+        .hero{background:linear-gradient(135deg,#0f2027 0%,#5c1a1a 50%,#991b1b 100%);color:white;text-align:center;padding:60px 40px 50px;margin:0 -20px 40px}
+        .hero-badge{display:inline-block;background:rgba(255,153,0,.25);border:1px solid rgba(255,153,0,.5);color:var(--primary);padding:5px 16px;border-radius:50px;font-size:.8em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+        .hero h1{font-size:2.8em;font-weight:800;margin-bottom:12px}.hero h1 span{color:var(--primary)}
+        .hero p{font-size:1.1em;opacity:.85;max-width:650px;margin:0 auto 24px}
+        .hero-meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+        .hero-meta span{background:rgba(255,255,255,.12);padding:6px 18px;border-radius:6px;font-size:.88em;font-weight:600}
+        .container{max-width:1100px;margin:0 auto}
+        .section-heading{display:flex;align-items:center;gap:14px;margin:50px 0 24px}
+        .section-icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#DC2626,#991b1b);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;box-shadow:0 4px 12px rgba(220,38,38,.35)}
+        .section-heading h2{font-size:1.7em;font-weight:800;color:var(--secondary)}
+        .card{background:var(--card-bg);border-radius:12px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)}
+        .card h3{font-size:1.15em;font-weight:700;color:var(--secondary);margin-bottom:14px}
+        .card h4{font-size:1em;font-weight:700;color:var(--danger);margin:18px 0 8px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        @media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.hero h1{font-size:1.9em}}
+        .concept-card{background:var(--card-bg);border-radius:10px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
+        .concept-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+        .concept-card .icon{font-size:2em;margin-bottom:10px}
+        .concept-card h3{font-size:1.05em;font-weight:700;color:var(--secondary);margin-bottom:8px}
+        .concept-card p{font-size:.9em;color:var(--text-muted);line-height:1.6}
+        .code-block{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:10px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.88em;line-height:1.7;margin:14px 0;white-space:pre}
+        .code-label{background:#313244;color:#cba6f7;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:6px 6px 0 0;display:inline-block;letter-spacing:.5px}
+        .callout{padding:16px 20px;border-radius:8px;margin:16px 0;font-size:.93em;display:flex;gap:12px;align-items:flex-start}
+        .callout .icon{font-size:1.2em;flex-shrink:0;margin-top:1px}
+        .callout-info{background:#DBEAFE;border-left:4px solid var(--info)}
+        .callout-warning{background:#FEF3C7;border-left:4px solid var(--warning)}
+        .callout-success{background:#DCFCE7;border-left:4px solid var(--accent)}
+        .callout-danger{background:#FEE2E2;border-left:4px solid var(--danger)}
+        .callout-purple{background:#F3E8FF;border-left:4px solid #7C3AED}
+        .analogy{background:linear-gradient(135deg,#fff5f5,#fee2e2);border:1px solid #fca5a5;border-radius:10px;padding:20px 24px;margin:16px 0}
+        .analogy .analogy-title{font-weight:800;color:var(--danger);font-size:.85em;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+        .compare-table{width:100%;border-collapse:collapse;font-size:.9em;margin:16px 0}
+        .compare-table th{background:var(--secondary);color:white;padding:12px 16px;text-align:left}
+        .compare-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+        .compare-table tr:nth-child(even) td{background:#f8fafc}
+        .compare-table td:first-child{font-weight:700;color:var(--secondary)}
+        .step-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+        .step-num{background:var(--danger);color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;flex-shrink:0}
+        .step-content{padding-top:4px}
+        .step-content strong{display:block;margin-bottom:3px}
+        .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+        .flow-box{background:var(--secondary);color:white;padding:8px 16px;border-radius:8px;font-size:.85em;font-weight:600}
+        .flow-box.red{background:var(--danger)}.flow-box.blue{background:var(--info)}.flow-box.orange{background:var(--primary-dark)}.flow-box.green{background:var(--accent)}.flow-box.purple{background:#7C3AED}
+        .flow-arrow{color:var(--text-muted);font-size:1.2em;font-weight:700}
+        .arch-diagram{background:#1e1e2e;color:#89b4fa;border-radius:10px;padding:24px;font-family:monospace;font-size:.85em;line-height:1.8;overflow-x:auto;white-space:pre}
+        .lab{background:linear-gradient(135deg,#1e1e2e,#181825);border-radius:12px;padding:28px;margin-bottom:24px;color:#cdd6f4}
+        .lab-title{color:#f38ba8;font-weight:800;font-size:1.05em;margin-bottom:6px}
+        .lab-desc{color:#a6adc8;font-size:.88em;margin-bottom:16px}
+        .lab ol{padding-left:20px;color:#cdd6f4;font-size:.9em;line-height:1.9}
+        .lab code{background:#313244;color:#f9e2af;padding:1px 6px;border-radius:4px;font-family:monospace}
+        .divider{border:none;height:2px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:40px 0}
+        ul li,ol li{margin-bottom:6px}
+        ul,ol{padding-left:20px}
+        .routing-card{background:var(--card-bg);border-radius:10px;padding:20px;border:1px solid var(--border);margin-bottom:16px;border-left:4px solid var(--danger)}
+        .routing-card h4{font-size:1em;font-weight:700;color:var(--danger);margin-bottom:8px}
+        .routing-card p{font-size:.9em;color:var(--text-muted)}
+        .summary-card{background:linear-gradient(135deg,var(--secondary),#5c1a1a);color:white;border-radius:12px;padding:32px;margin-bottom:24px}
+        .summary-card h2{color:var(--primary);margin-bottom:16px;font-size:1.4em}
+        .checklist{list-style:none;padding:0}
+        .checklist li{padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+        .checklist li::before{content:"✅";flex-shrink:0}
+    </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">📘 AWS Teaching Guide – Day Session</div>
+  <h1>AWS <span>Route 53</span> — DNS &amp; Traffic Management</h1>
+  <p>AWS's highly available and scalable Domain Name System (DNS) web service. Register domains, route traffic globally, and health-check your endpoints — all in one service.</p>
+  <div class="hero-meta">
+    <span>🕐 75–90 Minutes</span>
+    <span>🎯 Intermediate</span>
+    <span>🌐 DNS & Traffic Routing</span>
+    <span>🔗 Works with ALB, EC2, S3, CloudFront</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: WHAT IS DNS -->
+  <div class="section-heading">
+    <div class="section-icon">🌐</div>
+    <h2>DNS Fundamentals — Teach This First!</h2>
+  </div>
+
+  <div class="card">
+    <div class="analogy">
+      <div class="analogy-title">📖 Analogy — Phone Book for the Internet</div>
+      <p>DNS is the internet's phone book. You remember names (google.com), not phone numbers (142.250.64.14). DNS translates human-friendly domain names into machine-friendly IP addresses. Without DNS, you'd need to memorize the IP address of every website — Route 53 is AWS's managed DNS service that does this translation reliably and at massive scale.</p>
+    </div>
+
+    <h3>How DNS Resolution Works — Step by Step</h3>
+    <div class="arch-diagram">
+You type: www.nimbuswiztech.com in your browser
+
+Step 1: Browser checks LOCAL CACHE → not found
+        ↓
+Step 2: Browser asks OS DNS resolver (your ISP or 8.8.8.8 - Google DNS)
+        ↓
+Step 3: Recursive resolver asks ROOT DNS servers (13 clusters worldwide)
+        "Who handles .com domains?"
+        ↓
+Step 4: Root says → "Ask .COM TLD servers (Verisign)"
+        ↓
+Step 5: TLD (.com) servers say → "Ask ns-123.awsdns-45.net"
+        (This is Route 53's nameserver for nimbuswiztech.com)
+        ↓
+Step 6: Route 53 nameserver responds → "www.nimbuswiztech.com = 54.201.11.22"
+        ↓
+Step 7: Browser connects to 54.201.11.22 → loads the website! ✅
+
+Total time: 50-200ms (first visit, then cached for TTL duration)</div>
+
+    <h3>DNS Record Types — The Essential Ones</h3>
+    <table class="compare-table">
+      <tr><th>Record Type</th><th>Purpose</th><th>Example</th></tr>
+      <tr><td>A Record</td><td>Maps domain name → IPv4 address</td><td><code>app.example.com → 54.201.11.22</code></td></tr>
+      <tr><td>AAAA Record</td><td>Maps domain name → IPv6 address</td><td><code>app.example.com → 2001:0db8::1</code></td></tr>
+      <tr><td>CNAME Record</td><td>Maps domain name → another domain name (alias). Cannot be used for root domain.</td><td><code>www.example.com → app.example.com</code></td></tr>
+      <tr><td>MX Record</td><td>Mail server for the domain</td><td><code>example.com → mail.example.com priority 10</code></td></tr>
+      <tr><td>TXT Record</td><td>Text information — used for domain verification (Google, SSL), SPF records</td><td><code>v=spf1 include:amazonses.com ~all</code></td></tr>
+      <tr><td>NS Record</td><td>Name Servers responsible for this zone</td><td><code>ns-1.awsdns-10.org</code></td></tr>
+      <tr><td>SOA Record</td><td>Start of Authority — admin info for the zone</td><td>Auto-created by Route 53</td></tr>
+      <tr><td>ALIAS Record</td><td>AWS-specific extension of CNAME. Can point to AWS resources at root domain level. Free queries.</td><td><code>example.com → ALB-12345.ap-south-1.elb.amazonaws.com</code></td></tr>
+    </table>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <div><strong>Key Difference — ALIAS vs CNAME:</strong> CNAME cannot be used at the root domain (naked domain). You CAN'T do <code>example.com CNAME alb.amazonaws.com</code>. You CAN do <code>example.com ALIAS alb.amazonaws.com</code>. This is why AWS created the ALIAS record type — use it for ALBs, CloudFront, S3 websites.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: ROUTE 53 OVERVIEW -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🏗️</div>
+    <h2>Route 53 — Three Core Capabilities</h2>
+  </div>
+  <div class="card">
+    <div class="grid-3">
+      <div class="concept-card">
+        <div class="icon">🛒</div>
+        <h3>Domain Registration</h3>
+        <p>Register new domain names directly through Route 53. Prices from $9/year. AWS manages renewal automatically.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🗺️</div>
+        <h3>DNS Hosting (Hosted Zones)</h3>
+        <p>Host the DNS records for your domain. Route 53 is the authoritative nameserver. $0.50/hosted zone/month.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🏥</div>
+        <h3>Health Checking &amp; Traffic Routing</h3>
+        <p>Monitor endpoint health and automatically route traffic away from unhealthy endpoints. Multiple routing policies.</p>
+      </div>
+    </div>
+
+    <h3>Hosted Zone Types</h3>
+    <div class="grid-2">
+      <div class="concept-card">
+        <div class="icon">🌍</div>
+        <h3>Public Hosted Zone</h3>
+        <p>Answers DNS queries from the internet. Used for your public website and APIs accessible to users worldwide.</p>
+        <p style="margin-top:8px;font-size:.85em;color:var(--text-muted)">Cost: $0.50/month</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🔒</div>
+        <h3>Private Hosted Zone</h3>
+        <p>Answers DNS queries only from within associated VPCs. Used for internal microservices and databases: <code>db.internal.company.com</code></p>
+        <p style="margin-top:8px;font-size:.85em;color:var(--text-muted)">Cost: $0.50/month</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: HANDS-ON LAB -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🛠️</div>
+    <h2>Hands-On: Create Hosted Zone &amp; DNS Records (Step-by-Step)</h2>
+  </div>
+
+  <div class="card">
+    <h3>Lab 1: Create a Hosted Zone and Point to an EC2 Instance</h3>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Create a Public Hosted Zone</strong>
+        <ul>
+          <li>Route 53 → Hosted zones → Create hosted zone</li>
+          <li>Domain name: <code>example.com</code> (use your actual domain)</li>
+          <li>Type: <strong>Public hosted zone</strong></li>
+          <li>Create → Route 53 creates the zone with NS and SOA records automatically</li>
+          <li>Note the 4 NS record values: <code>ns-xxx.awsdns-xx.com / .net / .org / .co.uk</code></li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Update Nameservers at Your Domain Registrar</strong>
+        <ul>
+          <li>Go to your domain registrar (GoDaddy, Namecheap, etc.)</li>
+          <li>Find "Nameservers" setting for your domain</li>
+          <li>Replace existing nameservers with the 4 NS values from Route 53</li>
+          <li>Propagation takes 24-48 hours globally (for production domains)</li>
+        </ul>
+        <div class="callout callout-info">
+          <span class="icon">ℹ️</span>
+          <div><strong>If you registered the domain IN Route 53:</strong> The nameservers are already configured automatically — skip this step.</div>
+        </div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Create an A Record Pointing to EC2</strong>
+        <ul>
+          <li>In the hosted zone → Create record</li>
+          <li>Record name: <code>app</code> (creates <code>app.example.com</code>)</li>
+          <li>Record type: <strong>A</strong></li>
+          <li>Value: <code>54.201.11.22</code> (your EC2 Elastic IP)</li>
+          <li>TTL: <code>300</code> (5 minutes — clients cache for this long)</li>
+          <li>Create records</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Create an ALIAS Record for an ALB (Root Domain)</strong>
+        <ul>
+          <li>Create record → Record name: (leave blank for root domain example.com)</li>
+          <li>Record type: <strong>A</strong></li>
+          <li>Toggle on: <strong>Alias</strong></li>
+          <li>Route traffic to: <strong>Alias to Application and Classic Load Balancer</strong></li>
+          <li>Region: ap-south-1 → Select your ALB</li>
+          <li>Create records</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>Test the DNS Resolution</strong>
+        <div class="code-block">nslookup app.example.com
+dig app.example.com +short
+curl -I http://app.example.com</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: ROUTING POLICIES -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔀</div>
+    <h2>Route 53 Routing Policies — The Most Important Section</h2>
+  </div>
+
+  <div class="card">
+    <h3>7 Routing Policies — Teach Each with a Real Use Case</h3>
+
+    <div class="routing-card">
+      <h4>1. Simple Routing</h4>
+      <p><strong>What:</strong> One record, one or more IP values. Route 53 returns a random IP from the list.<br>
+      <strong>Use case:</strong> Single server, no health checks. Most basic setup.<br>
+      <strong>Example:</strong> <code>app.example.com → 54.201.11.22</code></p>
+    </div>
+
+    <div class="routing-card" style="border-left-color:var(--warning)">
+      <h4>2. Weighted Routing</h4>
+      <p><strong>What:</strong> Distribute traffic across multiple resources by percentage weight.<br>
+      <strong>Use case:</strong> A/B testing, Blue/Green deployments, gradual migration.<br>
+      <strong>Example:</strong> Version 1 (weight 90) = 90% traffic. Version 2 (weight 10) = 10% traffic.</p>
+      <div class="code-label">WEIGHTED ROUTING EXAMPLE</div>
+      <div class="code-block">Record 1: app.example.com → 54.201.11.22   Weight: 90
+Record 2: app.example.com → 54.201.11.99   Weight: 10
+# Route 53 sends 90% of queries to Record 1, 10% to Record 2</div>
+    </div>
+
+    <div class="routing-card" style="border-left-color:var(--info)">
+      <h4>3. Latency-Based Routing</h4>
+      <p><strong>What:</strong> Route users to the AWS region with the lowest latency from their location.<br>
+      <strong>Use case:</strong> Global applications — users in India get routed to ap-south-1, US users to us-east-1.<br>
+      <strong>Example:</strong> Two EC2s — one in Mumbai, one in N.Virginia. Route 53 measures latency and routes accordingly.</p>
+      <div class="callout callout-info">
+        <span class="icon">💡</span>
+        <div>Route 53 measures latency using a database it maintains from edge locations globally — it doesn't ping your user every time.</div>
+      </div>
+    </div>
+
+    <div class="routing-card" style="border-left-color:var(--accent)">
+      <h4>4. Failover Routing (Active-Passive)</h4>
+      <p><strong>What:</strong> Primary record handles all traffic. If health check fails → Route 53 automatically routes to secondary.<br>
+      <strong>Use case:</strong> Disaster Recovery — primary production server, secondary DR server.<br>
+      <strong>Requires:</strong> Health check configured on the primary record.</p>
+      <div class="flow">
+        <div class="flow-box green">Primary: 54.201.11.22 (Healthy ✅)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box green">All traffic → Primary</div>
+      </div>
+      <div class="flow">
+        <div class="flow-box red">Primary: 54.201.11.22 (FAILS ❌)</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box orange">Route 53 detects via health check</div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-box blue">All traffic → Secondary: 54.201.99.11</div>
+      </div>
+    </div>
+
+    <div class="routing-card" style="border-left-color:#7C3AED">
+      <h4>5. Geolocation Routing</h4>
+      <p><strong>What:</strong> Route based on the geographic location of the USER (country, continent, state/province for US).<br>
+      <strong>Use case:</strong> Serve localized content, comply with data residency laws, block certain geographies.<br>
+      <strong>Example:</strong> Indian users → India server, EU users → Frankfurt server, US users → Virginia server. Default record for everyone else.</p>
+      <div class="callout callout-warning">
+        <span class="icon">⚠️</span>
+        <div><strong>Geolocation vs Latency:</strong> Geolocation is based on <em>where the user is</em>. Latency is based on <em>which server is fastest for the user</em>. They often agree, but not always (e.g., a user in India on a satellite connection might get lower latency from a closer server even if they're geographically in India).</div>
+      </div>
+    </div>
+
+    <div class="routing-card" style="border-left-color:var(--danger)">
+      <h4>6. Geoproximity Routing (Traffic Flow Only)</h4>
+      <p><strong>What:</strong> Route based on geographic location of users AND resources. You can adjust the bias to shift more/less traffic to a resource.<br>
+      <strong>Use case:</strong> When you want to gradually move traffic from one region to another — increase bias on the new region to attract more traffic.<br>
+      <strong>Requires:</strong> Route 53 Traffic Flow (visual policy editor) — $50/policy/month.</p>
+    </div>
+
+    <div class="routing-card" style="border-left-color:var(--primary)">
+      <h4>7. Multi-Value Answer Routing</h4>
+      <p><strong>What:</strong> Returns up to 8 healthy IP addresses in random order. Each IP has an associated health check.<br>
+      <strong>Use case:</strong> Simple client-side load balancing across multiple healthy servers. Not a substitute for a proper LB, but simple alternative.<br>
+      <strong>Benefit over Simple:</strong> Unhealthy IPs are automatically removed from the response.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 5: HEALTH CHECKS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🏥</div>
+    <h2>Route 53 Health Checks</h2>
+  </div>
+  <div class="card">
+    <h3>What are Health Checks?</h3>
+    <p>Route 53 sends periodic requests to your endpoints to check if they're healthy. If unhealthy, DNS routing policies (Failover, Multi-Value) respond accordingly.</p>
+    <div class="grid-2">
+      <div>
+        <h4>Health Check Types:</h4>
+        <ul>
+          <li><strong>HTTP/HTTPS/TCP</strong> — checks a specific endpoint (most common)</li>
+          <li><strong>CloudWatch Alarm</strong> — healthy if a CloudWatch alarm is in OK state</li>
+          <li><strong>Calculated Health Check</strong> — combines multiple child health checks (OR/AND logic)</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Health Check Configuration:</h4>
+        <ul>
+          <li>Protocol: HTTP/HTTPS/TCP</li>
+          <li>Endpoint IP or domain</li>
+          <li>Port and path (e.g., <code>/health</code>)</li>
+          <li>Expected status code (200)</li>
+          <li>Interval: 30 sec (standard) or 10 sec (fast — $0.01/check/month extra)</li>
+          <li>Failure threshold: 3 (fails 3 checks → unhealthy)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <div><strong>Health Check IPs:</strong> Route 53 sends health check requests from multiple AWS edge locations globally. Your security group/firewall must allow traffic from Route 53 health checker IP ranges (<a href="https://ip-ranges.amazonaws.com/ip-ranges.json" style="color:var(--info)">ip-ranges.amazonaws.com</a>, service: ROUTE53_HEALTHCHECKS).</div>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-title">🔬 Lab 2: Create a Health Check + Failover Routing Policy</div>
+    <div class="lab-desc">Demonstrate automatic DNS failover — Route 53 switches traffic when primary fails</div>
+    <ol>
+      <li>Launch two EC2 instances — one in ap-south-1 (Primary), one in us-east-1 (Secondary). Install Nginx on both.</li>
+      <li>Create Health Check on Primary:
+        <ul>
+          <li>Route 53 → Health checks → Create health check</li>
+          <li>Name: <code>primary-server-health</code></li>
+          <li>Monitor: Endpoint → IP address → Primary EC2 IP → Port 80 → Path: /</li>
+        </ul>
+      </li>
+      <li>Create Failover record — PRIMARY:
+        <ul>
+          <li>Create record → <code>app.example.com</code> → Type A → Primary EC2 IP</li>
+          <li>Routing policy: Failover → Record type: Primary</li>
+          <li>Associate health check: <code>primary-server-health</code></li>
+        </ul>
+      </li>
+      <li>Create Failover record — SECONDARY:
+        <ul>
+          <li>Create record → <code>app.example.com</code> → Type A → Secondary EC2 IP</li>
+          <li>Routing policy: Failover → Record type: Secondary</li>
+          <li>No health check on secondary (always fallback)</li>
+        </ul>
+      </li>
+      <li>Test failover: Stop the primary EC2 → Watch health check turn UNHEALTHY → Run <code>nslookup app.example.com</code> every 30 seconds → IP changes to secondary within 30-60 seconds!</li>
+    </ol>
+  </div>
+
+  <!-- SECTION 6: DOMAIN REGISTRATION -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🛒</div>
+    <h2>Domain Registration via Route 53</h2>
+  </div>
+  <div class="card">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content"><strong>Route 53 → Domains → Register Domain</strong></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content"><strong>Search for your domain name</strong> — e.g., <code>mycompany.in</code> or <code>mycompany.com</code>. Route 53 shows availability and pricing.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content"><strong>Add to cart</strong> → Enter contact information (WHOIS details — name, address, email, phone). Enable "Privacy protection" to hide your personal details from public WHOIS lookup.</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content"><strong>Enable auto-renewal</strong> → Pay → Domain is registered. Route 53 automatically creates a hosted zone and configures the nameservers.</div>
+    </div>
+    <div class="callout callout-success">
+      <span class="icon">💡</span>
+      <div><strong>Key Advantage:</strong> When you register a domain IN Route 53, the nameservers are automatically configured. No manual step at a registrar required. The hosted zone is ready to use immediately.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: PRICING -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">💰</div>
+    <h2>Route 53 Pricing</h2>
+  </div>
+  <div class="card">
+    <table class="compare-table">
+      <tr><th>Feature</th><th>Price</th></tr>
+      <tr><td>Public Hosted Zone</td><td>$0.50/month per zone</td></tr>
+      <tr><td>Private Hosted Zone</td><td>$0.50/month per zone</td></tr>
+      <tr><td>DNS Queries (Standard)</td><td>$0.40 per million queries (first 1 billion/month)</td></tr>
+      <tr><td>ALIAS queries (to AWS resources)</td><td>FREE when target is AWS resource in same zone</td></tr>
+      <tr><td>Health Checks (Standard)</td><td>$0.50/health check/month (AWS endpoints $0.25)</td></tr>
+      <tr><td>Domain Registration (.com)</td><td>$13/year</td></tr>
+      <tr><td>Domain Registration (.in)</td><td>$14/year</td></tr>
+      <tr><td>Traffic Policy</td><td>$50/policy record/month</td></tr>
+    </table>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <h2>📚 Session Summary — Route 53 Key Takeaways</h2>
+    <ul class="checklist" style="color:white">
+      <li>DNS = translates domain names to IP addresses. Route 53 is AWS's managed DNS service</li>
+      <li>Key record types: A (domain→IPv4), AAAA (→IPv6), CNAME (→another domain), ALIAS (→AWS resource, even at root), MX (mail), TXT (verification)</li>
+      <li>ALIAS vs CNAME: Use ALIAS for AWS resources, especially at root domain. Cannot use CNAME at root domain</li>
+      <li>Public Hosted Zone = internet-facing DNS. Private Hosted Zone = internal VPC DNS only</li>
+      <li>7 Routing Policies: Simple, Weighted (A/B test), Latency (performance), Failover (DR), Geolocation (user's country), Geoproximity (bias shifting), Multi-Value (client-side LB)</li>
+      <li>Health Checks: Route 53 monitors endpoints. Failover routing automatically reroutes when primary fails</li>
+      <li>Domain Registration: Buy domains directly in Route 53 — auto-configures nameservers</li>
+      <li>TTL: Lower TTL = faster DNS changes propagate. Higher TTL = lower cost (fewer resolver queries)</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

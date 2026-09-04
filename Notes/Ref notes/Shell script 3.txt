@@ -1,0 +1,180 @@
+1. Biggest 3 no's
+
+#!/bin/bash
+if [ $1 -gt $2 ] && [ $1 -gt $3 ]
+then
+echo "$1 is big"
+elif [ $2 -gt $3 ]
+then
+echo "$2 is big"
+else
+echo "$3 is big"
+fi
+
+======================================================================================
+
+2. Write a shell script to check whether given name is a file or directory or link or doesnot exist,
+	* If its a file display the content, count how many lines content is present in that file.
+	* if its a directory display the file
+
+
+#!/bin/bash
+echo "Enter the name to check:"
+read name
+if [ -f $name ]
+then
+echo "The contents of $name is:"
+cat $name
+echo "No. of line in this file  = ` wc -l $name`"
+elif [ -d $name ]
+then
+echo "List of files and directories in $name:"
+ls $name
+elif [ -L $name ]
+then
+echo "$name is a link"
+else
+echo "$name doesnot exit"
+fi
+
+======================================================================================
+
+
+3. Write a shell script to add, subtract, multiply and divide the two numbers
+
+#!/bin/bash
+	echo "Enter Num1"
+	read num1
+	echo "Enter Num2"
+	read num2
+	add=`expr $num1 + $num2`
+	mul=`expr $num1 \* $num2`
+	if [ $num1 -gt $num2 ]
+	then
+	sub=`expr $num1 - $num2`
+	div=`expr $num1 / $num2`
+	else
+	sub=`expr $num2 - $num1`
+	div=`expr $num2 / $num1`
+	fi
+	echo "Addtion  is $add"
+	echo "Subtraction  is $sub"
+	echo "Multiplication is $mul"
+	echo "Division is $div"
+
+======================================================================================
+
+
+4. Write a script to find factorial of a given number
+
+#!/bin/bash
+
+num=$1
+fact=1
+while [ $num -gt 0 ]
+do
+        fact=`expr $fact \* $num`
+        num=`expr $num - 1`
+done
+
+echo "The factorial of given $num is $fact"
+
+======================================================================================
+
+5. Write a script to add given set of numbers
+
+#!/bin/bash
+set -x
+echo "Enter the number for factorial:"
+read num
+Nu=$num
+fact=1
+while [ $num -gt 0 ]
+do
+        fact=`expr $fact \* $num`
+        num=`expr $num - 1`
+done
+
+echo "The factorial of given $Nu is $fact"
+
+
+======================================================================================
+
+5. Write a script to add given set of numbers
+
+#!/bin/bash
+set -x 
+sum=0
+for i in $*
+do
+        sum=`expr $sum + $i`
+done
+echo $sum
+
+
+======================================================================================
+
+
+6. Write a script to check disk memory, if memory exceeds more than 90% it should send a notification saying that "disk is full, Please take appropriate action."
+
+
+	#!/bin/bash
+	space=`df -h .|tail -1|awk -F " " '{print $5}'|sed 's/%//g'`
+	if [ $space -ge 90 ]
+	then
+	echo "Disk is full, Please take appropriate action."|mail -s "Disk memory full" -c "abc.com" "devops.com"
+	fi
+
+Cronjobs : schedule the scripts on perticular time
+
+
+* --> [min(0-59)]
+
+* --> [hours(0-23)]
+
+* --> [Day of month(1-30/31/28/29)]
+
+* --> [Month (1-12)]
+
+* --> [Day of week (0(sun)-6(sat)]
+
+
+crontab -l --> list all the cronjob(users specific)
+
+crontab -e --> create new cronjob
+
+
+* * * * * /home/ubuntu/shell.sh
+
+0 * * * * /home/ubuntu/shell.sh
+
+28th Dec 2022 1:30pm at wednesday
+
+30 01 28 12 03 0 * * * * /home/ubuntu/shell.sh
+
+
+======================================================================================
+
+assgn.6 Write a script to display the name of employees whose age is more than 40
+
+
+Name		Emp-ID	Age
+ABC		202201	35
+EFG		202202	40
+HIJ		202203	38
+LMN		202204	45
+XYZ		202205	43
+GHY		202206	42		
+
+======================================================================================
+
+
+assgn.7 Write a shell script to check the services are running state or stopped state, and notify if the services are stopped
+
+======================================================================================
+
+assgn.8 Write a script to retain recent 20 files and delete all other files in given path:/home/path
+
+======================================================================================
+
+

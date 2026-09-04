@@ -1,0 +1,30 @@
+/* Common Styles for Nimbus Auto */
+body { font-family: 'Outfit', sans-serif; background-color: #020617; color: #f8fafc; }
+.glass-nav { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(12px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+
+/* Car Cards */
+.car-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+.car-card:hover { transform: translateY(-5px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.1); }
+.car-image-wrapper { overflow: hidden; }
+.car-image { transition: transform 0.5s ease; }
+.car-card:hover .car-image { transform: scale(1.05); }
+
+/* Page Transitions */
+.page-transition {
+    animation: fadeInSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeInSlideUp {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Staggered animation for grid items */
+.stagger-1 { animation-delay: 0.1s; }
+.stagger-2 { animation-delay: 0.2s; }
+.stagger-3 { animation-delay: 0.3s; }
+.stagger-4 { animation-delay: 0.4s; }
+
+.hero-gradient { background: linear-gradient(to right, #020617, transparent), url('https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1920&q=80') center/cover; }

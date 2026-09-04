@@ -1,0 +1,129 @@
+***Docker
+
+Docker is an open-source containerization platform. This Docker tool designed to make it easier to create, deploy and run application by using containers.
+
+***Docker images
+
+Docker image is a package. that have everything to run an application.
+Set of instruction stored in the form of layer. Each layer is read only.
+
+***Docker containers
+
+Docker container is a standardized unit which can be create on the fly to deploy a particular application or environment.
+It’s a running instance of an image. Container are writable.
+
+Docker architecture
+
+
+virual machine vs Container
+
+
+Docker login
+docker images
+docker rmi 51035bcd0a9d
+docker login -u siddeshg672
+docker logout
+docker pull siddeshg672/testdeployimage:tagname_test
+docker tag jenkins/jenkins siddeshg672/testdeployimage:tagname_test
+docker push siddeshg672/testdeployimage:tagname_test
+
+
+FROM -- base images
+
+ADD -- download from internet
+
+COPY -- copy from local vm to container path
+
+RUN -- executing shell commmands
+
+ENV -- environment variables, Will declare inside dockerfile
+
+ARG -- parameter we use at the time of creating docker image
+
+CMD -- start the processs
+
+ENTRYPOINT -- start the processs
+
+WORKDIR -- it will consider the menrioned path as default folder
+
+LABEL -- we can define docker file rekated info
+
+MAINTAINER -- about developer
+
+USER -- switch between the users
+
+EXPOSE -- to declare the container ports
+
+
+
+Dangling images
+
+ADD vs COPY
+CMD vs ENTRYPOINT
+
+
+
+
+
+
+docker image
+
+checkout repo to container 
+https://github.com/Siddeshg672/hello_world_public_war.git master
+
+create war from source code
+
+
+
+context
+
+.dockerignore
+
+
+dangling images
+
+
+docker voloumes
+	shared
+		* nfs
+		* s3
+	Bind	
+		* bind volumes -- localally created folders
+			docker run -id --name stmulh -v /root/test:/usr/local/tomcat/webapps -p 9116:8080 dcc00d1e67b5
+		* normal volumes -- created with docker volumes commands 
+			docker volume create testVolume
+			docker run -id --name stmulh -v testVolume:/usr/local/tomcat/webapps -p 9116:8080 dcc00d1e67b5
+		* anonymous volumes -- default
+			docker run -id --name stmul -p 8914:8080 -v /usr/local/tomcat/webapps dcc00d1e67b5
+
+
+Docker networs
+	* Bridge -- default network, used when application run in isolation containers that need to be communicated
+	* Host -- removes the network isolation between the containers and docker host
+	* overlay -- this will interact multiple docker hosts
+	* ipvlan -- this will controles ipv4 and ipv6
+	* maclan -- this allows to assign the mac address to container 
+	* none -- disbales all the network part
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

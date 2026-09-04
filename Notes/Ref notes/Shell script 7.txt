@@ -1,0 +1,104 @@
+
+assgn.6 Write a script to display the name of employees whose age is more than 40
+
+
+Name		Emp-ID	Age
+ABC		202201	35
+EFG		202202	40
+HIJ		202203	38
+LMN		202204	45
+XYZ		202205	43
+GHY		202206	42	
+
+Script:
+
+#!/bin/bash
+echo "pls enter filename:"
+read fname
+echo "enter the age of employee:"
+read n
+echo "========================================"
+
+echo "List of Employees whose age is $n"
+
+echo "========================================"
+
+sed '1d' $fname > temp
+while read line
+do
+        age=`echo "$line"|awk -F " " '{print $3}'`
+        if [ $age -ge $n ]
+        then
+                echo "$line"|awk -F " " '{print $1}'
+
+        else
+                echo "No employees found in the given age $n"
+
+--------------------------
+
+Script:
+
+#!/bin/bash
+sed '1d' employee >age1
+
+while read line
+do
+age=`echo "$line" | awk -F " " '{print $3}'`
+if [ $age -gt 40 ]
+then
+echo "$line" | awk -F " " '{print $1}'
+fi
+done<age1
+
+===================================================================
+
+assgn.7 Write a shell script to check the services are running state or stopped state, and notify if the services are stopped
+
+#!/bin/bash
+#set -x
+services="tomcat apache2 java"
+for i in $services
+do
+temp=`sudo service $i status`
+if [ $? -ne 0 ]
+then
+echo "$i service is stopped please take some action"
+fi
+done
+
+
+======================================================================================
+
+assgn.8 Write a script to retain recent 20 files and delete all other files in given path:/home/path
+
+#!/bin/bash
+allfiles=`ls | wc -l`
+echo "total number of files and directorys are $allfiles"
+extrafiles=`expr $allfiles - 20`
+echo "total number of extra files are $extrafiles"
+if [ $extrafiles -gt 0 ]
+then
+ls -rt | head -$extrafiles | xargs rm -rf
+fi
+
+======================================================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

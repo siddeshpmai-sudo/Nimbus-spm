@@ -1,0 +1,38 @@
+pipeline{
+    agent {
+        label 'k8sdeploy'
+    }
+    stages{
+        stage('checkout'){
+            steps{
+                cleanWs()
+                git branch: 'main', url: 'https://github.com/Siddeshg672/hello_world_public_war.git'    
+            }
+        }
+        // stage('create and push docker image') {  
+        //     steps{
+        //         sh "mvn -DskipTests clean install"
+        //         sh "docker build -t siddeshg672/devopsapp:latest ."
+        //         sh "docker tag siddeshg672/devopsapp:latest siddeshg672/devopsapp:test-deploy_${BUILD_NUMBER}"
+        //         withCredentials([usernamePassword(credentialsId: 'docker_pass', passwordVariable: 'pass', usernameVariable: 'user')]) {
+        //             sh "docker login -u ${user} -p ${pass}"
+        //             sh "docker push siddeshg672/devopsapp:test-deploy_${BUILD_NUMBER}"
+        //         }
+        //     }
+        // }
+        stage('update manifest file'){
+            steps{
+                // sh """
+                //     sed -i "s/test-deploy_.*/test-deploy_$BUILD_NUMBER/" nginx-deploymeny.yaml
+                // """
+                // withKubeConfig(caCertificate: '', clusterName: 'jenkins-eks-cluster', contextName: '', credentialsId: 'k8sDeploy', namespace: 'default', serverUrl: 'https://037BA7ECEAFF16FF55CFC8588A64129F.gr7.us-west-2.eks.amazonaws.com') {
+                    sh "kubectl get all"
+                    sh "kubectl apply -f nginx-deploymeny.yaml"
+                    sleep 20
+                     sh "kubectl get all"
+                // }
+            }
+        }
+        
+    }
+}

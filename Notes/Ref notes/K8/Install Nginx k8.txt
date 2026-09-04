@@ -1,0 +1,14 @@
+appversion: v1
+kind: pod
+metadata:
+	name: Stattic-web
+	labeles: 
+		role: my-role
+spec: 
+	containers: 
+		- name: web
+		  image: nginx
+		  ports: 
+		  	- name: web
+		  	  containers: 80
+		  	  protocolL tcp 

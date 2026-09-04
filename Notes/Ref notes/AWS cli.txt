@@ -1,0 +1,64 @@
+
+
+    1  cat /etc/*release*
+    2  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    3  unzip awscliv2.zip
+    4  sudo ./aws/install
+    5  aws
+    6  aws --version
+    7  aws configure
+    8  aws ec2 describe-instances
+
+
+   11  aws ec2 describe-instances --query 'Instances[*].[InstanceId]' --output text
+
+   13  aws ec2 describe-instances
+
+   16  aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId]"
+   17  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId]"
+   18  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId]" --output text
+   19  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId].{PublicIP:PublicIpAddress" --output text
+   20  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId].{PublicIP:PublicIpAddress}" --output text
+   21  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress}" --output text
+   22  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,status}" --output text
+   23  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,status:status.name}" --output text
+   24  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name}" --output text
+   25  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType}" --output text
+   26  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType,VpcId:VpcId}" --output text
+   27  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType,VpcId:VpcId}" --output table
+
+
+
+
+Step1: Launch an EC2 Instance and save the instance ID into an environment variable
+
+instance_id=$(aws ec2 run-instances --image-id ami-55ef662f --instance-type t2.micro --key-name MyKeyPair1 --user-data file://userdata.txt  --query 'Instances[*].[InstanceId]' --output text )
+
+
+Step 2: Check the user data worked and the web server is running by typing the web server IP on a browser and verifying you see ÒHello WorldÓ
+
+Step 3: Create an image from that instance ID and save the image id to a variable image_id
+image_id=$(aws ec2 create-image --instance-id $instance_id --name "My server" --description "An AMI for my webserver" --query ImageId --output text)
+
+step 4: use that image to launch an instance
+aws ec2 run-instances --image-id $image_id --instance-type t2.micro --key-name MyKeyPair1   --query 'Instances[*].[InstanceId]' --output text 
+i-03c84ceb5391371b6
+
+
+
+
+aws ec2 run-instances --image-id $image_id --count 1 --instance-type t2.micro --key-name MyKey1 --security-group-ids sg-062b30d45273965cf --subnet-id subnet-06b6e3c6d00fe73f1 --query 'Instances[*].[InstanceId]' --output text
+
+
+
+
+
+
+instance_id=$(aws ec2 run-instances --image-id ami-0557a15b87f6559cf --count 1 --instance-type t2.micro --key-name MyKey1 --security-group-ids sg-062b30d45273965cf --subnet-id subnet-06b6e3c6d00fe73f1 --query 'Instances[*].[InstanceId]' --output text)
+
+
+
+
+
+
+

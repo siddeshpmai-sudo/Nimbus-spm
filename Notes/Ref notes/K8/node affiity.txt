@@ -1,0 +1,22 @@
+-----node affiity-----
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: na-nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: ec2
+            operator: In
+            values:
+            - worker2

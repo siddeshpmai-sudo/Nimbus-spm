@@ -1,0 +1,13 @@
+headless
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginix-headless
+spec:
+  clusterIP: None
+  selector:
+    app: nginix
+  ports:
+  - targetPort: 80
+  port: 8010

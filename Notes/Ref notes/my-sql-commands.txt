@@ -1,0 +1,12 @@
+
+
+
+MYSQL database commands:
+
+Dump all databases for backup	::--> mysqldump -u root -ppassword --opt >/tmp/alldatabases.sql
+
+Dump one database for backup ::--> mysqldump -u username -ppassword --databases databasename >/tmp/databasename.sql
+
+Dump a table from a database::--> mysqldump -c -u username -ppassword databasename tablename > /tmp/databasename.tablename.sql
+
+Restore database::--> mysql -u username -ppassword databasename < /tmp/databasename.sql

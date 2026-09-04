@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: affinity-test
+spec:
+  affinity:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+        - matchExpressions:
+          - key: kubernetes.io/test-name
+            operator: In
+            values:
+            - test1
+            - test2
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: example-node-label-key
+            operator: In
+            values:
+            - example-node-label-value
+  containers:
+  - name: affinity-test
+    image: k8s.gcr.io/pause:2.0

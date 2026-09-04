@@ -1,0 +1,52 @@
+
+
+
+118. cut -d " " -f1 filename
+119. cut -d " " -f3 filename
+120. cut -d " " -f1,2 filename
+121. awk -F " " '{print $2}' test1
+122. awk -F " " '{print $3}' test1
+123. awk -F " " '{print $NF}' test1
+124. awk -F " " '{print $(NF-1)}' test1
+125. awk -F " " '{print $1,$3}' test1
+126. ps -ef
+127. ps -ef|grep -i "process_name/service_name"
+128. ps -ef|grep -ie "process1" -ie "process2"
+129. kill -9 "pid"
+130. service service_name stop
+131. service service_name start
+132. service service_name restart
+133. ps -u "user_name"
+134. ps -u "ubuntu"
+135. adduser username
+136. find . -iname "test"
+137. find . -iname "dir"
+138. find /Users/hareeshab/Documents -iname "dir2"
+139. find . -type f -iname "test"
+140. find . -type d -iname "test"
+141. find . -type f -mtime -10
+142. find . -type d -mtime -10
+143. find . -type d -mtime +5
+144. find . -type f -mtime +20
+145. find . -type f -mmin -5
+146. find . -type d -mmin -15
+147. find . -type f -mmin -15
+148. find . -type f -perm 777
+149. find . -type d -perm 644
+150. find . -perm 755
+151. find . -type f -empty
+152. find . -type f -not -empty
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 

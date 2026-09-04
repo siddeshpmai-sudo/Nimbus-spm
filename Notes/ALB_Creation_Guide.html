@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Application Load Balancer (ALB) & Path-Based Routing Guide</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 30px;
+            background-color: #f4f7f6;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 15px;
+            text-align: center;
+            font-size: 2.5em;
+        }
+        h2 {
+            margin-top: 40px;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 10px;
+            color: #2980b9;
+        }
+        .step {
+            background: #ffffff;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #2ecc71;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #27ae60;
+        }
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+        .note {
+            background: #e8f6ff;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        .important {
+            background: #fff8e1;
+            border-left: 4px solid #f1c40f;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 5px 5px 0;
+        }
+        ul, ol {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+        strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>AWS ALB with Path-Based Routing Guide</h1>
+    <p>This guide demonstrates how to set up an Application Load Balancer (ALB) to route traffic to different target groups based on the requested URL path (e.g., <code>/billing.html</code> vs <code>/payment.html</code>). We will deploy 5 EC2 instances in total: 2 for billing, 2 for payment, and 1 as a default target.</p>
+
+    <h2>Phase 1: Launching EC2 Web Servers</h2>
+    
+    <div class="step">
+        <h3>Step 1: Launch 5 EC2 Instances</h3>
+        <p>Launch 5 identical Amazon Linux instances (e.g., <code>t2.micro</code>) to serve as our web servers. Use an existing key pair and a security group that allows HTTP (Port 80) and SSH (Port 22) traffic from anywhere.</p>
+        <ul>
+            <li><strong>Name them clearly:</strong> <code>ALB-Server-Default</code>, <code>ALB-Server-Billing1</code>, <code>ALB-Server-Billing2</code>, <code>ALB-Server-Payment1</code>, <code>ALB-Server-Payment2</code>.</li>
+            <li><strong>User Data:</strong> Use the following bash script for all instances to install and start Apache automatically on boot.</li>
+        </ul>
+        <div class="code-block">
+<pre>#!/bin/bash
+yum update -y
+yum install -y httpd
+systemctl start httpd
+systemctl enable httpd
+echo "&lt;h1&gt;Default Homepage&lt;/h1&gt;" &gt; /var/www/html/index.html</pre>
+        </div>
+    </div>
+
+    <div class="step">
+        <h3>Step 2: Configure Custom Pages via SSH</h3>
+        <p>We need to create specific HTML files so our load balancer health checks can pass and we can verify routing.</p>
+        <ol>
+            <li><strong>Default Server:</strong> Leave it as is. It already has <code>index.html</code>.</li>
+            <li><strong>Billing Servers (x2):</strong> SSH into both billing servers and rename the index file to <code>billing.html</code>. Add billing-specific text.
+                <div class="code-block">
+<pre>sudo su
+cd /var/www/html
+mv index.html billing.html
+echo "&lt;h1&gt;Welcome to the Billing Page!&lt;/h1&gt;" &gt; billing.html</pre>
+                </div>
+            </li>
+            <li><strong>Payment Servers (x2):</strong> SSH into both payment servers and rename the index file to <code>payment.html</code>. Add payment-specific text.
+                <div class="code-block">
+<pre>sudo su
+cd /var/www/html
+mv index.html payment.html
+echo "&lt;h1&gt;Welcome to the Payment Page!&lt;/h1&gt;" &gt; payment.html</pre>
+                </div>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Phase 2: Creating Target Groups</h2>
+
+    <div class="step">
+        <h3>Step 3: Create Three Target Groups</h3>
+        <p>Navigate to <strong>EC2 Dashboard > Target Groups</strong> and create the following three Target Groups (Type: Instances, Protocol: HTTP, Port 80):</p>
+        
+        <ol>
+            <li><strong>Default Target Group:</strong>
+                <ul>
+                    <li>Name: <code>Default-TG</code></li>
+                    <li>Health Check Path: <code>/index.html</code> (or just <code>/</code>)</li>
+                    <li><em>Register target:</em> Select the 1 Default server.</li>
+                </ul>
+            </li>
+            <li><strong>Billing Target Group:</strong>
+                <ul>
+                    <li>Name: <code>Billing-TG</code></li>
+                    <li>Health Check Path: <code>/billing.html</code></li>
+                    <li><em>Register targets:</em> Select the 2 Billing servers.</li>
+                </ul>
+            </li>
+            <li><strong>Payment Target Group:</strong>
+                <ul>
+                    <li>Name: <code>Payment-TG</code></li>
+                    <li>Health Check Path: <code>/payment.html</code></li>
+                    <li><em>Register targets:</em> Select the 2 Payment servers.</li>
+                </ul>
+            </li>
+        </ol>
+        <div class="note">
+            <strong>Note:</strong> Under Advanced Health Check settings, you can adjust the interval to 10 seconds to speed up the health check process. Wait until targets show as <strong>Healthy</strong> before proceeding.
+        </div>
+    </div>
+
+    <h2>Phase 3: Creating the Application Load Balancer</h2>
+
+    <div class="step">
+        <h3>Step 4: Configure the ALB</h3>
+        <ol>
+            <li>Navigate to <strong>EC2 Dashboard > Load Balancers</strong> and click <strong>Create load balancer</strong>. Select <strong>Application Load Balancer</strong>.</li>
+            <li><strong>Name:</strong> e.g., <code>Nimbus-ALB</code></li>
+            <li><strong>Scheme:</strong> Internet-facing</li>
+            <li><strong>Network mapping:</strong> Select at least two Availability Zones where your instances are deployed (e.g., <code>us-east-1a</code> and <code>us-east-1b</code>).</li>
+            <li><strong>Security groups:</strong> Select your web security group allowing Port 80.</li>
+            <li><strong>Listeners and routing:</strong> 
+                <ul>
+                    <li>Protocol: HTTP, Port: 80</li>
+                    <li>Default action: <strong>Forward to <code>Default-TG</code></strong></li>
+                </ul>
+            </li>
+            <li>Click <strong>Create load balancer</strong> and wait for the state to become <strong>Active</strong>.</li>
+        </ol>
+    </div>
+
+    <div class="step">
+        <h3>Step 5: Configure Path-Based Routing Rules</h3>
+        <p>Now we will tell the ALB how to route traffic based on the URL path.</p>
+        <ol>
+            <li>Select your ALB and go to the <strong>Listeners and rules</strong> tab.</li>
+            <li>Click on the <strong>HTTP:80</strong> listener to view its rules.</li>
+            <li>Click <strong>Manage rules</strong> (or Add rule).</li>
+            
+            <li><strong>Add Rule 1 (Billing):</strong>
+                <ul>
+                    <li>Condition: <strong>Path</strong> is <code>/billing.html</code></li>
+                    <li>Action: <strong>Forward to</strong> <code>Billing-TG</code> (Weight: 100%)</li>
+                    <li>Priority: 1</li>
+                </ul>
+            </li>
+            
+            <li><strong>Add Rule 2 (Payment):</strong>
+                <ul>
+                    <li>Condition: <strong>Path</strong> is <code>/payment.html</code></li>
+                    <li>Action: <strong>Forward to</strong> <code>Payment-TG</code> (Weight: 100%)</li>
+                    <li>Priority: 2</li>
+                </ul>
+            </li>
+        </ol>
+    </div>
+
+    <h2>Phase 4: Testing the Setup</h2>
+
+    <div class="step">
+        <h3>Step 6: Verify Traffic Distribution</h3>
+        <ol>
+            <li>Copy the <strong>DNS name</strong> of your Application Load Balancer.</li>
+            <li><strong>Test Default:</strong> Paste the DNS name in your browser. It should hit the Default target and show "Default Homepage".</li>
+            <li><strong>Test Billing:</strong> Append <code>/billing.html</code> to the DNS name (e.g., <code>nimbus-alb-123.us-east-1.elb.amazonaws.com/billing.html</code>). You should see the Billing Page. <em>Refresh multiple times to verify traffic balances between your two billing instances.</em></li>
+            <li><strong>Test Payment:</strong> Append <code>/payment.html</code> to the DNS name. You should see the Payment Page. <em>Refresh to see load balancing across the two payment instances.</em></li>
+        </ol>
+    </div>
+
+</body>
+</html>

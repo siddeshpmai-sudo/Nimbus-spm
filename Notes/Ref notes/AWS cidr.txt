@@ -1,0 +1,35 @@
+
+
+
+10.0.0.0 --> Network address
+10.0.0.1 --> Reserved by aws for the vpc router
+10.0.0.2 --> Reserved by aws for DNS server
+10.0.0.3 --> Reserved by aws for future use
+last ip --> n/w broadcast address
+
+
+2^32-26 --> 2^6 --> 64
+
+2^32-16 --> 2^16 --> 65536
+
+
+
+10.0.0.0
+10.0.0.1
+10.0.0.2		pub-sn-01
+---
+10.0.0.15
+
+
+
+----
+10.0.0.64
+
+
+4 systems
+
+192.121.11.12
+192.121.21.33
+192.121.33.35
+192.121.56.57
+

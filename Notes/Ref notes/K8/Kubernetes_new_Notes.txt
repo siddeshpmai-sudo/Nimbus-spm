@@ -1,0 +1,1349 @@
+ KUBERNETES
+CLASS 1 18-2-2021
+--------------------------------------------------------------------------------------------------------------------------
+==>Kuberenets Installation :
+kubectl get nodes --> TO get the information about the cluster
+kubectl label node <node_name> node-role.kubernetes.io/worker1=worker1 --> to create/change the label of the worker node
+
+k8s Master --> t2.medium
+k8s Worker Nodes --> t2.micro
+
+*** Interview 
+==> its better and easy to say in the interview ?
+      I didnot set up the total kubernetes environment but i know how to install kubernetes and everything 
+	  kubernetes environment is set up by my team lead or architect
+--> but i know the procedure on how to setup everything so just need to know some steps on how kubernetes will setup
+---------------------------------------------------------------------------------------------------------------------
+CLASS 2 19-12-2021
+----------------------------------------------------------------------------------------------------------------------- 
+==> Kuberenets [k8s] :
+         Kuberenets is an open source container orchestration technology for automating deployment ,scaling,and 
+		  management of containeraized applications
+   ->    Kuberenets is orginally developed by google and is now maintaned by cloud native computing foundation(CNCF)
+
+==> Kuberenets Architecture :
+ 1)Master (Control Plane ) :
+              Kuberenets master majorly runs with 4 components 
+    1)API Server :
+        ->    API serevr is the  main Managemnt point of the entire cluster.when we interact with  kubernetes cluster 
+		       using the kubectl command we are actually communicating with the master API serevr.			   
+        ->    API server is the only kubernetes component that connects to all other components 
+		        API server is also responsible for authentication and authorization
+	    ->    The API server also implements a watch mechanisam to watch for any required changes.this allows components
+                such as the schedular and the controller manager to interact with the API server and try to match the
+                desired state with the actual state.
+   2) Etcd : 				
+        etcd is a distributed,consistent key value store used to store the configuration data of the complete 
+		kubernetes cluster .etcd reliabily stores the configuration data of the kubernetes cluster representing the
+		state of the cluster at any given point of time (Ex:what nodes existing in the cluster,what pods should be
+		running,which nodes they are running on etc.)
+             etcdctl snapshot save -> used to take backup of entire kubernetes cluster data
+			 etcd.io --> website of etcd
+	3) Shedular :
+             A schedular watches for any unschedule pods and binds them to the nodes
+        ->   Shedular decides which node the pod has to be created according to the availability of the requested
+             resources,affinity and anti-affinity specifications and other constrains.
+			 
+    4) Controller/Control-Manager :
+     	     It is a deamon which runs a never ending core control loop (also known as controllers).Basically 
+			 a controller watches the state of the cluster through the API serevr watch mechanisam,and when it gets 
+			 notified it makes the necessary changes attempting to the current state towards the desired state.
+	
+        Examples : 1) Deployment
+		           2) Replications/Replica set	
+				   3) Stateful set
+				   4) Deamon set ...etc
+				   
+==> Major Components of Worker Nodes :
+     Node (Worker) :
+          A Node is a worker machine where containers inside the pods will be launched by kubernetes.
+     Components are 
+     1) Container Runtime :
+	           the container runtime is the underline software that is used to run containers generally docker is 
+              used as the container runtime.
+    ==> Other supported K8S container Runtime are 
+           Docker,cri-o,rktlet etc..  
+    
+	 2) Kublet :
+	      kublet is the agent that runs on each node in the cluster.kublet is the responsible for making sure that 
+		   the containers are running on the nodes as expected.
+		   
+	 3) kube-proxy
+	    ->  It is a proxy services which runs on each nodes helps in making the services available to external host  
+        ->  It helps in forwarding the request to the correct containers and is capabile of performing basic load
+            balancing			
+      4) Pod :
+	       A pod is the smallest deployable unit that can be managed by the kubernetes.A pod can have one or more 
+		    containers inside
+		->	The major api versions are v1 and apps/v1
+   
+==> Simple Manifest file to create a simple pod :
+apiVersion: v1
+kind: Pod
+metadata:
+    name: nginx
+    labels:
+       app: load-balancer
+spec:
+    containers:
+	- name: nginx-container
+	  image: nginx:latest
+	  
+Commands :	  
+kubectl apply -f <.yaml> --> To create a K8s / how 
+kuectl get pods --> To check all the pods running on the cluster
+kubectl delete pod  <podname> --> To delete the pod 	  
+kubectl describe pod <podname>  --> to check the information about the pod 
+kubectl getpods -o wide --> to extend the information of the pods
+------------------------------------------------------------------------------------------------------------------------------
+CLASS 3 20-12-2021
+------------------------------------------------------------------------------------------------------------------------
+==> Manifest file Components:
+1.api version :
+    api version specifies the version of kubernetes api that we will be using to create the kubernetes object 
+	EX: v1, apps/v1, etc
+	kubectl api-versions --> to check all the api versions available
+	kubectl api-resources --api-groups<api_version_name> --> to check the objects that we could create using the specified
+                                                            	api version
+
+2.kind :
+     kind specifies the type of kubernetes object that we are trying to create.it can be a pod or deployment controller	or
+      deamon set 
+
+3.metadata :
+     metadata provides the information about the objects like name of the pod,namespace,under which the pod will be 
+	 running etc.
+
+4.spec :
+  spec consists of the core information of the pod and it specifies the desired state of our object 
+
+5.labels :
+      labels are key value pairs attached to an object that helps to select and group the object,we can associate any
+    number of labels to a kubernetes object.
+  ex : 
+labels:
+- app: website
+- os: linux
+
+6.selector :
+    using the matching labels of the object selectors can be used to identify the kubernetes objects
+    the api currently supports 2 types of selectors
+a).equity-based selectors :
+	  in equity or equality base selectors 3 kinds of operators are allowed i,e =,==,!= .the first two represents the equality
+	    later represent the inequality
+ex :
+app = alpine
+os != windows		
+
+b)set-based selectors :
+   it allows filtering of the keys based on a set of values. the operators are in,notin,exists.
+ex :
+   environment in (production, qa)
+   os notin (windows, linux)
+ 
+------------------------------------------------------------------------------------------------------------------------ 
+==> Controller Types :
+
+1.ReplicaSet / Replication Controller :
+             This controller is used to run multiple instances of a single pod to acheive load balancing and high availability
+			 if any pod dies then the controller will recreate a new one .the replication controller will do 2 activities
+			 
+  1.creating multiple instances of the same applications.while both replication controller or replica set are used to 
+   create the replicas of the pods the replication controller only supports equity based selectors while replica set supports
+   both equity based as well as set based selectors 
+   
+kubectl scale --replicas=5 rc/rs <name> --> if you want to scale up the replicas through manually
+kubectl delete rc name --> to delete the total replicationset/replicationController
+
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: rc-nginx
+spec:
+  replicas: 3
+  selector:
+    app: nginx
+  template:
+    metadata:
+      name: template-nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx
+        ports:
+        - containerPort: 80
+		
+
+2.Deployment Controller:
+         Deployment is the most common object for deploying the pods in kubernetes.a deployment provides declarative updates
+		 for pods without breaking the user experience .we can effortlessly rollout application updates and also rollback
+		 the update if anything breaks.
+		 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+	  app: nginx
+  template:
+    metadata:
+      name: template-nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20
+        ports:
+        - containerPort: 80		 
+kubectl set image deployment/deploymentControllername imagename=nginix:1.21 --> to update the image of nginix to 1.21 		 
+kubectl set image deployment/deploymentControllername imagename=nginix:1.21 --record --> to update the image of nginix to 1.21
+                     if the image is not there it cannot terminate the older images and kept in running(it shows imagepullerror)
+kubectl rollout history --> to check the history of the deployment controller
+kubectl rollout undo deployment/dep-nginx --> to roll back to the previous version
+kubectl rollout undo deployment/dep-nginx --to-revison:2 --> To roll back to a particular revision
+kubcetel delete deployment deploymentControllername --> to delete the deploymentController		 
+
+-----------------------------------------------------------------------------------------------------------------------------
+CLASS 4 21-12-2021
+--------------------------------------------------------------------------------------------------------------------------
+==> 3) DeamonSet :
+     DeamonSet ensures that the pod runs on all nodes of the cluster,if a node is added or removed from the cluster deamonset 
+	  automatically adds or deletes the pods.
+	 some tipical use cases of deamonset:
+1.Monitoring Exporters: 
+   if you wnat to monitor all the nodes of the cluster we can run a monitoring tool like node exporter on all the nodes 
+   of  the cluster.
+2.Logs Collection :
+     whenever we want to export logs from all the nodes we can use deamonset with Fluentd to export logs from all the 
+	 nodes
+--> Prometheus is a monotoring tool used to monitor nodes pods and entire cluster
+-->Graffana is a visualization tool where used to create a dashboard based on dashboard easily monitor your kubernetes cluster	
+	
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: daemon-nginx
+spec:
+  selector:
+    matchLabels:
+	  app: nginx
+  template:
+    metadata:
+      name: template-nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.20
+        ports:
+        - containerPort: 80
+	  livenessProbe:	 
+	 
+==> 4) StatefullSet :
+      like deployment controller statefulset manages the pods that are based on an identical container specification.
+     unlike deployment controller stateful set maintains unique identity for every pod.each pod will have their own state and
+	 their own volume 
+ -> we cannot rollback a stateful set to a previous version.we can only delete scale up,scale down or update the
+    statefulset
+
+** Interview Question
+1.How you monitor your kubernetes cluster ?
+A)we have setup a prometheous and we visualize all the data that is coming out of prometheous using graffana dashboards	
+------------------------------------------------------------------------------------------------------------------------
+==> Pod Phases/Pod Lifecycle :
+ 
+1.Pending :
+   The pod has been accepted by the kubernetes cluster but one or more containers present in the pod have not yet been started.
+2.Running :
+          The pod has been bount to a node all of the containers are up and running
+3.Succeeded :
+   All the containers in the pod have terminated in the sucess and will not be restarted  
+4.Failed :
+  All the containers in the pod have terminated and atleast one container has terminated in failure i,e the container is
+  exited in non zero status(error).
+ 5.Unknow :
+   For some reason the state of the pod could not be obtained then the pod goes into unknown phase.This phase typically occurs
+   due to an error in communicating with the node where the pod is running 
+  
+-----------------------------------------------------------------------------------------------------------------
+==> Probes :
+  Probes are the actions performed by kublet which provides health checks to monitor and check the state or the condtion of
+   the pods
+  -> probes are defined at the container level and we can define multiple probes inside our manifest file 
+
+--> Configure probes:
+   probes have a number of fields that we can use preciousily control the behaviour of probe checks
+   1.Initial DelaySeconds :
+       number of seconds after the container has started before the probe gets executed for the first time.
+	   default value is 0 seconds
+  2.periodseconds :
+     how often to perform the probe.default value is 10 seconds
+  3.timeoutseconds:
+       number of seconds that the probe waits for a response before assuming failure.default value is 1 second
+  4.successThreshold:
+      minimum consecutive times for the probes to be consider successfull after having fail.default value is 1.
+  5.FailureThreshold:
+       when a probe check fails kubernetes will try failure threshold times before giving up.default value is 3.
+
+Assiagnemnet :
+ 1)  Pod Failures ?
+    1.Wrong container image/invalid registry permissions
+	2.Application crashing after launch
+	3.Missing config map or secret
+	4.Liveness/readiness probe failure
+	5.Exceeding CPU/Memory limits
+	6.Resource quotas
+	7.Insufficient cluster resources
+	8.persistent volume fails to mount
+	9.Validation error
+	10.container image not updating
+ ----------------------------------------------------------------------------------------------------------------------
+ 2)  Http status codes ?
+    1.Informational response (100 - 199)
+	2.sucessfull response (200 - 299)
+	3.redirection message ( 300 - 399)
+	4.client error response (400 - 499)
+	5.server error response (500 - 599)
+
+----------------------------------------------------------------------------------------------------------------------
+CLASS 5 22-12-2021
+-------------------------------------------------------------------------------------------------------------------
+==> Types of Probes :
+
+1.Readiness Probe :
+    Readiness probes are used to check weather the applications inside the container are ready and able to receive external 
+	request.if the condition inside readiness probe fails applications are not allowed to serve any request.this way 
+	kubernetes can prevent an application to recive request when it is still loading or too busy to process them properly.
+
+2.Liveness Probe :
+      Liveness probe works exactly like readiness probes but incase of failure it causes the container to be killed and 
+      restarted so that it would return the application to its intial healthy state
+
+3.Startup probe :
+     startup probe was introduced in version 1.16.startup probe and liveness probe are both exactly the same in case of failure
+     they cause the container to be restarted
+  -> if both startup and liveness probes are configured for the pods kubernetes will execute startup probe first.if it succeeds
+  then the liveness probe will be executed normally as configured.if the startup probes fails the pod is restarted and the
+  cycle is repeate it is an extral layer of check for the pods.
+  
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe
+  labels:
+	type: probe
+spec:
+  containers:
+  - name: probe
+    image: alpine
+	ports:
+	- containerPort: 80
+	<probe_type>
+	  <probe_action>
+	  initialDelaySeconds: 0
+      periodSeconds: 10
+	  timeoutSeconds: 1
+	  successThreshold: 1
+
+-----------------------------------------------------------------------------------------------------------------------------
+==> Probe Actions :
+     probes can execute different actions to interact with the applications running in a container
+
+1.HTTP Request - [httpGet] :
+     As kubernetes is usually used in web applications the most comman probe action is the http request.Http request sends
+	 a get request to the path define in the probe.The Http status code determines weather the probe is sucessfull or not
+ synax :
+   <probe_type>
+    httpGet:
+      path: <path_to_application>
+      port: <port_number>
+    initialDelaySeconds: 0
+    periodseconds: 10	
+	
+--> EX:
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe
+  labels:
+    type: probe
+spec:
+  containers:
+  - name: probe
+    image: k8s.gcr.io/liveness
+    args:
+    - /server
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 2	
+
+2. Shell - [exec]
+   shell probe action help us to run shell commands which are excuted in pods shell evironment.and they are considered as 
+   failed if the command exists with the non zero value
+Syntax:
+<probe_type>:
+	  exec:
+	    command:
+		  - <command>
+		  - <arguments>           
+   
+apiVersion: v1
+kind: Pod
+metadata:
+  name: shell
+  labels:
+	type: probe
+spec:
+  containers:
+  - name: shell
+    image: alpine
+	args:
+	- /bin/sh
+	- -c
+	- touch /tmp/test; sleep 20; rm -rf /tmp/test; sleep 500
+	livenessProbe:
+	  exec:
+	    command:
+		- cat
+		- /tmp/test
+	  initialDelaySeconds: 0
+      periodSeconds: 5
+	  failureThreshold: 2   
+
+3. TCP Port Check - [tcpSocket] :
+     the tcp port check probe action is used to check if a port of the pod is open and if the kubelet is able to connect to 
+     the specific port	 
+Syntax :
+
+<probe_type>
+  tcpSocket:
+    port: <port_number>
+
+--------------------------------------------------------------------------------------------------------------------
+CLASS 6 Evening 22-12-2021
+--------------------------------------------------------------------------------------------------------------------
+==> Kuberenets Services :
+       Services in kubernetes are a way of defining network configuration for pods.services always point to the pods not the
+	   deployment or other controllers.In kubernetes pods can communicate with each other by defalut without any configuration
+	   by using internal ip address assiagned to them by kube-proxy.
+
+Need for Kuberenets Services :
+  1. since pods are short lived, every time a pod dies and a new pod comesup. the ip address for that pod is most slightly 
+        to change therefore we cannot relay on internal ip for communication.
+  2. pods can be horizontally scaled and each new pod gets its own ip address.they wont be a way for us to know about the 
+        ip address in advance.
+  3. we cannot use pods ip address if you want to request services running in the pod from outside the cluster 
+ 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dep-nginx
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+	  app: nginx
+  template:
+    metadata:
+      name: template-nginx
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:alpine
+        ports:
+        - containerPort: 80  
+	  
+Types of Services in KUBERNETES :
+1. ClusterIP :
+    Clusterip is the deafult service type in kubernetes and is only exposed internally with in the cluster.It enables pods to 
+	communicate with other pods in the cluster without having to use their IP address.
+	
+restriction : it is inside kubernetes itself.if any request coming from the outside world it not accept	
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginix-clusterip
+spec:
+  type: ClusterIP
+  selector:
+    app: nginix
+  ports:
+  - targetPort: 80
+  port: 8000
+
+kubectl exec podname -it sh --> to go to inside the pod / get into the container
+kubectl get svc -> to get the services 
+curl ipaddress:port_number --> it connects to the nginix 
+
+
+2.NodePort Service :
+   NodePort service allows us to exopse our pods in the cluster on a static port.which enables us to accesss as the pod running
+   inside the cluster from the outside world
+  -> NodePort range in k8s is 30000 to 32767  
+ 
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginix-nodeport
+spec:
+  type: NodePort
+  selector:
+    app: nginix
+  ports:
+  - targetPort: 80
+  port: 8000
+  nodePort: 31000
+kubectl describe svc nginix-nodeport(podname) --> to describe the sevice 
+
+3.LoadBalancer Service :
+  LoadBalancer Service is way to expose our services externally and it is useful when combined with a cloud providers
+  LoadBalancers (elastic loadbalancer etc).with loadbalancer service the nodeport and Clusterip services are created 
+  automatically.
+  
+4. Headless : 
+    Headless service is the same as the default clusterIP service but lacks loadbalancing or proxying allowing us to connect 
+    to a pod directly
+	Headless service will return all the ips of the pods which are associated with it 
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginix-headless
+spec:
+  clusterIP: None
+  selector:
+    app: nginix
+  ports:
+  - targetPort: 80
+  port: 8010
+
+nslookup podname -->get all the pods ip address individually 
+
+------------------------------------------------------------------------------------------------------------------
+CLASS 7 23-12-2021
+-----------------------------------------------------------------------------------------------------------------------
+C-Groups :
+    c-Groups or controlgroups are a kernal mechanisam for limiting and measuring the total resources used by a group of
+	process running on a system.controlgroups allow dokcer engine to share availabe hardware resources to containers and 
+	optionally enforce limits and constraints
+
+NameSpaces :
+     NameSpaces are a kernal mechanisam for limiting the visibility of group of process to the rest of the system.when you run
+    a container docker engine creates a set of namespaces for that container these namespaces provides a layer of isolation.
+
+Types : 
+PID --> based on PID,process isolation
+NET --> Based on networking
+MNT --> For mount points/file system
+UTS --> For isolating kernel and version identifiers
+IPC --> Limiting access to certain resources
+
+CGropus -- Limit how much you can use
+NameSpaces -- Limit how much you can see and therefore use
+
+ -->  When you apply a full setup CGropus and NameSpaces you end up having a group of process running inside a fully isolated
+      environment with in a linux system.this is what makes a docker container
+
+Kubectl get ns --> to get the namespaces
+kubectl describe ns kube-system -> to get the details of the name space
+kubectl get pods -n kube-system --> to get the pods in the particular namespace
+kubectl create ns <namespace_name> --> to create the name space
+kubectl apply -f <.yaml_file> -n <namespace_name> --> to create a object in the particular namespace
+
+apiVersion: v1
+kind: Pod
+metadata:
+  namespace: dev
+  name: nginx
+  labels:
+	app: load-balancer
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+     
+csv --> comma separated value
+
+==> KUBERNETES NameSpaces :
+     kubernetes namespaces allows us to partion our cluster into separate virtual subdivision.we can create multiple name spaces
+  with in one kubernetes cluster and they are logically isolated from one another
+  -> we can create a namespace for different teams ,projects or projectstages.
+  -> kubernetes has 4 intial namespaces
+ 1.default :
+    This namespace is used for objects when we dont specify any namespace while creating a kubernetes object 
+ 2.	kube-system :
+     kube-system namespace is for the objects created by the kubernetes system to run its components.we usually never 
+	 re-configure or create any objects in kube system
+ 3.kube-public :
+     the resources inside this namespace is readiable by all users including those who are not authenticate
+ 4.kube-node-lease :
+        this namespace is a new addition in kubernetes and it has resources which provides tools to monitor objects associated
+        which each node	 
+  
+  kubectl get all --all-namespaces : to get all the information all the namespaces inside the cluster 	 
+
+--------------------------------------------------------------------------------------------------------------------
+CLASS 8 28-12-2021
+-------------------------------------------------------------------------------------
+==> Scheduling Pods :
+             in general scheduling of pods is handle by kubernetes schedular.schedular ensures that the right node is selected
+			 by checking the nodes capacity for CPU & RAM
+	     -> However there are some scenarios where you want your pods to end upon specific nodes
+	For EX :
+	    1.when we want a pods to end up on a node with some particular resource availabe on it.
+	    2.when we want to co-locate pods on particular nodes from the same availability zone
+		3.when we want to co-locate a pod from one service with a pod from another service on the same node due to strong
+		   dependency on each other.
+	-> the three methods in kubernetes to schedule the pods manually are
+                   1.Node Selector
+                   2.Affinity and Anti-Affinity
+                   3.Taints and Tolerations
+
+1.Node Selector :
+     NodeSelector is the simplest way of scheduling the pods to a particular node using its labels and defining them under
+	 NodeSelector in the manifest file.
+
+Syntax :
+     nodeSelector:
+	   <key>: <value>
+
+kubectl label node <node_name> <key>=<value> --> To assaign a label to the node
+kubectl getnodes --show-labels -->  to display all the labels of the node
+	   
+2.Affinity and Anti-Affinity :
+     The Affinity greatly expands the node selector and there are two types of Affinity in kubernetes NodeAffinity and
+	 PodAffinity
+-> Affinity also provides soft and hard scheduling rules,if the soft rule is not met the schedular can still schedule a pod
+   onto a specific other node
+   Syntax :
+   spec:
+     affinity:
+	   <affinity_type>
+	      requiredDuringSchedulingIgnoredDuringExecution   (this the way to write hard limit)
+  
+   2 ways of assaign limits hardlink and softlink
+  -> Hard Rule : requiredDuringSchedulingIgnoredDuringExecution 
+  
+  -> Soft Rule : preferedDuringSchedulingIgnoredDuringExecution 
+ 
+--> Node Affinity :
+     Similar to node selector node Affinity allows scheduling of pods to specific nodes ,we are using more expressions.
+    synax :
+   	 spec:
+     affinity:
+	   nodeAffinity:
+	      requiredDuringSchedulingIgnoredDuringExecution
+		    nodeSelectorTerms
+			- matchExpressions:
+			   - key: <key>
+			   operator: In  
+			   values:
+			   - <value>
+			   
+apiVersion: v1
+kind: Pod
+metadata:
+  name: na-nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 1
+        preference:
+          matchExpressions:
+          - key: ec2
+            operator: In
+            values:
+            - worker2			   
+
+Pod Affinity and Pod Anti-Affinity :
+    with pod Affinity and Anti-Affinity we can define weather a pod should or should not be scheduled on to a particular node
+	based on labels of other pods already running on that node 
+ 
+    synax :
+   	 spec:
+     affinity:
+	   <podAffinity/podAntiAffinity>
+	      requiredDuringSchedulingIgnoredDuringExecution
+		  - labelSelector
+			matchExpressions:
+			   - key: <key>
+			   operator: In  
+			   values:
+			   - <value>
+           topologykey: <key>
+		   
+apiVersion: v1
+kind: Pod
+metadata:
+  name: pod-affinity
+  labels:
+    app: load-balancer
+spec:
+  containers:
+  - name: jenkins
+    image: jenkins/jenkins
+  affinity:
+    podAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchExpressions:
+          - key: app
+            operator: In
+            values:
+            - nginx
+        topologyKey: kubernetes.io/hostname		   
+------------------------------------------------------------------------------------------------------------------------
+CLASS 9 29-12-2021
+------------------------------------------------------------------------------------------------------------------------ 
+
+Taints & Tolerations :
+        Affinity is a property of pods that attracts them to a set of nodes.while the taints are the opposite.they allow a 
+		node to repel a set of pods 
+	-> Tolerations are applied to pods so that they are allowed to schedule on to nodes with matching taints
+kubcetel taint nodes <node_name> <taint_key>=<taint_value>:<taint_effect> --> to taint a node with particular key and effect
+kubectl taint nodes <node_name> ec2=taint:NoSchedule
+
+kubcetel taint nodes <node_name> <taint_key>=<taint_value>:<taint_effect>-  --> to untaint a node 
+
+
+Taint Effects:
+1.NoSchedule
+2.PreferNoSchedule
+3.NoExecute
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ns-nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+  tolerations:
+  - key: "ec2"
+    operator: "Equal"
+    value: "taint"
+    effect: "NoSchedule"
+
+-----------------------------------------------------------------------------------------------------------------------------
+==> Kuberenets Volumes :
+       
+1.Ephemeral Volumes [shortlived] :
+     These are short lived and they are tightly dependent on the lifetime of the pod or node
+2.Persistent volumes [long duration] :
+      Persistent volumes are meant for longterm storage and are independent of the pods or the nodes lifecycle.
+     -> Persistent Volumes can be created in 2 ways	  
+	      1.static persistent volume[manually created by the administrator]
+		  2.dynamic persistent volume [automatic] (storage classes)
+1.static persistent volume[manually created by the administrator]
+       static persistent volume are manually created by the administrator
+		PV --> PVC --> POD  
+		  
+2.dynamic persistent volume [automatic] (storage classes) :
+            In dynamic volumes we configure storage classes to dynamically create persistent volumes.The main goal of storage
+			class is to eliminate the need for administrators to pre-provisioned storage.here volumes are created dynamically
+			on demand.developers can then request storage by specifying the storage class in pvc
+		StorageClass -> PVC --> Pod	
+ Persistent Volume Claim:
+    to claim a persistent volume we use PVC.PVC is a way for a developer to request storage for the application
+		  
+kubectl get pv --> to get the persistent volumes
+ssd -fast,hdd - medium, magnetic-slow
+
+
+Interview question :
+how you mount a volumes inside the pod ?
+ persisent volume Claim
+ 
+------------------------
+Persistent Volume:
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pv-vol
+spec:
+  storageClassName: staticpv
+  capacity:
+    storage: 1Gi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /tmp/static
+-----------------------------
+PersistentVolumeClaim:
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pv-vol-claim
+spec:
+  storageClassName: staticpv
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+	  storage: 1Gi
+---------------------- 
+Mount to a Pod:
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ns-nginx
+  labels:
+    app: nginx
+spec:
+  volumes:
+  - name: volume
+    persistentVolumeClaim:
+	  claimName: pv-vol-claim
+  containers:
+  - name: nginx-container
+    image: nginx:latest
+	volumeMounts:
+	- mountPath: /home
+	  name: volume 
+------------------------------------------------------------------------------------------------------------------
+CLASS 10 30-12-2021
+--------------------------------------------------------------------------------
+==> ConfigMaps & Secrets :
+      ConfigMaps and Secrets are kubernetes object to store data in key value pairs pods can then use this key values as 
+	  environment variables or as config files in a volume.
+	  
+ConfigMaps :
+      ConfigMaps are namespaced objects which are used to store data in terms of plain text.which is open and readiable to all
+	  the users who have access to the cluster.
+--> ConfigMaps use case is to setup environmental variables	  
+	  
+kubectl create configmap <configmap_name> --from-literal <key>=<value> --> to create a configmap
+kubectl get configmap --> to get the congigmaps
+kubectl get configmap -n namespace --> to get congigmap under particular namespace
+kubectl describe configmsp/username -n namespace --> to describe the configmap under a namespace
+
+ EX :kubectl create configmap username --from-literal user=abc --> to create a configmap
+ 
+ apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: username
+  namespace: dev
+data:
+  user: abc
+
+==> Secrets :
+       Kuberenets secrets are secured the object to store sensitive data such as passwords,keys which are encrypted in base64.
+--> secrets use case is it stores the data like passwords keys in encrypted form	   
+
+  kubectl create secret generic <secret_name> --from-literal <key>=<value> --> to create a secret
+ ex: kubectl create secret generic password --from-literal pass=tesr --> to create a secret
+
+kubectl describe secret/password -n namespace --> to describe the secret under a namespace
+
+ echo -n "<string>" | base64 --> To encrypt a string
+ kubectl exec configsecrets -n namespace -it -sh --> to get into the configsecrets
+ 
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configsecrets
+  labels:
+    app: golang
+  namespace: dev
+spec:
+  containers:
+  - name: golang
+    image: golang:alpine3.15
+    command: ["sleep", "20000"]
+	env:
+	- name: USERNAME
+	  valueFrom:
+	    configMapKeyRef:
+		  name: username
+		  key: user
+	- name: PASSWORD
+	  valueFrom:
+	    secretKeyRef:
+		  name: password
+		  key: pass 
+
+==> How do you mount environmental variables in k8s ?
+    configmaps and secrets
+there are two ways of mount the configmaps and secrets are --> environmental variables and volumes 	
+----------------------------------------------------------------------------------------------------------------------
+==> Resourcequotas :
+   Kuberenets namespace help in creating logically isolated work environment,but namespaces donot enforce limitations of quotas
+   for this purpouse we use resource quotas to specify limits for around 15 kubernetes object
+
+kubectl describe resouecquota/rq -n namespace --> to describe the resourcequota under a namespace
+
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: rq
+  namespace: dev
+spec:
+  hard:
+    pods: 2
+	secrets: 2
+	requests.cpu: 0.5
+	limits.cpu: 1
+	requests.memory: "256Mi"
+	limits.memory: "512Mi"
+
+==> For Memory
+request.cpu : 0.5  --> 1 cpu core node
+limits.cpu : 1   --> all the pods
+
+==> For CPU :
+requestmemory : 256 Mi --> each pod use
+limits.memory : 512 Mi --> all the pods
+-----------------------------------------------------
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configsecrets
+  labels:
+    app: golang
+  namespace: dev
+spec:
+  containers:
+  - name: golang
+    image: golang:alpine3.15
+    command: ["sleep", "20000"]
+    resources:
+	  requests:
+	    cpu: 0.25
+		memory: "128Mi"
+	  limits:
+	    cpu: 0.5
+		memory: "256Mi"
+---------------------------------------------------------------------------------------------------------------------------
+CLASS 11 04-01-2022
+----------------------------------------------------------------------------------------------------------------------
+==> RBAC (RoleBaseAcessControls) :
+Context :
+           Context is a group of access parameters to enable secure connection to a specific clusters API server each
+    context contains a kubernetes cluster,a user and a namespace.	
+Types Of users in Kuberenets :
+ 1.User Account :
+       we can create a users and groups who can connect to the kubernetes api server  
+  kubernetes-admin is the defaulut user
+
+ 2. Service Account :
+    service accounts are used to give access to applications or processes that are running inside the pods to interact
+	  with the kubernetes api server and service accounts can also be used by applications running outside the cluster
+	 as well
+ --> for example prometheous monitoring tool which is used to monitor the cluster can be given the access using 
+     service account.
+	 
+Steps to create  Service Account :
+Step1 : Creating the service-Account
+        kubectl create sa devops(name) --> to create a service account
+Step2 : Get the secret token i,e generetaed for the particular service account
+         kubectl describe sa devops(saname) --> to get all the information
+Step3 : Get the token value from the secret
+	    kubectl describe secret <token_name>	
+Step4 : Assiagn the secret value to some variable
+         TOKEN="<secret_token_value>"
+		
+Step5 : Set the credential for the serviceAccount
+         kubectl config set-credentials devops(saname) --token=$TOKEN	
+Step6 : we need to create a context for the newly created ServiceAccount
+		 kubcetel config set-context <context_name> --cluster=kubernetes --user=devops
+Step7 : Switch the context		 
+        kubectl config use-context <context_name>
+
+kubectl auth can-i list pods 
+
+==> RBAC :
+  RBAC is an approach in kubernetes used to add constrains for users,groups and serviceAccounts to acess kubernets 
+   resources.RBAC basically adds security to kubernetes cluster and we can apply it for a specific namespace or to 
+   the totally cluster.RBAC uses rbac.authorization.k8s.io.API group
+   
+1.Subject :
+    subject is the entity that needs access to the cluster it could be user or a group or a service account
+2.Resource:
+   Resource is the kubernetes object that a subject wants to access,it could be pods,deployments,services etc
+3.Verbs :
+   Verbs are the actions that a subject can perform on resources it could be list,delete,create,watch etc   
+
+---------------------------------------------------------------------------------------------------------------
+CLASS 12 05-01-2022
+---------------------------------------------------------------------------------------------------------------
+kubectl create clusterrole sa-cluster-role --resource=pods --resource=secrets --verb=get --verb=list -->create clusterrole
+kubectl create clusterrolebinding sa-crb --serviceaccount=default:devops --clusterrole=sa-cluster-role --> create clusterrolebinding
+
+in role we mention namespace inside the role
+in clusterrole we donot mention namespace because it have acess entire the cluster
+
+==> what is role and clusterrole ?
+ Role :
+          In a Role,the rules are applicable to a single namespace 
+		  
+ ClusterRole :account to have acess the whole cluster	 
+	            A ClusterRole is cluster-wide, so the rules are applicable to more than one namespace.
+	             ClusterRoles can define rules for cluster-scoped resources (such as nodes) as well
+				 
+==> What is RoleBinding and ClusterRoleBinding ?
+
+ RoleBinding :
+       A RoleBinding grants permissions within a specific namespace.A RoleBinding may reference any Role in the same namespace.
+	   Alternatively, a RoleBinding can reference a ClusterRole and bind that ClusterRole to the namespace of the RoleBinding	
+
+ ClusterRoleBinding : outside namespace in the cluster
+           ClusterRoleBinding grants that access cluster-wide.If you want to bind a ClusterRole to all the namespaces 
+		   in your cluster, you use a ClusterRoleBinding.
+
+==> ROLE		   
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: sa-role
+  namespace: dev
+rules:
+- apiGroups: ["*"]
+  resources: ["pods", "secrets"]
+  verbs: ["get", "watch", "list"]
+
+==> CLUSTERROLE
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: sa-cluster-role
+rules:
+- apiGroups: ["*"]
+  resources: ["pods", "secrets"]
+  verbs: ["get", "watch", "list"]		   
+
+==> CLUSTERROLEBINDING :
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: sa-crb
+subjects:
+- kind: ServiceAccount
+  name: devops
+  apiGroup: ""
+  namespace: default
+roleRef:
+  kind: ClusterRole
+  name: sa-cluster-role
+  apiGroup: rbac.authorization.k8s.io		   
+----------------------------------------------------------------------------------------------------------------------
+CLASS 13 06-01-2022
+-----------------------------------------------------------------------------------------------------------------------
+==> Jenkins Integration with Kuberenets
+
+----------------------------------------------------------------------------------------------------------------------
+CLASS 14 08-01-2022
+---------------------------------------------------------------------------------------------------
+EKS Setup
+----------------------------------------------------------------------------------------------------------
+Step 1: Install AWS ClI
+https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2-windows.html
+
+Step 2: Open cmd.exe as Administrator
+
+Step 3: Instal Chocolatey
+https://docs.chocolatey.org/en-us/choco/setup
+
+Step 4: Install eksctl
+choco install -y eksctl
+
+Step 5: Install kubectl
+choco install kubernetes-cli
+
+Step 6: Create Cluster
+eksctl create cluster \
+ --name kube-cluster \
+ --version 1.21 \
+ --with-oidc \
+ --nodegroup-name worker \
+ --region us-east-2 \
+ --node-type t3.medium \
+ --managed \
+ --ssh-access \
+ --ssh-public-key eks 
+ 
+t2.micro --> 4 pods there will be system pods also  so i create t3.medium
+----------------------------------------------------------------------------------------------------------
+aws eks --region us-east-2 update-kubeconfig --name my-cluster  --> to connect the eks cluster that is already setup
+----------------------------------------------------------------------------------------------------------
+==> Helem Charts :
+    Helm chart is a package manager for Kubernetes which helps in combining the YAML definition to single package. 
+	Once packaged, installing a Helm Chart into your cluster is as easy as running a single helm install
+	
+Advantages of Helm Charts :
+        1.Boosts productivity
+        2.Reduces duplication & complexity
+        3.Enables the easy integration to ci/cd
+        4.Simplifies deployments
+
+helm install <chart_name> --> To create helm template
+helm install <name> <chart_folder> --> To deploy a chart
+helm upgrade <name> <chart_folder> --> To upgrade a chart
+helm upgrade <name> --set-replicaCount=4 --set image.repository=<image> <chart_folder> --> to upgrade the helem package
+helem list --> it will show all the helem things that you deployable/ it will show all information about your helem
+
+------------------------------------------------------------------------------------------------		 
+=> What is the use of helem chart ?
+   it is the packe manager for kuberneties which we can reuse the manifest file by changing the values,helem is used to create 
+   a templates
+   ------------------------------------------------------------------------------------------------
+==>What does Helem chart contains/ what are the components of the helem chart ?
+    1. .helem ignore 
+         .helmignore: This holds all the files to ignore when packaging the chart. Similar to .gitignore.
+		 
+    2. Chart.yaml: 
+	      This is where you put all the information about the (helem)chart you are packaging. So,for example, your version
+		  number,etc. This is where you will put all those details.(inside this file it has apiversion,name,descrption,type,
+		    appversion)
+    3. Values.yaml: 
+	      This is where you define all the values you want to inject into your templates. If you are familiar with
+		  terraform think of this as helms variable.tf file.
+		  where we pass on necessary required values here(like replicacount,image,imagePullSecrets,service,resources)
+    4. Charts:
+       	This is where you store other charts that your chart depends on. You might be calling another chart that your
+		chart need to function properly.(any dependency  of helem chart we have here)
+    5. Templates: 
+	      This folder is where you put the actual manifest you are deploying with the chart. For example you might be
+		  deploying an nginx deployment that needs a service, configmap and secrets. You will have your deployment.yaml,
+		  service.yaml, config.yaml and secrets.yaml all in the template dir. They will all get their values from
+		  values.yaml from above.
+		  --> you will have all manifest files (volumes,secrects,configmaps,deployment.yamal,service,ingress we will keep all 
+		      those in under this template folder)
+    6. _hepers.tpl: 
+	     This is file is used to create a templates which we can refer in the manifest files. 
+
+==>helem provides a way to create a template directly,where it will create all the files
+
+-----------------------------------------------------------------------------------------------
+==> Helm default objects
+             Object which we can refer in the chart template 
+		1. Release.Name : To get the release name 
+		2. Chart.Name : To get the chart name 
+		3. Chart.Version : To get the chart version  
+
+-------------------------------------------------------------------------------------------------
+==> Helm Hooks :
+       Helm provides a hook mechanism to allow chart developers to intervene at certain points in a release's life cycle
+	   example at pre-install, post-install, pre-upgrade, post- delete
+	   
+--------------------------------------------------------------------------	   		
+===> ARCHITECTURE 
+--> HELEM 2:
+    1.  Helm 2 is a client-server architecture with the client called helm and the server called Tiller. 
+	2. The client is a CLI that users interact with to perform different operations like install, upgrade, and delete.
+	3. The client interacts with Tiller and the chart repository. 
+	4. Tiller interacts with the Kubernetes API server. 
+	5 It renders Helm template files into Kubernetes manifest files, which it uses for operations on the Kubernetes cluster
+     	through the Kubernetes API
+		
+--> HELEM 3 :
+    1. Helm 3 has a client-only architecture with the client still called helm.
+	2. It operates similar to the Helm 2 client, but the client interacts directly with the Kubernetes API server. 
+	3. The in-cluster server Tiller is now removed.		
+ 
+-------------------------------------------------------------------------------------------- 
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: {{ .Values.application.name }}
+  name: webapp-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+      - image: {{ .Values.image.repository }}
+        name: nodejs
+        ports:
+        - containerPort: 3080
+      imagePullSecrets:
+      - name: dockerhub
+
+     ---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-svc
+spec:
+  ports:
+  - port: 3080
+    targetPort: 3080
+    nodePort: {{ .Values.ports.nodePort }}
+  selector:
+    app: {{ .Values.application.name }}
+  type: NodePort
+
+------------------------------------------------------------------	
+==> Chart.yaml
+apiVersion: v2
+name: nodejs
+description: A Helem chart to deploy nodejs application
+type: application
+version: 0.1.0
+appversion: "0"	
+
+---------------------------------------------------------------------------
+==> Values.yaml
+replicaCount: 3
+
+image:
+   repository: " "
+   
+application:
+    name: webapp
+ports:
+   nodePort: 8080	
+==> with in {{ }} always give the values.yaml file values to parametrized the values   
+------------------------------------------------------------------------------------------------
+==> Ingress :
+ --> Ingress exposes  http and https  routers from outside the cluster to service with in the cluster
+ --> Traffic routing is controlled by rules defined on the ingress resource
+ --> in order for the ingress resource to work the cluster should have an ingress controller running
+ --> tha famous ingress conrollers are nginix,aws and gce.
+
+To deploy the ingress rules, we use the following syntax --> kubectl create –f ingress.yaml
+-----------------------------------------------------------------------------------------------------------------
+==> how do we expose our applications to the outside or to inside cluster ?
+   outsideworld- nodeport, insidecluster - clusterIP 
+-----------------------------------------------------------------------------------------------------   
+==> different types of ingress controllers in the market :
+      nginix,aws and gce
+  --> Nginix is the open source	, aws&gce is used for the loadbalancers in aws and gce
+ -----------------------------------------------------------------------------------------------
+==> Difference between Application LoadBalancer and IngressController ?
+Application LoadBalancer : Connect to multiple servers 
+IngressController : connect to multiple microservices
+IngressController used to connect from the outside world 
+---------------------------------------------------------------------------------------------------
+==> What is haproxy ?
+        The HAProxy Ingress Controller is the most efficient way to route traffic into a Kubernetes cluster. Request a Trial. 
+        Simplify your infrastructure by routing ingress traffic using one IP address and port.
+        Requests are routed to the correct pod based on the Host header and request path.
+   
+----------------------------------------------------------------------------------------------------------------------- 
+
+2.which deployment startagey you are using?
+   Blue-Green Stratagey ,but also i have some knowledge about other stratagies
+--------------------------------------------------------------------------------------------------------  
+3.==> Deploymengt Stratagey
+
+1.recreate :
+               terminate the old version and release the new one
+2.ramped : 
+               release a new version on a rolling update fashion, one after the other
+3.blue/green : 
+                release a new version alongside the old version then switch traffic
+4.canary : 
+            release a new version to a subset of users, then proceed to a full rollout
+5.a/b testing : 
+               release a new version to a subset of users in a precise way (HTTP headers, cookie, weight, etc.). 
+           A/B testing is really a technique for making business decisions based on statistics but we will briefly describe
+		   the process. This doesn’t come out of the box with Kubernetes, it implies extra work to setup a more advanced
+		   infrastructure (Istio, Linkerd, Traefik, custom nginx/haproxy, etc).
+ 
+---------------------------------------------------------------------------------------------------
+4.What is service mesh ?
+  Service mesh is a dedicated infrastructure layer for facilitating service to service communications,between services or
+  microservices using a proxy.
+  
+ -------------------------------------------------------------------------------------------------------------------------- 
+
+==> when we execute kubectl get nodes command it shows the following details
+  1) Name (IPaddress of worker nodes ) 2) Status -Ready 3)Roles (none) 4)Age (how much time before its created)
+  5)version (k8s version)
+  
+==> how we are able to authenticate to the api server that is inside in the aws provider ?
+   by using Service account / it generate a token  
+==> In eks cluster we have context,cluster 
+
+ ==> Which version of helem you are using ?
+       Helem3
+  
+ ==> What is Kuberenets High Availability ?
+    we have multiple masternodes and odd number of workernodes.if one masternode goes down the other master up and
+    running.so we dont have any down time	
+----------------------------------------------------------------------------------------------------------
+
+==> What is InIT Container ?
+       Init containers are simply test/temporary containers..
+       Which get executed before any other containers running in a POD.
+ -> It's mean to perform intialization logic for  the main application hosted on Pod
+--> Use case:
+                 In real time, init containers are used to check the state of node,pod.
+                 Whether they are ready for the main application to be deployed in them 
+For Example:
+     Create the necessary accounts, perform database migrations, create database schemas and so on
+--------------------------------------------------------------------------------------------------------------
+==> Parameters in Ingress Yamal file
+    role,namespace,clusterrole,rolebinding,clusterrolebinding,configmap,serviceaccount
+
+----------------------------------------------------------------------------------------------
+==> How do you test a manifest without actually executing it?
+   A) Kubectl apply -f dep.yaml --dry-run
+
+-------------------------------------------------------------------------------------
+==> How to drain/divert traffic from an existing POD manually m ?
+     A) kubectl drain <nodename>   
+------------------------------------------------------------------------------------------------------------
+
+Ingress Controller : Ingress exposes  http and https  routers from outside the cluster to service with 
+            in the cluster
+ --> Traffic routing is controlled by rules defined on the ingress resource
+ 
+ --> in order for the ingress resource to work the cluster should have an ingress controller running
+ --> tha famous ingress conrollers are nginix,aws and gce.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	

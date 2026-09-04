@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS S3 Static Website Hosting Guide</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: #f8fafc; }
+        .step-card { background-color: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        .step-number { background: linear-gradient(to right, #06b6d4, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: bold; font-size: 1.25rem; }
+        code { background-color: #020617; padding: 0.2rem 0.4rem; border-radius: 4px; color: #38bdf8; font-family: monospace; font-size: 0.9em; }
+        pre code { display: block; padding: 1rem; overflow-x: auto; margin-top: 0.5rem; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <header class="text-center mb-10 max-w-4xl mx-auto">
+        <h1 class="text-4xl md:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-4">AWS S3 Static Website Hosting</h1>
+        <p class="text-gray-400 text-lg">A complete, step-by-step guide to hosting a serverless static website using Amazon S3.</p>
+    </header>
+
+    <div class="max-w-4xl mx-auto">
+        
+        <div class="step-card">
+            <h2 class="text-2xl font-semibold mb-3"><span class="step-number">Step 1:</span> Create an S3 Bucket</h2>
+            <ul class="list-disc ml-6 text-gray-300 space-y-2">
+                <li>Log in to the <a href="https://console.aws.amazon.com/s3" class="text-blue-400 hover:underline">AWS Management Console</a> and navigate to S3.</li>
+                <li>Click <strong>Create bucket</strong>.</li>
+                <li>Enter a <strong>Bucket name</strong>. <em>Important:</em> If you plan to use a custom domain (e.g., <code>www.example.com</code>), the bucket name MUST match your domain name exactly.</li>
+                <li>Select your preferred AWS Region.</li>
+                <li>Leave default settings for Object Ownership (ACLs disabled).</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h2 class="text-2xl font-semibold mb-3"><span class="step-number">Step 2:</span> Enable Public Access</h2>
+            <ul class="list-disc ml-6 text-gray-300 space-y-2">
+                <li>In the bucket creation wizard (or the Permissions tab later), find the <strong>Block Public Access settings for this bucket</strong> section.</li>
+                <li><strong>Uncheck</strong> the box that says <em>"Block all public access"</em>.</li>
+                <li>Check the box to acknowledge that the current settings might result in the bucket and the objects within becoming public.</li>
+                <li>Click <strong>Create bucket</strong> at the bottom.</li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h2 class="text-2xl font-semibold mb-3"><span class="step-number">Step 3:</span> Enable Static Website Hosting</h2>
+            <ul class="list-disc ml-6 text-gray-300 space-y-2">
+                <li>Click on your newly created bucket to open it.</li>
+                <li>Go to the <strong>Properties</strong> tab.</li>
+                <li>Scroll all the way down to the <strong>Static website hosting</strong> section.</li>
+                <li>Click <strong>Edit</strong>.</li>
+                <li>Select <strong>Enable</strong>.</li>
+                <li>For <strong>Index document</strong>, type <code>index.html</code>.</li>
+                <li>(Optional) For <strong>Error document</strong>, type <code>error.html</code> (or <code>index.html</code> if using a Single Page App like React).</li>
+                <li>Click <strong>Save changes</strong>.</li>
+                <li><em>Note down the Bucket website endpoint generated here (e.g., <code>http://your-bucket.s3-website-us-east-1.amazonaws.com</code>).</em></li>
+            </ul>
+        </div>
+
+        <div class="step-card">
+            <h2 class="text-2xl font-semibold mb-3"><span class="step-number">Step 4:</span> Add a Bucket Policy for Public Read Access</h2>
+            <p class="text-gray-300 mb-2">Even though public access isn't blocked, you still need to explicitly grant read permissions to the files.</p>
+            <ul class="list-disc ml-6 text-gray-300 space-y-2">
+                <li>Go to the <strong>Permissions</strong> tab of your bucket.</li>
+                <li>Scroll down to <strong>Bucket policy</strong> and click <strong>Edit</strong>.</li>
+                <li>Paste the following JSON policy (replace <code>YOUR-BUCKET-NAME</code> with your actual bucket name):</li>
+            </ul>
+            <pre><code>{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::YOUR-BUCKET-NAME/*"
+        }
+    ]
+}</code></pre>
+            <p class="text-gray-300 mt-2">Click <strong>Save changes</strong>.</p>
+        </div>
+
+        <div class="step-card">
+            <h2 class="text-2xl font-semibold mb-3"><span class="step-number">Step 5:</span> Upload Your Website Files</h2>
+            <ul class="list-disc ml-6 text-gray-300 space-y-2">
+                <li>Go to the <strong>Objects</strong> tab in your bucket.</li>
+                <li>Click <strong>Upload</strong>.</li>
+                <li>Add your <code>index.html</code>, CSS files, JavaScript files, and images.</li>
+                <li>Click <strong>Upload</strong> at the bottom.</li>
+            </ul>
+        </div>
+
+        <div class="step-card border-green-500 bg-green-900/20">
+            <h2 class="text-2xl font-semibold mb-3 text-green-400"><span class="step-number !text-green-500">🎉 Step 6:</span> View Your Live Website!</h2>
+            <p class="text-gray-300">
+                Go back to the <strong>Properties</strong> tab, scroll down to <strong>Static website hosting</strong>, and click the <strong>Bucket website endpoint</strong> URL. 
+                You should now see your live static website!
+            </p>
+        </div>
+
+        <div class="text-center mt-10 mb-20">
+            <a href="/car-shop-demo/index.html" class="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold rounded-lg shadow-lg hover:shadow-xl transition-all">
+                View Sample Static Website (Car Shop Demo) &rarr;
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

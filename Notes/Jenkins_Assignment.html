@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Project – Jenkins & Tomcat CI/CD</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d27;
+            --surface-2: #232736;
+            --border: #2e3348;
+            --text: #e4e6ef;
+            --text-muted: #8b8fa7;
+            --accent: #6c5ce7;
+            --accent-light: #a29bfe;
+            --green: #00b894;
+            --green-dim: #00b89422;
+            --orange: #fdcb6e;
+            --orange-dim: #fdcb6e18;
+            --red: #ff6b6b;
+            --blue: #74b9ff;
+            --blue-dim: #74b9ff15;
+            --gradient-1: linear-gradient(135deg, #6c5ce7, #a29bfe);
+            --gradient-2: linear-gradient(135deg, #00b894, #55efc4);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+        .header-badge {
+            display: inline-block;
+            background: var(--accent);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+        }
+        .header h1 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .header p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header-meta {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .header-meta span {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+        .header-meta strong {
+            color: var(--text);
+        }
+
+        /* Main */
+        .container {
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem 4rem;
+        }
+
+        /* Objective */
+        .objective {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .objective h2 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            color: var(--accent-light);
+        }
+        .objective p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* Pipeline Diagram */
+        .diagram {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            overflow-x: auto;
+        }
+        .diagram pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            color: var(--green);
+            line-height: 1.6;
+            white-space: pre;
+        }
+
+        .repo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--blue);
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            text-decoration: none;
+            margin-top: 1rem;
+            transition: border-color 0.2s;
+        }
+        .repo-link:hover { border-color: var(--blue); }
+
+        /* Steps */
+        .step {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            transition: border-color 0.2s;
+        }
+        .step:hover { border-color: var(--accent); }
+
+        .step-number {
+            position: absolute;
+            top: -14px;
+            left: 24px;
+            background: var(--gradient-1);
+            color: #fff;
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 1rem;
+            border-radius: 50px;
+            letter-spacing: 0.5px;
+        }
+
+        .step h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-top: 0.25rem;
+        }
+
+        .step ol, .step ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        .step li {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 0.5rem;
+        }
+        .step li strong {
+            color: var(--text);
+        }
+
+        .screenshot {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: var(--blue-dim);
+            border: 1px solid #74b9ff30;
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--blue);
+        }
+        .screenshot .icon { font-size: 1.1rem; }
+
+        /* Stage Table */
+        .stage-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+        }
+        .stage-table th {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            background: var(--surface-2);
+            color: var(--accent-light);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid var(--border);
+        }
+        .stage-table td {
+            padding: 0.65rem 1rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+        .stage-table td:first-child {
+            color: var(--text);
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+        }
+        .stage-table tr:last-child td { border-bottom: none; }
+
+        .requirements {
+            background: var(--surface-2);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-top: 1rem;
+        }
+        .requirements h4 {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--orange);
+            margin-bottom: 0.5rem;
+        }
+        .requirements ul { padding-left: 1.25rem; }
+        .requirements li {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        /* Submission */
+        .submission {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .submission h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .folder-tree {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.25rem 1.5rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.8;
+            color: var(--text-muted);
+            overflow-x: auto;
+        }
+        .folder-tree .folder { color: var(--orange); }
+        .folder-tree .file { color: var(--green); }
+        .folder-tree .comment { color: var(--text-muted); opacity: 0.6; }
+
+        /* Notes */
+        .notes {
+            background: var(--orange-dim);
+            border: 1px solid #fdcb6e25;
+            border-radius: 12px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+        }
+        .notes h3 {
+            color: var(--orange);
+            font-size: 0.95rem;
+            margin-bottom: 0.75rem;
+        }
+        .notes ul {
+            padding-left: 1.25rem;
+        }
+        .notes li {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            margin-bottom: 0.4rem;
+        }
+
+        /* Bonus */
+        .bonus {
+            background: var(--green-dim);
+            border: 1px solid #00b89430;
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+        }
+        .bonus .icon { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+        .bonus-text strong {
+            color: var(--green);
+            font-size: 0.9rem;
+        }
+        .bonus-text p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            border-top: 1px solid var(--border);
+            margin-top: 2rem;
+        }
+        .footer strong { color: var(--text); }
+
+        /* Code */
+        code {
+            font-family: 'JetBrains Mono', monospace;
+            background: var(--surface-2);
+            padding: 0.15rem 0.45rem;
+            border-radius: 4px;
+            font-size: 0.82rem;
+            color: var(--accent-light);
+        }
+
+        /* Plugin badges */
+        .plugin-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 0.75rem 0;
+            list-style: none;
+            padding: 0;
+        }
+        .plugin-list li {
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            padding: 0.35rem 0.85rem;
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        @media (max-width: 600px) {
+            .header h1 { font-size: 1.5rem; }
+            .header-meta { flex-direction: column; gap: 0.5rem; }
+            .step, .submission, .objective { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <span class="header-badge">Student Assignment</span>
+        <h1>🚀 Build & Deploy a Java Web App to Tomcat using Jenkins</h1>
+        <p>Set up a complete CI/CD pipeline — from code checkout to production deployment</p>
+        <div class="header-meta">
+            <span><strong>Batch:</strong> Nimbus DevOps Training</span>
+            <span><strong>Topics:</strong> Jenkins CI/CD + Tomcat</span>
+        </div>
+    </div>
+
+    <div class="container">
+
+        <!-- Objective -->
+        <div class="objective">
+            <h2>📌 Objective</h2>
+            <p>Set up a complete CI/CD pipeline that checks out a Java Maven project from GitHub, builds a WAR file, and deploys it to a Tomcat server automatically using Jenkins.</p>
+
+            <div class="diagram">
+<pre>Developer → GitHub → Jenkins → (SSH) → Tomcat Server
+                        |
+                  ┌─────▼─────┐
+                  │  Pipeline  │
+                  │ 1. Checkout│
+                  │ 2. Test    │
+                  │ 3. Build   │
+                  │ 4. Approve │
+                  │ 5. Deploy  │
+                  └────────────┘</pre>
+            </div>
+
+            <a class="repo-link" href="https://github.com/nimbuswiztech/maven_webapp.git" target="_blank">
+                📦 Source Code: https://github.com/nimbuswiztech/maven_webapp.git
+            </a>
+        </div>
+
+        <!-- Step 1 -->
+        <div class="step">
+            <span class="step-number">STEP 1</span>
+            <h3>Set Up Tomcat Server</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">On an Ubuntu server:</p>
+            <ol>
+                <li>Install <strong>Java</strong> (OpenJDK 11 or 17)</li>
+                <li>Download and install <strong>Apache Tomcat 9</strong> in <code>/opt/tomcat</code></li>
+                <li>Start Tomcat and verify it works at <code>http://&lt;TOMCAT_IP&gt;:8080</code></li>
+            </ol>
+            <div class="screenshot">
+                <span class="icon">📸</span>
+                <span>Screenshot: Tomcat default page running in the browser</span>
+            </div>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="step">
+            <span class="step-number">STEP 2</span>
+            <h3>Set Up Jenkins Server</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">On an Ubuntu server (can be the same or different machine):</p>
+            <ol>
+                <li>Install <strong>Java</strong> and <strong>Jenkins</strong></li>
+                <li>Complete Jenkins initial setup (unlock, install plugins, create admin user)</li>
+                <li>Install the following plugins:</li>
+            </ol>
+            <ul class="plugin-list">
+                <li>Maven Integration</li>
+                <li>SSH Agent</li>
+                <li>Git</li>
+            </ul>
+            <ol start="4">
+                <li>Configure Maven in <strong>Manage Jenkins → Tools</strong> (name it <code>Maven3</code>)</li>
+            </ol>
+            <div class="screenshot">
+                <span class="icon">📸</span>
+                <span>Screenshot: Jenkins dashboard after setup</span>
+            </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="step">
+            <span class="step-number">STEP 3</span>
+            <h3>Configure SSH Between Jenkins and Tomcat</h3>
+            <ol>
+                <li>Generate an <strong>SSH key pair</strong> on the Jenkins server</li>
+                <li>Copy the public key to the Tomcat server's <code>~/.ssh/authorized_keys</code></li>
+                <li>Add the private key as a <strong>Jenkins Credential</strong> (type: SSH Username with private key, ID: <code>tomcat-ssh</code>)</li>
+                <li>Verify: SSH from Jenkins to Tomcat <strong>without a password</strong></li>
+            </ol>
+            <div class="screenshot">
+                <span class="icon">📸</span>
+                <span>Screenshot: Successful passwordless SSH connection</span>
+            </div>
+        </div>
+
+        <!-- Step 4 -->
+        <div class="step">
+            <span class="step-number">STEP 4</span>
+            <h3>Write the Jenkins Pipeline</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Create a <strong>Jenkinsfile</strong> with the following stages:</p>
+
+            <table class="stage-table">
+                <thead>
+                    <tr>
+                        <th>Stage</th>
+                        <th>What It Does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Checkout</td>
+                        <td>Clone the Maven webapp repo from GitHub (branch: <code>main</code>)</td>
+                    </tr>
+                    <tr>
+                        <td>Test</td>
+                        <td>Run <code>mvn test</code></td>
+                    </tr>
+                    <tr>
+                        <td>Build</td>
+                        <td>Run <code>mvn clean package -DskipTests</code> to create the WAR file</td>
+                    </tr>
+                    <tr>
+                        <td>Approval</td>
+                        <td>Manual approval gate using <code>input</code> step</td>
+                    </tr>
+                    <tr>
+                        <td>Deploy</td>
+                        <td>Use <code>sshagent</code> to SCP the WAR to Tomcat's <code>/opt/tomcat/webapps/</code></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="requirements">
+                <h4>Requirements</h4>
+                <ul>
+                    <li>Use an <code>environment</code> block for Tomcat IP, username, and webapps path</li>
+                    <li>Use a <code>post</code> block with <code>success</code>, <code>failure</code>, and <code>always</code> (clean workspace)</li>
+                </ul>
+            </div>
+
+            <div class="screenshot">
+                <span class="icon">📸</span>
+                <span>Screenshot: Successful pipeline run – all stages green ✅</span>
+            </div>
+        </div>
+
+        <!-- Step 5 -->
+        <div class="step">
+            <span class="step-number">STEP 5</span>
+            <h3>Verify Deployment</h3>
+            <ol>
+                <li>After successful pipeline run, open the browser</li>
+                <li>Navigate to <code>http://&lt;TOMCAT_IP&gt;:8080/nimbus-webapp</code></li>
+                <li>The application should be <strong>live and running</strong> on Tomcat</li>
+            </ol>
+            <div class="screenshot">
+                <span class="icon">📸</span>
+                <span>Screenshots: Pipeline stages passed ✅ + App running in browser</span>
+            </div>
+        </div>
+
+        <!-- Submission -->
+        <div class="submission">
+            <h2>📂 Submission</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1rem;">Push everything to a GitHub repository named <code>jenkins-assignment</code>:</p>
+
+            <div class="folder-tree">
+<span class="folder">jenkins-assignment/</span>
+│
+├── <span class="file">README.md</span>              <span class="comment">← Your name, batch, date</span>
+├── <span class="file">Jenkinsfile</span>            <span class="comment">← Your deployment pipeline</span>
+└── <span class="folder">screenshots/</span>
+    ├── <span class="file">01-tomcat-running.png</span>
+    ├── <span class="file">02-jenkins-dashboard.png</span>
+    ├── <span class="file">03-ssh-connection.png</span>
+    ├── <span class="file">04-pipeline-success.png</span>
+    └── <span class="file">05-app-in-browser.png</span>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="notes">
+            <h3>⚠️ Important Notes</h3>
+            <ul>
+                <li>If you face issues, document them in <code>README.md</code> along with how you resolved them.</li>
+                <li>Take it step by step — set up servers first, then SSH, then the pipeline.</li>
+            </ul>
+        </div>
+
+        <!-- Bonus -->
+        <div class="bonus">
+            <span class="icon">⭐</span>
+            <div class="bonus-text">
+                <strong>Bonus Challenge</strong>
+                <p>Add a 6th stage that sends an email notification on pipeline failure using the <code>emailext</code> plugin.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        <strong>Nimbus DevOps Training</strong> · Take it step by step – good luck! 🚀
+    </div>
+
+</body>
+</html>

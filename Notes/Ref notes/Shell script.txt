@@ -1,0 +1,77 @@
+
+Shell Script:
+
+
+echo $SHELL --> to check default shell
+
+#!/bin/bash --> shebang --> invokes bash shell
+
+
+
+exp1.sh
+
+#!/bin/bash
+echo "Hi \nThis is devops class"
+echo "Started on Nov"
+
+execution shell script:
+
+./exp1.sh
+bash exp1.sh
+sh exp1.sh
+
+================================================
+
+exp2.sh
+
+#!/bin/bash
+echo "This is $1 class"
+echo "Started on $2"
+
+execution:
+./exp2.sh Devops Nov
+
+================================================
+
+
+Input arguments
+
+if the argument from 1 to 9
+
+	we used as $1, $2, $3 ... $9
+
+if the argument from 10th onwards
+	we used as ${10}, ${11}....
+
+$1 --> first input argument
+$2 --> Second input argument
+$0 --> Shell script name
+
+================================================
+
+exp3.sh
+
+#!/bin/bash
+name="Test"
+month="Nov"
+num="2022"
+echo "This is $name platform and month is $month"
+echo "The number will be $num"
+
+================================================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

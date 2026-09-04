@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8">
+  <title>Mastering Apache Web Server: From Beginner to Advanced | NimbusWiz Tech</title>
+  <meta name="description" content="A comprehensive interactive guide to installing, configuring, securing, and optimizing the Apache Web Server. From virtual hosts to reverse proxies.">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="apache_guide.css">
+</head>
+<body>
+
+  <!-- Announcement & Navigation -->
+  <header class="header-nav" role="banner">
+    <a href="index.html" class="nav-brand" id="brand-link">
+      <img src="nimbus-logo.png" alt="NimbusWiz Tech Logo" width="32" height="32">
+      <span>NimbusWiz</span>Tech Guide
+    </a>
+    
+    <div class="nav-controls">
+      <div class="search-container">
+        <svg class="search-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="search-input" class="search-input" placeholder="Search guide headings..." aria-label="Search guide headings">
+        <div id="search-results-dropdown" style="display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); box-shadow: var(--shadow-lg); max-height: 250px; overflow-y: auto; z-index: 110; margin-top: 5px;"></div>
+      </div>
+
+      <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle Light/Dark Theme">
+        <!-- Sun Icon (for dark mode to switch to light) -->
+        <svg id="sun-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <!-- Moon Icon (for light mode to switch to dark) -->
+        <svg id="moon-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="display:none;">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+      
+      <a href="index.html" class="cta-secondary-btn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Home</a>
+    </div>
+  </header>
+
+  <!-- Layout Container -->
+  <div class="layout-container">
+    
+    <!-- Left Sidebar: Table of Contents -->
+    <aside class="sidebar-left" role="complementary" aria-label="Table of Contents">
+      <div class="sidebar-heading">Guide Chapters</div>
+      <nav>
+        <ul class="toc-list">
+          <li><a href="#introduction" class="toc-link active">1. Introduction</a></li>
+          <li><a href="#installation" class="toc-link">2. Installing Apache</a></li>
+          <li><a href="#basic-concepts" class="toc-link">3. Basic Concepts</a></li>
+          <li><a href="#first-website" class="toc-link">4. First Website</a></li>
+          <li><a href="#configuration" class="toc-link">5. Understanding Config</a></li>
+          <li><a href="#virtual-hosts" class="toc-link">6. Hosting Multi-sites</a></li>
+          <li><a href="#essential-commands" class="toc-link">7. Essential Commands</a></li>
+          <li><a href="#enabling-https" class="toc-link">8. Let's Encrypt HTTPS</a></li>
+          <li><a href="#server-hardening" class="toc-link">9. Server Hardening</a></li>
+          <li><a href="#performance" class="toc-link">10. Performance Optimization</a></li>
+          <li><a href="#reverse-proxy" class="toc-link">11. Reverse Proxy</a></li>
+          <li><a href="#monitoring-logging" class="toc-link">12. Monitoring & Logging</a></li>
+          <li><a href="#backup-recovery" class="toc-link">13. Backup & Recovery</a></li>
+          <li><a href="#cheat-sheet" class="toc-link">14. Cheat Sheet</a></li>
+          <li><a href="#knowledge-check" class="toc-link">15. Quiz Time</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Center Content: Reading Panel -->
+    <main class="main-content" role="main">
+      
+      <!-- Article Hero Section -->
+      <section class="article-hero" id="introduction">
+        <a href="index.html" class="back-link">
+          <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+          Back to NimbusWiz Tech
+        </a>
+        <h1 class="article-title">Mastering Apache Web Server: From Beginner to Advanced</h1>
+        <div class="article-meta">
+          <div class="meta-author">
+            <img src="https://miro.medium.com/v2/resize:fill:64:64/1*x1lF7ZqUo43HEuepKKkx5A.jpeg" alt="Nayeem Islam" class="author-img">
+            <span>By <strong>Nayeem Islam</strong> (NoManNayeem)</span>
+          </div>
+          <span class="meta-badge">⏱ 20 Min Read</span>
+          <span class="meta-badge">📅 Published April 30, 2025</span>
+        </div>
+      </section>
+
+      <!-- Section 1: Intro -->
+      <section class="content-section">
+        <blockquote>
+          <p>“Imagine the internet as a bustling city, full of websites acting as storefronts. Now, think of the Apache Web Server as the diligent shopkeeper, ensuring every visitor gets exactly what they need.”</p>
+        </blockquote>
+
+        <p><strong>Apache</strong> is one of the most widely used web servers in the world, powering over <strong>31% of websites globally</strong>. Known for its flexibility, reliability, and robust features, it's a cornerstone of modern web hosting. Whether you're a beginner building your first website or an IT professional managing high-traffic servers, Apache has something for everyone.</p>
+        <p>In this guide, we'll take you on a journey from the basics of Apache to advanced-level configurations and optimizations. By the end, you'll not only understand how to set up and run Apache but also how to secure, optimize, and troubleshoot it like a pro.</p>
+      </section>
+
+      <!-- Section 2: Installation -->
+      <section class="content-section" id="installation">
+        <h2>2. Installing Apache</h2>
+        <p>The first step to mastering the web is putting the right tools in place. And installing Apache is as simple as it is powerful. Apache is open-source and available for almost every operating system.</p>
+        
+        <h3>Installing on Ubuntu/Debian</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Update package index</span>
+<span class="keyword">sudo</span> apt update
+
+<span class="comment"># Install Apache2</span>
+<span class="keyword">sudo</span> apt install apache2 -y
+
+<span class="comment"># Start and enable the service on boot</span>
+<span class="keyword">sudo</span> systemctl start apache2
+<span class="keyword">sudo</span> systemctl enable apache2</code></pre>
+          </div>
+        </div>
+
+        <h3>Installing on CentOS/RHEL</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Install httpd package</span>
+<span class="keyword">sudo</span> yum install httpd -y
+
+<span class="comment"># Start and enable httpd service</span>
+<span class="keyword">sudo</span> systemctl start httpd
+<span class="keyword">sudo</span> systemctl enable httpd</code></pre>
+          </div>
+        </div>
+
+        <h3>Installing on Windows</h3>
+        <ol>
+          <li>Download the latest Windows binary from the official Apache Lounge website.</li>
+          <li>Extract the ZIP file to <code>C:\Apache24</code>.</li>
+          <li>Open Command Prompt as Administrator and run the server binary:</li>
+        </ol>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Cmd</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">cd</span> C:\Apache24\bin
+httpd.exe</code></pre>
+          </div>
+        </div>
+
+        <h3>Installing on macOS</h3>
+        <p>macOS comes with Apache pre-installed. To start and verify the server, run:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> apachectl start</code></pre>
+          </div>
+        </div>
+        <p><strong>Verifying Your Installation:</strong> Confirm Apache is running by opening a web browser and navigating to <a href="http://localhost" target="_blank"><code>http://localhost</code></a>. You should see the default Apache welcome page.</p>
+      </section>
+
+      <!-- Section 3: Basic Concepts -->
+      <section class="content-section" id="basic-concepts">
+        <h2>3. Understanding Basic Concepts</h2>
+        <p>Before you can build a skyscraper, you need to understand the foundation it stands on. In the world of web servers, that foundation is built on key concepts that every developer should know.</p>
+
+        <!-- Illustration: Request-Response pipeline -->
+        <div class="article-graphic">
+          <svg width="600" height="220" viewBox="0 0 600 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Client Browser -->
+            <rect x="20" y="50" width="120" height="90" rx="6" fill="#1e293b" stroke="#6366f1" stroke-width="2"/>
+            <rect x="20" y="50" width="120" height="22" rx="4" fill="#334155"/>
+            <circle cx="35" cy="61" r="4" fill="#ef4444"/>
+            <circle cx="47" cy="61" r="4" fill="#f59e0b"/>
+            <circle cx="59" cy="61" r="4" fill="#10b981"/>
+            <text x="80" y="110" font-family="Inter" font-size="12" fill="#f8fafc" text-anchor="middle">Browser (Client)</text>
+            
+            <!-- HTTP Request Arrow -->
+            <path d="M160 80 H260" stroke="#6366f1" stroke-width="3" stroke-dasharray="6 4"/>
+            <polygon points="260,85 270,80 260,75" fill="#6366f1"/>
+            <text x="210" y="70" font-family="Inter" font-size="10" fill="#94a3b8" text-anchor="middle">HTTP Request</text>
+            <text x="210" y="95" font-family="Inter" font-size="9" fill="#a855f7" text-anchor="middle">Port 80 / 443</text>
+            
+            <!-- Apache Web Server -->
+            <rect x="280" y="30" width="140" height="130" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
+            <path d="M300 45 L320 65 L360 35 M320 65 L335 80" stroke="#e11d48" stroke-width="3" stroke-linecap="round"/>
+            <text x="350" y="100" font-family="Plus Jakarta Sans" font-weight="bold" font-size="14" fill="#f8fafc" text-anchor="middle">Apache HTTPD</text>
+            <text x="350" y="125" font-family="Inter" font-size="10" fill="#a855f7" text-anchor="middle">Processes Request</text>
+            
+            <!-- HTTP Response Arrow -->
+            <path d="M260 120 H160" stroke="#10b981" stroke-width="3"/>
+            <polygon points="160,115 150,120 160,125" fill="#10b981"/>
+            <text x="210" y="138" font-family="Inter" font-size="10" fill="#94a3b8" text-anchor="middle">HTTP Response</text>
+            <text x="210" y="152" font-family="Inter" font-size="9" fill="#10b981" text-anchor="middle">200 OK / 404</text>
+            
+            <!-- Disk Content -->
+            <path d="M440 90 H480" stroke="#64748b" stroke-width="2"/>
+            <rect x="490" y="60" width="90" height="100" rx="4" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+            <text x="535" y="100" font-family="Inter" font-size="11" fill="#94a3b8" text-anchor="middle">Document Root</text>
+            <text x="535" y="120" font-family="monospace" font-size="10" fill="#38bdf8" text-anchor="middle">/var/www/html</text>
+          </svg>
+        </div>
+
+        <p>To work effectively with Apache Web Server, grasp these essential ideas:</p>
+        <ul>
+          <li><strong>What is a Web Server?</strong> A web server processes requests from clients (like browsers) and delivers web pages, assets, and resources. Apache listens on specific ports (port 80 for HTTP, port 443 for HTTPS) and serves standard responses.</li>
+          <li><strong>Apache vs Other Web Servers:</strong>
+            <ul>
+              <li><strong>Nginx:</strong> Built for performance, low resources, and high concurrency. Excels as a reverse proxy.</li>
+              <li><strong>IIS:</strong> Microsoft's IIS server is integrated directly with Windows Server environments.</li>
+            </ul>
+          </li>
+          <li><strong>Key Terminologies:</strong>
+            <ul>
+              <li><strong>Virtual Hosts:</strong> Direct traffic to separate directories based on the incoming domain name, hosting multiple sites on one IP.</li>
+              <li><strong>Document Root:</strong> The primary directory where website code files live (commonly <code>/var/www/html</code>).</li>
+              <li><strong>Modules:</strong> Extensible add-ons like <code>mod_ssl</code> (HTTPS) and <code>mod_rewrite</code> (URL rewrites) that can be toggled easily.</li>
+            </ul>
+          </li>
+        </ul>
+      </section>
+
+      <!-- Section 4: First Website -->
+      <section class="content-section" id="first-website">
+        <h2>4. Creating Your First Website</h2>
+        <p>Every great journey begins with a single step, and in web development, that step is launching custom HTML pages.</p>
+        
+        <h3>Replacing the Default welcome page</h3>
+        <p>Let's create a custom welcome page by editing files in our Document Root:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">cd</span> /var/www/html
+<span class="keyword">sudo</span> nano index.html</code></pre>
+          </div>
+        </div>
+
+        <p>Inside the file, paste the following simple HTML template:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">Html</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attribute">lang</span>=<span class="string">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute">charset</span>=<span class="string">"UTF-8"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute">name</span>=<span class="string">"viewport"</span> <span class="attribute">content</span>=<span class="string">"width=device-width, initial-scale=1.0"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>My First Website<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Welcome to My First Website!<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;p&gt;</span>This is a simple web page served by Apache.<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></code></pre>
+          </div>
+        </div>
+        <p>Save and exit the editor. Visit <code>http://localhost</code> to view your customized webpage immediately.</p>
+      </section>
+
+      <!-- Section 5: Configuration -->
+      <section class="content-section" id="configuration">
+        <h2>5. Understanding Apache Configuration</h2>
+        <p>Just as a conductor leads an orchestra, the configuration files of Apache guide the server's performance, ensuring every request is handled with precision.</p>
+        <p>Apache's power lies in its extensive configuration structure. Key config locations on Ubuntu include:</p>
+        <ul>
+          <li><code>/etc/apache2/apache2.conf</code>: The main global server configuration file.</li>
+          <li><code>/etc/apache2/ports.conf</code>: Defines ports Apache listens on (typically 80, 443).</li>
+          <li><code>/etc/apache2/sites-available/</code>: Stores config blueprints for individual websites.</li>
+          <li><code>/etc/apache2/sites-enabled/</code>: Symlinked configurations that are active.</li>
+        </ul>
+        
+        <h3>Implementing a Custom Redirect via .htaccess</h3>
+        <p><code>.htaccess</code> allows site-level configuration inside web directories without altering master configuration files. Let's redirect an old page URL to a new page:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots">
+              <span class="code-dot red"></span>
+              <span class="code-dot yellow"></span>
+              <span class="code-dot green"></span>
+            </div>
+            <span class="code-panel-lang">htaccess</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Redirect old-page to new-page permanently</span>
+Redirect 301 /old-page http://example.com/new-page</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 6: Virtual Hosts -->
+      <section class="content-section" id="virtual-hosts">
+        <h2>6. Hosting Multiple Websites (Virtual Hosts)</h2>
+        <p>Virtual hosting allows a single Apache web server instance to deliver content for multiple domains (like <code>example.com</code> and <code>myblog.com</code>) under a single shared IP address.</p>
+
+        <!-- Illustration: Virtual Host Routing -->
+        <div class="article-graphic">
+          <svg width="600" height="220" viewBox="0 0 600 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- Client requests -->
+            <rect x="15" y="30" width="130" height="45" rx="6" fill="#131c31" stroke="#38bdf8"/>
+            <text x="80" y="58" font-family="Inter" font-size="12" fill="#38bdf8" text-anchor="middle">http://site-a.com</text>
+            
+            <rect x="15" y="130" width="130" height="45" rx="6" fill="#131c31" stroke="#a855f7"/>
+            <text x="80" y="158" font-family="Inter" font-size="12" fill="#a855f7" text-anchor="middle">http://site-b.com</text>
+            
+            <!-- Lines to Apache -->
+            <path d="M145 52 L240 90" stroke="#38bdf8" stroke-width="2"/>
+            <path d="M145 152 L240 110" stroke="#a855f7" stroke-width="2"/>
+            
+            <!-- Server -->
+            <rect x="250" y="65" width="120" height="75" rx="6" fill="#1e293b" stroke="#f8fafc" stroke-width="2"/>
+            <text x="310" y="100" font-family="Plus Jakarta Sans" font-size="13" fill="#f8fafc" text-anchor="middle">Apache (1 IP)</text>
+            <text x="310" y="120" font-family="Inter" font-size="10" fill="#94a3b8" text-anchor="middle">Port 80</text>
+            
+            <!-- Splits to Document Root directories -->
+            <path d="M370 95 L440 60" stroke="#38bdf8" stroke-width="2"/>
+            <path d="M370 110 L440 145" stroke="#a855f7" stroke-width="2"/>
+            
+            <rect x="450" y="30" width="130" height="50" rx="4" fill="#0f172a" stroke="#1e293b"/>
+            <text x="515" y="50" font-family="Inter" font-size="10" fill="#94a3b8" text-anchor="middle">Directory A</text>
+            <text x="515" y="65" font-family="monospace" font-size="8" fill="#38bdf8" text-anchor="middle">/var/www/site-a/html</text>
+            
+            <rect x="450" y="125" width="130" height="50" rx="4" fill="#0f172a" stroke="#1e293b"/>
+            <text x="515" y="145" font-family="Inter" font-size="10" fill="#94a3b8" text-anchor="middle">Directory B</text>
+            <text x="515" y="160" font-family="monospace" font-size="8" fill="#a855f7" text-anchor="middle">/var/www/site-b/html</text>
+          </svg>
+        </div>
+
+        <h3>Setting Up a Virtual Host Blueprint</h3>
+        <ol>
+          <li>Create the directories for site files:</li>
+          <div class="code-panel">
+            <div class="code-panel-header">
+              <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+              <span class="code-panel-lang">Bash</span>
+              <button class="copy-code-btn">📋 Copy</button>
+            </div>
+            <div class="code-panel-body">
+              <pre><code><span class="keyword">sudo</span> mkdir -p /var/www/example.com/public_html
+<span class="keyword">sudo</span> chown -R www-data:www-data /var/www/example.com/public_html</code></pre>
+            </div>
+          </div>
+          
+          <li>Create a sample home index file:</li>
+          <div class="code-panel">
+            <div class="code-panel-header">
+              <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+              <span class="code-panel-lang">Bash</span>
+              <button class="copy-code-btn">📋 Copy</button>
+            </div>
+            <div class="code-panel-body">
+              <pre><code><span class="keyword">sudo</span> nano /var/www/example.com/public_html/index.html</code></pre>
+            </div>
+          </div>
+          
+          <li>Write Virtual Host configuration file:</li>
+          <div class="code-panel">
+            <div class="code-panel-header">
+              <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+              <span class="code-panel-lang">Apache</span>
+              <button class="copy-code-btn">📋 Copy</button>
+            </div>
+            <div class="code-panel-body">
+              <pre><code><span class="tag">&lt;VirtualHost</span> <span class="attribute">*:80</span><span class="tag">&gt;</span>
+    ServerAdmin webmaster@example.com
+    ServerName example.com
+    ServerAlias www.example.com
+    DocumentRoot /var/www/example.com/public_html
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+<span class="tag">&lt;/VirtualHost&gt;</span></code></pre>
+            </div>
+          </div>
+          
+          <li>Enable site and reload server:</li>
+          <div class="code-panel">
+            <div class="code-panel-header">
+              <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+              <span class="code-panel-lang">Bash</span>
+              <button class="copy-code-btn">📋 Copy</button>
+            </div>
+            <div class="code-panel-body">
+              <pre><code><span class="keyword">sudo</span> a2ensite example.com.conf
+<span class="keyword">sudo</span> systemctl reload apache2</code></pre>
+            </div>
+          </div>
+        </ol>
+      </section>
+
+      <!-- Section 7: Essential Commands -->
+      <section class="content-section" id="essential-commands">
+        <h2>7. Essential Apache Commands</h2>
+        <p>Familiarity with administration commands empowers developers to safely control service status and active configurations.</p>
+        <ul>
+          <li><strong>Start Service:</strong> <code>sudo systemctl start apache2</code></li>
+          <li><strong>Stop Service:</strong> <code>sudo systemctl stop apache2</code></li>
+          <li><strong>Reload Settings Safely:</strong> <code>sudo systemctl reload apache2</code></li>
+          <li><strong>Hard Restart:</strong> <code>sudo systemctl restart apache2</code></li>
+          <li><strong>Show Service Status:</strong> <code>sudo systemctl status apache2</code></li>
+          <li><strong>Disable a virtual host:</strong> <code>sudo a2dissite site_name.conf</code></li>
+          <li><strong>Enable a module (rewrite):</strong> <code>sudo a2enmod rewrite</code></li>
+        </ul>
+      </section>
+
+      <!-- Section 8: Let's Encrypt HTTPS -->
+      <section class="content-section" id="enabling-https">
+        <h2>8. Enabling HTTPS with Let's Encrypt</h2>
+        <p>Securing communications via SSL/TLS certificates establishes web authenticity and protects data payloads in transit.</p>
+        
+        <h3>1. Install Certbot tool</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Ubuntu/Debian installation</span>
+<span class="keyword">sudo</span> apt update
+<span class="keyword">sudo</span> apt install certbot python3-certbot-apache -y</code></pre>
+          </div>
+        </div>
+
+        <h3>2. Run Certbot & automatic routing</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> certbot --apache</code></pre>
+          </div>
+        </div>
+        <p>Follow prompts to insert email, accept agreement, and choose whether to redirect HTTP traffic to secure HTTPS links automatically.</p>
+        
+        <h3>3. Testing Certificate Auto-Renewal</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> certbot renew --dry-run</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 9: Hardening -->
+      <section class="content-section" id="server-hardening">
+        <h2>9. Basic Server Hardening</h2>
+        <p>Fortifying server structures shields apps against unauthorized attacks or structural discovery scanning.</p>
+        
+        <h3>Hiding Apache Server Signature Details</h3>
+        <p>By default, error pages output exact versions of Apache installed. Prevent this by editing <code>/etc/apache2/apache2.conf</code>:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Apache</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code>ServerSignature Off
+ServerTokens Prod</code></pre>
+          </div>
+        </div>
+        
+        <h3>Setting Secure Permissions</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> chown -R www-data:www-data /var/www/html
+<span class="keyword">sudo</span> find /var/www/html -type d -exec chmod 755 {} \;
+<span class="keyword">sudo</span> find /var/www/html -type f -exec chmod 644 {} \;</code></pre>
+          </div>
+        </div>
+
+        <h3>Implementing Password Auth on Directory</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> apt install apache2-utils -y
+<span class="keyword">sudo</span> htpasswd -c /etc/apache2/.htpasswd username</code></pre>
+          </div>
+        </div>
+        <p>In virtual host config, add details targeting the directory path:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Apache</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="tag">&lt;Directory</span> <span class="attribute">/var/www/html</span><span class="tag">&gt;</span>
+    AuthType Basic
+    AuthName "Restricted Area"
+    AuthUserFile /etc/apache2/.htpasswd
+    Require valid-user
+<span class="tag">&lt;/Directory&gt;</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 10: Performance -->
+      <section class="content-section" id="performance">
+        <h2>10. Performance Optimization</h2>
+        <p>Optimizing web server response paths preserves active memory bandwidth and ensures server requests complete faster.</p>
+        
+        <h3>Enabling GZIP Compression</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> a2enmod deflate</code></pre>
+          </div>
+        </div>
+        <p>In <code>apache2.conf</code> global settings:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Apache</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="tag">&lt;IfModule</span> <span class="attribute">mod_deflate.c</span><span class="tag">&gt;</span>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+<span class="tag">&lt;/IfModule&gt;</span></code></pre>
+          </div>
+        </div>
+
+        <h3>KeepAlive Tuning</h3>
+        <p>Persistent connection parameters in <code>apache2.conf</code>:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Apache</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code>KeepAlive On
+MaxKeepAliveRequests 100
+KeepAliveTimeout 5</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 11: Reverse Proxy -->
+      <section class="content-section" id="reverse-proxy">
+        <h2>11. Apache as a Reverse Proxy</h2>
+        <p>Apache can route external customer client traffic safely to localized web-apps (e.g. Node.js on port 3000) running in private subnets.</p>
+
+        <!-- Illustration: Reverse Proxy -->
+        <div class="article-graphic">
+          <svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- User Browser -->
+            <rect x="20" y="50" width="100" height="80" rx="6" fill="#131c31" stroke="#38bdf8" stroke-width="2"/>
+            <text x="70" y="90" font-family="Inter" font-size="12" fill="#f8fafc" text-anchor="middle">User Client</text>
+            <text x="70" y="110" font-family="Inter" font-size="10" fill="#38bdf8" text-anchor="middle">port 443</text>
+            
+            <!-- Connection to Proxy -->
+            <path d="M120 90 H230" stroke="#38bdf8" stroke-width="2"/>
+            <polygon points="230,95 240,90 230,85" fill="#38bdf8"/>
+            
+            <!-- Apache Reverse Proxy -->
+            <rect x="240" y="30" width="140" height="120" rx="8" fill="#1e1b4b" stroke="#a855f7" stroke-width="2"/>
+            <text x="310" y="80" font-family="Plus Jakarta Sans" font-weight="bold" font-size="13" fill="#f8fafc" text-anchor="middle">Apache (Proxy)</text>
+            <text x="310" y="100" font-family="Inter" font-size="10" fill="#a855f7" text-anchor="middle">Port 80/443</text>
+            <text x="310" y="120" font-family="monospace" font-size="9" fill="#94a3b8" text-anchor="middle">ProxyPass /</text>
+            
+            <!-- Proxy connection to Backend -->
+            <path d="M380 90 H470" stroke="#10b981" stroke-width="2"/>
+            <polygon points="470,95 480,90 470,85" fill="#10b981"/>
+            
+            <!-- Backend Application -->
+            <rect x="480" y="45" width="100" height="90" rx="6" fill="#0f172a" stroke="#1e293b" stroke-width="2"/>
+            <text x="530" y="85" font-family="Inter" font-weight="600" font-size="11" fill="#f8fafc" text-anchor="middle">Node.js / Go</text>
+            <text x="530" y="105" font-family="monospace" font-size="10" fill="#10b981" text-anchor="middle">port 3000</text>
+          </svg>
+        </div>
+
+        <h3>Enabling Required Proxy Modules</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="keyword">sudo</span> a2enmod proxy
+<span class="keyword">sudo</span> a2enmod proxy_http
+<span class="keyword">sudo</span> a2enmod proxy_balancer
+<span class="keyword">sudo</span> a2enmod lbmethod_byrequests
+<span class="keyword">sudo</span> systemctl restart apache2</code></pre>
+          </div>
+        </div>
+
+        <h3>Reverse Proxy Virtual Host setup</h3>
+        <p>Forward port 80 requests directly to localhost port 3000 app server:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Apache</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="tag">&lt;VirtualHost</span> <span class="attribute">*:80</span><span class="tag">&gt;</span>
+    ServerName your-domain.com
+    ProxyRequests Off
+    
+    ProxyPass / http://localhost:3000/
+    ProxyPassReverse / http://localhost:3000/
+    
+    <span class="tag">&lt;Proxy</span> <span class="attribute">*</span><span class="tag">&gt;</span>
+        Order deny,allow
+        Allow from all
+    <span class="tag">&lt;/Proxy&gt;</span>
+<span class="tag">&lt;/VirtualHost&gt;</span></code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 12: Monitoring & Logging -->
+      <section class="content-section" id="monitoring-logging">
+        <h2>12. Monitoring and Logging</h2>
+        <p>Logging structures track active connections, verify errors, and diagnostic parameters to evaluate server operations.</p>
+        <ul>
+          <li><strong>Access Log:</strong> Records details of incoming requests (URL, IP, user agents, response codes).</li>
+          <li><strong>Error Log:</strong> Contains warnings, configuration parsing errors, and service interruptions.</li>
+        </ul>
+        
+        <h3>Real-time log tracking</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Tail live access requests</span>
+tail -f /var/log/apache2/access.log
+
+<span class="comment"># Filter error log for specific 404 responses</span>
+grep "404" /var/log/apache2/error.log</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 13: Backup & Recovery -->
+      <section class="content-section" id="backup-recovery">
+        <h2>13. Backup and Recovery Strategies</h2>
+        <p>Having a secure backup process avoids operational catastrophes when configuration issues occur.</p>
+        
+        <h3>Backing Up Configurations & Site Files</h3>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Bash</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code><span class="comment"># Backup configuration files</span>
+<span class="keyword">sudo</span> cp -r /etc/apache2 /backup/apache-config/
+
+<span class="comment"># Package and compress document root web files</span>
+<span class="keyword">cd</span> /var/www
+<span class="keyword">sudo</span> tar -czvf /backup/website-backup.tar.gz html/</code></pre>
+          </div>
+        </div>
+        
+        <h3>Automation via Cron Job</h3>
+        <p>Add the following job to <code>sudo crontab -e</code> to run daily backups at 2 AM:</p>
+        <div class="code-panel">
+          <div class="code-panel-header">
+            <div class="code-panel-dots"><span class="code-dot red"></span><span class="code-dot yellow"></span><span class="code-dot green"></span></div>
+            <span class="code-panel-lang">Cron</span>
+            <button class="copy-code-btn">📋 Copy</button>
+          </div>
+          <div class="code-panel-body">
+            <pre><code>0 2 * * * tar -czvf /backup/apache-config-$(date +%F).tar.gz /etc/apache2</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- Command Cheat Sheet Dashboard -->
+      <section class="cheatsheet-section" id="cheat-sheet">
+        <div class="cheatsheet-header">
+          <h2 class="cheatsheet-title" style="margin: 0; border: none; padding: 0;">
+            🛠️ Interactive Apache Cheat Sheet
+          </h2>
+          <div class="cheatsheet-filter">
+            <button class="filter-pill active" data-filter="all">All</button>
+            <button class="filter-pill" data-filter="service">Service</button>
+            <button class="filter-pill" data-filter="modules">Modules</button>
+            <button class="filter-pill" data-filter="security">Security</button>
+          </div>
+        </div>
+        <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.5rem;">Click on any command card below to copy it immediately to your clipboard.</p>
+        
+        <div class="cheatsheet-grid">
+          <div class="command-card" data-cat="service">
+            <div class="command-desc">Reload Apache configuration without drop connections</div>
+            <div class="command-box">
+              <span class="command-text">sudo systemctl reload apache2</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+          
+          <div class="command-card" data-cat="service">
+            <div class="command-desc">Check active systemctl status of Apache process</div>
+            <div class="command-box">
+              <span class="command-text">sudo systemctl status apache2</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+
+          <div class="command-card" data-cat="modules">
+            <div class="command-desc">Enable rewrite engine module (mod_rewrite)</div>
+            <div class="command-box">
+              <span class="command-text">sudo a2enmod rewrite</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+
+          <div class="command-card" data-cat="modules">
+            <div class="command-desc">Enable virtual host site configurations</div>
+            <div class="command-box">
+              <span class="command-text">sudo a2ensite example.com.conf</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+
+          <div class="command-card" data-cat="security">
+            <div class="command-desc">Obtain Let's Encrypt SSL Cert & Auto-configure HTTPS</div>
+            <div class="command-box">
+              <span class="command-text">sudo certbot --apache</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+
+          <div class="command-card" data-cat="security">
+            <div class="command-desc">Create encrypted password file for Basic Auth</div>
+            <div class="command-box">
+              <span class="command-text">sudo htpasswd -c /etc/apache2/.htpasswd admin</span>
+              <span class="command-copy-icon">📋</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Knowledge Check / Quiz -->
+      <section class="quiz-section" id="knowledge-check">
+        <div class="quiz-header">
+          <h2 class="quiz-title" style="margin:0; border:none; padding:0;">🧠 Test Your Apache Knowledge</h2>
+          <p class="quiz-intro">Take this quick check to verify your understanding of core Apache concepts.</p>
+        </div>
+        
+        <div id="quiz-container">
+          <!-- Question 1 -->
+          <div class="quiz-question" data-q="1">
+            <div class="quiz-question-title">
+              <span class="question-num">Q1.</span>
+              <span>What is the default Document Root directory where Apache hosts site files on Ubuntu systems?</span>
+            </div>
+            <div class="quiz-options">
+              <label class="quiz-option-label">
+                <input type="radio" name="q1" value="A">
+                <span class="option-text">A) /etc/apache2/sites-available</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q1" value="B">
+                <span class="option-text">B) /var/www/html</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q1" value="C">
+                <span class="option-text">C) /var/log/apache2</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q1" value="D">
+                <span class="option-text">D) /usr/share/nginx</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 2 -->
+          <div class="quiz-question" data-q="2">
+            <div class="quiz-question-title">
+              <span class="question-num">Q2.</span>
+              <span>Which specific command is used to enable a Virtual Host config file on Debian-based platforms?</span>
+            </div>
+            <div class="quiz-options">
+              <label class="quiz-option-label">
+                <input type="radio" name="q2" value="A">
+                <span class="option-text">A) sudo a2enmod</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q2" value="B">
+                <span class="option-text">B) sudo systemctl enable apache2</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q2" value="C">
+                <span class="option-text">C) sudo a2ensite</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q2" value="D">
+                <span class="option-text">D) sudo apachectl restart</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Question 3 -->
+          <div class="quiz-question" data-q="3">
+            <div class="quiz-question-title">
+              <span class="question-num">Q3.</span>
+              <span>Which directives should be set to prevent error headers from exposing the exact installed version of Apache?</span>
+            </div>
+            <div class="quiz-options">
+              <label class="quiz-option-label">
+                <input type="radio" name="q3" value="A">
+                <span class="option-text">A) ServerSignature Off & ServerTokens Prod</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q3" value="B">
+                <span class="option-text">B) HideSignature On & Tokens Hashed</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q3" value="C">
+                <span class="option-text">C) DocumentRoot /hidden</span>
+              </label>
+              <label class="quiz-option-label">
+                <input type="radio" name="q3" value="D">
+                <span class="option-text">D) KeepAlive Off & MaxRequests 0</span>
+              </label>
+            </div>
+          </div>
+
+          <button id="submit-quiz-btn" class="quiz-btn">Submit Quiz Answers</button>
+        </div>
+
+        <div id="quiz-result" class="quiz-result">
+          <div class="quiz-result-title" id="quiz-result-title">Quiz Completed!</div>
+          <div class="quiz-result-score" id="quiz-result-score">3 / 3 (100%)</div>
+          <p id="quiz-result-feedback" style="font-size:0.95rem; color: var(--text-secondary);"></p>
+          <button id="retry-quiz-btn" class="quiz-btn" style="margin-top: 1rem; display: none;">Try Again</button>
+        </div>
+      </section>
+
+      <!-- CTA Course Banner -->
+      <section class="cta-banner">
+        <div class="cta-text">
+          <div class="cta-tagline">Devops Training Platform</div>
+          <h3 class="cta-heading">Ready to Master DevOps Infrastructures?</h3>
+          <p class="cta-desc">Join NimbusWiz Tech's 120+ Hours Live Instructor-Led Course. Pay only after a 7-day free trial!</p>
+        </div>
+        <div class="cta-actions">
+          <a href="index.html#batches" class="cta-primary-btn">View Upcoming Batches</a>
+          <a href="index.html#contact" class="cta-secondary-btn">Enquire Now &rarr;</a>
+        </div>
+      </section>
+
+      <!-- Footer segment -->
+      <footer class="guide-footer" role="contentinfo">
+        <p>&copy; 2026 NimbusWiz Tech training guides. Built by Antigravity AI.</p>
+      </footer>
+
+    </main>
+
+    <!-- Right Sidebar Widgets -->
+    <aside class="sidebar-right" role="complementary" aria-label="Quick Utilities">
+      <div class="widget-card">
+        <h4 class="widget-title">📌 Author Details</h4>
+        <div class="widget-content">
+          <p style="margin-bottom: 0.5rem;">Written by <strong>Nayeem Islam</strong>, Full Stack Engineer & Tech Author.</p>
+          <a href="https://github.com/NoManNayeem" target="_blank" style="font-weight: 600; font-size: 0.8rem; display: flex; align-items: center; gap: 4px;">
+            <span>GitHub Profile</span>
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="widget-card">
+        <h4 class="widget-title">⚙️ Apache Quick Links</h4>
+        <div class="widget-content">
+          <ul style="list-style:none; display:flex; flex-direction:column; gap:6px;">
+            <li><a href="https://httpd.apache.org/" target="_blank">Official Website &rarr;</a></li>
+            <li><a href="https://httpd.apache.org/docs/2.4/" target="_blank">Documentation &rarr;</a></li>
+            <li><a href="https://www.apachelounge.com/" target="_blank">Apache Lounge (Win) &rarr;</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="widget-card">
+        <h4 class="widget-title">📧 Guide Updates</h4>
+        <div class="widget-content">
+          <p>Get notified when new DevOps guides are published by our team.</p>
+          <form class="newsletter-form" id="newsletter-form">
+            <input type="email" class="newsletter-input" placeholder="Enter email address" required aria-label="Email for newsletter">
+            <button type="submit" class="newsletter-btn">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- Scroll to Top and Toast -->
+  <button id="back-to-top" class="back-to-top-btn" aria-label="Back to top">
+    <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <polyline points="18 15 12 9 6 15"></polyline>
+    </svg>
+  </button>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">
+    <span id="toast-text">Text Copied successfully!</span>
+  </div>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Dark/Light Theme Switching
+      const themeToggleBtn = document.getElementById('theme-toggle');
+      const sunIcon = document.getElementById('sun-icon');
+      const moonIcon = document.getElementById('moon-icon');
+      
+      // Load preference or default to dark
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      updateThemeIcons(savedTheme);
+
+      themeToggleBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcons(newTheme);
+        showToast(`Switched to ${newTheme} mode.`);
+      });
+
+      function updateThemeIcons(theme) {
+        if (theme === 'dark') {
+          sunIcon.style.display = 'block';
+          moonIcon.style.display = 'none';
+        } else {
+          sunIcon.style.display = 'none';
+          moonIcon.style.display = 'block';
+        }
+      }
+
+      // 2. ScrollSpy Navigation
+      const sections = document.querySelectorAll('section[id], header[id]');
+      const tocLinks = document.querySelectorAll('.toc-link');
+
+      window.addEventListener('scroll', () => {
+        let currentActive = "";
+        sections.forEach(section => {
+          const sectionTop = section.offsetTop - 120; // accounting for headers
+          if (window.scrollY >= sectionTop) {
+            currentActive = section.getAttribute('id');
+          }
+        });
+
+        tocLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${currentActive}`) {
+            link.classList.add('active');
+          }
+        });
+      });
+
+      // 3. Code Block Copying
+      const copyButtons = document.querySelectorAll('.copy-code-btn');
+      copyButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const codeEl = btn.parentElement.nextElementSibling.querySelector('code');
+          navigator.clipboard.writeText(codeEl.innerText).then(() => {
+            btn.classList.add('copied');
+            btn.innerHTML = '✓ Copied';
+            showToast('Code copied to clipboard!');
+            setTimeout(() => {
+              btn.classList.remove('copied');
+              btn.innerHTML = '📋 Copy';
+            }, 2000);
+          }).catch(err => {
+            console.error('Failed to copy text: ', err);
+          });
+        });
+      });
+
+      // 4. Cheat Sheet Filtering & Copying
+      const filterPills = document.querySelectorAll('.filter-pill');
+      const commandCards = document.querySelectorAll('.command-card');
+
+      filterPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          filterPills.forEach(p => p.classList.remove('active'));
+          pill.classList.add('active');
+          const filter = pill.getAttribute('data-filter');
+
+          commandCards.forEach(card => {
+            const cat = card.getAttribute('data-cat');
+            if (filter === 'all' || cat === filter) {
+              card.style.display = 'flex';
+            } else {
+              card.style.display = 'none';
+            }
+          });
+        });
+      });
+
+      commandCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const commandText = card.querySelector('.command-text').innerText;
+          navigator.clipboard.writeText(commandText).then(() => {
+            card.classList.add('copied');
+            showToast(`Copied: ${commandText}`);
+            setTimeout(() => {
+              card.classList.remove('copied');
+            }, 2000);
+          }).catch(err => {
+            console.error('Could not copy command: ', err);
+          });
+        });
+      });
+
+      // 5. Interactive Quiz Logic
+      const answers = { q1: 'B', q2: 'C', q3: 'A' };
+      const submitQuizBtn = document.getElementById('submit-quiz-btn');
+      const retryQuizBtn = document.getElementById('retry-quiz-btn');
+      const quizResult = document.getElementById('quiz-result');
+      const quizResultScore = document.getElementById('quiz-result-score');
+      const quizResultFeedback = document.getElementById('quiz-result-feedback');
+      const optionLabels = document.querySelectorAll('.quiz-option-label');
+
+      submitQuizBtn.addEventListener('click', () => {
+        let score = 0;
+        let unanswered = false;
+
+        // Reset styling
+        optionLabels.forEach(label => label.classList.remove('correct', 'incorrect'));
+
+        // Grade Q1, Q2, Q3
+        for (let i = 1; i <= 3; i++) {
+          const selectedOption = document.querySelector(`input[name="q${i}"]:checked`);
+          if (!selectedOption) {
+            unanswered = true;
+            break;
+          }
+          
+          const val = selectedOption.value;
+          const label = selectedOption.closest('.quiz-option-label');
+          
+          if (val === answers[`q${i}`]) {
+            score++;
+            label.classList.add('correct');
+          } else {
+            label.classList.add('incorrect');
+            // Show the correct one in green
+            const correctRadio = document.querySelector(`input[name="q${i}"][value="${answers[`q${i}`]}"]`);
+            correctRadio.closest('.quiz-option-label').classList.add('correct');
+          }
+        }
+
+        if (unanswered) {
+          alert('Please answer all questions before submitting.');
+          return;
+        }
+
+        // Show results
+        submitQuizBtn.style.display = 'none';
+        quizResult.style.display = 'block';
+        quizResultScore.innerHTML = `${score} / 3 (${Math.round((score/3)*100)}%)`;
+
+        if (score === 3) {
+          quizResultFeedback.innerHTML = '🎉 Perfect score! You have successfully mastered the fundamentals of Apache Web Server administration.';
+        } else {
+          quizResultFeedback.innerHTML = 'Good try! Review the correct answers highlighted above in green to improve your knowledge.';
+          retryQuizBtn.style.display = 'inline-flex';
+        }
+      });
+
+      retryQuizBtn.addEventListener('click', () => {
+        // Reset inputs
+        const checkedRadios = document.querySelectorAll('input[type="radio"]:checked');
+        checkedRadios.forEach(radio => radio.checked = false);
+
+        // Reset styling
+        optionLabels.forEach(label => label.classList.remove('correct', 'incorrect'));
+
+        // Hide result, show submit button
+        quizResult.style.display = 'none';
+        retryQuizBtn.style.display = 'none';
+        submitQuizBtn.style.display = 'inline-flex';
+      });
+
+      // 6. Navigation Search filtering
+      const searchInput = document.getElementById('search-input');
+      const searchDropdown = document.getElementById('search-results-dropdown');
+      
+      // Get all section headings
+      const headingElements = document.querySelectorAll('.content-section h2, .content-section h3, .article-hero h1');
+      const headingList = Array.from(headingElements).map(el => {
+        let parentSection = el.closest('section');
+        let id = parentSection ? parentSection.id : 'introduction';
+        return {
+          text: el.innerText.replace(/[\n\t]/g, '').trim(),
+          id: id
+        };
+      });
+
+      searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase().trim();
+        searchDropdown.innerHTML = '';
+        
+        if (!query) {
+          searchDropdown.style.display = 'none';
+          return;
+        }
+
+        const matches = headingList.filter(item => item.text.toLowerCase().includes(query));
+
+        if (matches.length === 0) {
+          searchDropdown.innerHTML = '<div style="padding: 10px; font-size: 0.85rem; color: var(--text-muted);">No sections match query</div>';
+        } else {
+          matches.forEach(match => {
+            const item = document.createElement('a');
+            item.href = `#${match.id}`;
+            item.style.display = 'block';
+            item.style.padding = '8px 12px';
+            item.style.fontSize = '0.85rem';
+            item.style.color = 'var(--text-primary)';
+            item.style.borderBottom = '1px solid var(--border-color)';
+            item.innerHTML = match.text;
+            item.addEventListener('click', () => {
+              searchDropdown.style.display = 'none';
+              searchInput.value = '';
+            });
+            searchDropdown.appendChild(item);
+          });
+        }
+        searchDropdown.style.display = 'block';
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!searchInput.contains(e.target) && !searchDropdown.contains(e.target)) {
+          searchDropdown.style.display = 'none';
+        }
+      });
+
+      // 7. Back To Top scroll visibility
+      const backToTopBtn = document.getElementById('back-to-top');
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+          backToTopBtn.classList.add('visible');
+        } else {
+          backToTopBtn.classList.remove('visible');
+        }
+      });
+      backToTopBtn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+
+      // 8. Toast Message Utility
+      const toast = document.getElementById('toast');
+      const toastText = document.getElementById('toast-text');
+      
+      function showToast(message) {
+        toastText.innerHTML = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 2500);
+      }
+
+      // 9. Newsletter dummy action
+      const newsletterForm = document.getElementById('newsletter-form');
+      newsletterForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = newsletterForm.querySelector('input');
+        showToast(`✉️ Subscribed: ${input.value}`);
+        input.value = '';
+      });
+
+    });
+  </script>
+
+</body>
+</html>

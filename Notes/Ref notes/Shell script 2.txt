@@ -1,0 +1,148 @@
+
+
+If statement:
+
+if [ condition ]
+then
+execution
+else
+execution
+fi
+
+======================================
+
+exp4.sh
+
+#!/bin/bash
+if [ $1 -eq 5 ]
+then
+echo "$1 is Five"
+else
+echo "$1 is not Five"
+fi
+
+=========================================
+
+parameters:
+
+-eq --> equals
+-lt --> less than
+-le --> less than or equal
+-ge --> greater than or equal
+-gt --> greater than
+-ne --> not equal
+
+
+=========================================
+exp5.sh
+
+write a shell script to find biggest of two numbers.
+
+2 3
+
+#!/bin/bash
+if [ $1 -gt $2 ]
+then
+echo "$1 is Big"
+else
+echo "$2 is Big"
+fi
+
+===========================================
+exp6.sh
+
+#!/bin/bash
+if [ $# -ne 2 ]
+then
+echo "Enter only two arguments"
+exit
+fi
+if [ $1 -gt $2 ]
+then
+echo "$1 is Big"
+else
+echo "$2 is Big"
+fi
+
+===========================================
+
+
+special characters of global variables:
+
+$? --> status of last executed command 
+	0 --> means success
+	non-zero --> failure  
+
+$$ --> process ID of current running process
+
+$! --> process ID of last command went into background
+
+$* --> All the arguments pass to a shell script
+
+$@ --> All the arguments pass to a shell script stored in array format [ 1 23 55 66 ]
+
+$# --> Total number of arguments pass to a shell script
+
+======================================================================================
+
+syntax for "for" loop
+
+for i in List
+do
+	commands/execution
+done
+
+======================================================================================
+
+
+Syntax for "While" lopp
+
+
+while [ condition]
+do 
+	commands/execution
+done
+
+======================================================================================
+
+Write a shell script to check whether given name is a file or directory or link or doesnot exist?
+
+#!/bin/bash
+echo "Enter the name to check:"
+read name
+if [ -f $name ]
+then
+echo "$name is file"
+elif [ -d $name ]
+then
+echo "$name is a directory"
+elif [ -l $name ]
+then
+echo "$name is a link"
+else
+echo "$name doesnot exit"
+fi
+
+======================================================================================
+
+
+Assignments:
+
+1. Biggest 3 no's
+2. Write a shell script to check whether given name is a file or directory or link or doesnot exist,
+	* If its a file display the content, count how many lines content is present in that file.
+	* if its a directory display the file 
+3. Write a shell script to add, subtract, multiply and divide the two numbers
+4. Write a script to find factorial of a given number
+5. Write a script to add given set of numbers
+
+
+======================================================================================
+
+
+
+
+
+
+
+

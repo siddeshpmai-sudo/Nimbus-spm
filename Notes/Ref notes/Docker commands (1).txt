@@ -1,0 +1,88 @@
+docker login -u siddeshg672 registry link
+	login to docker registry
+
+docker logout
+	logout from registry 
+
+docker pull siddeshg672/testdeployimage:tagname_test
+	pull image from repo
+
+docker tag jenkins/jenkins siddeshg672/testdeployimage:tagname_test
+	tag image with different name 
+
+docker push siddeshg672/testdeployimage:tagname_test
+	push image to registry
+
+docker images 
+	List all docker images
+
+docker rmi 51035bcd0a9d
+	Delete image 
+
+docker run -id --name tomcat_cont -p 9090:8080 tomcat:1.0
+	Create container from docker image
+
+docker ps
+	List running container
+
+docker ps -a
+	List all containers 
+
+docker start tomcat_cont
+	Start container 
+
+docker stop tomcat_cont
+	Stop container 
+
+docker logs 16fc3d052eae
+	Check logs of container 
+
+docker build -t tomcat:1.0 -f Dockerfile_tomcat_maven .
+	Create image
+
+docker run -id --name tomcat_cont -p 9090:8080 tomcat:1.0
+	Create container 
+
+docker rm 16fc3d052eae
+	delete container  
+
+docekr attach -it eb7824eab1bb 
+docker exec -it eb7824eab1bb /bin/sh
+	Login to running container 
+
+docker build -t tomcat:3.0 -f dockerfilelatesttomcat --build-arg mvn_version=3.3 .
+	Example of run time variables 
+
+docker build --no-cache -t tomcat:4.0 -f testDockerfile .
+	no cache
+
+docker build -t testimage:3.0 -f sample test/
+	context example
+
+docker images -f dangling=true
+
+docker rmi $(docker images -f dangling=true -q) 
+Docker ps 
+docker rm $(docker ps -a -q)
+
+docker rmi $(docker images -q)
+
+docker network prune
+docker container prune
+docker images prune
+
+docker inspect (images/container/volume/network)
+
+docker stats
+
+docker run -id --name testmulti --memory="200mb" --cpus="1" -p 9004:8080 dcc00d1e67b5
+
+docker commit ae0807285e0c backup_container:1.0
+
+docker network create -d bridge --subnet 172.18.10.10/16 --gateway 172.18.10.1 testNetwork
+
+docker run -id --name test --network 278fec752a86 -p 8933:8080 dcc00d1e67b5
+	docker run -id --name test --network 278fec752a86 -p 8933:8080 dcc00d1e67b5
+	docker run -id --name test1 --network 2ed5c6d5cdef -p 8943:8080 dcc00d1e67b5
+	docker network connect 2ed5c6d5cdef test
+

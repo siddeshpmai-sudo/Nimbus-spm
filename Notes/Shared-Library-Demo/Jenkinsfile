@@ -1,0 +1,34 @@
+@Library('my-shared-lib') _
+
+pipeline {
+    agent any
+    
+    stages {
+        stage('Init') {
+            steps {
+                // Using the custom logMessage step from our shared library
+                logMessage('Starting the CI/CD Pipeline')
+            }
+        }
+        
+        stage('Build Docker Image') {
+            steps {
+                // Using the custom buildDocker step
+                // In a real scenario, this requires a Dockerfile in the workspace
+                script {
+                    // Creating a dummy Dockerfile just for demonstration
+                    sh "echo 'FROM alpine:latest' > Dockerfile"
+                    sh "echo 'CMD echo Hello World' >> Dockerfile"
+                }
+                buildDocker('demo-app', '1.0.0')
+            }
+        }
+    }
+    
+    post {
+        always {
+            logMessage('Cleaning up workspace')
+            cleanWs()
+        }
+    }
+}

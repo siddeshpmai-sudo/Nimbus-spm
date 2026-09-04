@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS SQS – Complete Teaching Guide</title>
+    <style>
+        :root{--primary:#FF9900;--primary-dark:#c77b00;--secondary:#232F3E;--accent:#1A9C3E;--info:#2563EB;--warning:#D97706;--danger:#DC2626;--light-bg:#F8FAFC;--card-bg:#FFFFFF;--border:#E2E8F0;--text-main:#1E293B;--text-muted:#64748B;--code-bg:#1e1e2e;--code-text:#cdd6f4}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;color:var(--text-main);background:var(--light-bg);padding:0 20px 60px}
+        .hero{background:linear-gradient(135deg,#0f2027 0%,#1f3d1a 50%,#1a6b3a 100%);color:white;text-align:center;padding:60px 40px 50px;margin:0 -20px 40px}
+        .hero-badge{display:inline-block;background:rgba(255,153,0,.25);border:1px solid rgba(255,153,0,.5);color:var(--primary);padding:5px 16px;border-radius:50px;font-size:.8em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+        .hero h1{font-size:2.8em;font-weight:800;margin-bottom:12px}.hero h1 span{color:var(--primary)}
+        .hero p{font-size:1.1em;opacity:.85;max-width:650px;margin:0 auto 24px}
+        .hero-meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+        .hero-meta span{background:rgba(255,255,255,.12);padding:6px 18px;border-radius:6px;font-size:.88em;font-weight:600}
+        .container{max-width:1100px;margin:0 auto}
+        .section-heading{display:flex;align-items:center;gap:14px;margin:50px 0 24px}
+        .section-icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#1A9C3E,#0f6b28);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;box-shadow:0 4px 12px rgba(26,156,62,.35)}
+        .section-heading h2{font-size:1.7em;font-weight:800;color:var(--secondary)}
+        .card{background:var(--card-bg);border-radius:12px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)}
+        .card h3{font-size:1.15em;font-weight:700;color:var(--secondary);margin-bottom:14px}
+        .card h4{font-size:1em;font-weight:700;color:var(--accent);margin:18px 0 8px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        @media(max-width:768px){.grid-2,.grid-3{grid-template-columns:1fr}.hero h1{font-size:1.9em}}
+        .concept-card{background:var(--card-bg);border-radius:10px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
+        .concept-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+        .concept-card .icon{font-size:2em;margin-bottom:10px}
+        .concept-card h3{font-size:1.05em;font-weight:700;color:var(--secondary);margin-bottom:8px}
+        .concept-card p{font-size:.9em;color:var(--text-muted);line-height:1.6}
+        .code-block{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:10px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.88em;line-height:1.7;margin:14px 0;white-space:pre}
+        .code-label{background:#313244;color:#cba6f7;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:6px 6px 0 0;display:inline-block;letter-spacing:.5px}
+        .callout{padding:16px 20px;border-radius:8px;margin:16px 0;font-size:.93em;display:flex;gap:12px;align-items:flex-start}
+        .callout .icon{font-size:1.2em;flex-shrink:0;margin-top:1px}
+        .callout-info{background:#DBEAFE;border-left:4px solid var(--info)}
+        .callout-warning{background:#FEF3C7;border-left:4px solid var(--warning)}
+        .callout-success{background:#DCFCE7;border-left:4px solid var(--accent)}
+        .callout-danger{background:#FEE2E2;border-left:4px solid var(--danger)}
+        .callout-purple{background:#F3E8FF;border-left:4px solid #7C3AED}
+        .analogy{background:linear-gradient(135deg,#f0fdf4,#dcfce7);border:1px solid #86efac;border-radius:10px;padding:20px 24px;margin:16px 0}
+        .analogy .analogy-title{font-weight:800;color:var(--accent);font-size:.85em;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+        .compare-table{width:100%;border-collapse:collapse;font-size:.9em;margin:16px 0}
+        .compare-table th{background:var(--secondary);color:white;padding:12px 16px;text-align:left}
+        .compare-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+        .compare-table tr:nth-child(even) td{background:#f8fafc}
+        .compare-table td:first-child{font-weight:700;color:var(--secondary)}
+        .step-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+        .step-num{background:var(--accent);color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;flex-shrink:0}
+        .step-content{padding-top:4px}
+        .step-content strong{display:block;margin-bottom:3px}
+        .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+        .flow-box{background:var(--secondary);color:white;padding:8px 16px;border-radius:8px;font-size:.85em;font-weight:600}
+        .flow-box.purple{background:#7C3AED}.flow-box.blue{background:var(--info)}.flow-box.orange{background:var(--primary-dark)}.flow-box.green{background:var(--accent)}.flow-box.red{background:var(--danger)}
+        .flow-arrow{color:var(--text-muted);font-size:1.2em;font-weight:700}
+        .arch-diagram{background:#1e1e2e;color:#89b4fa;border-radius:10px;padding:24px;font-family:monospace;font-size:.85em;line-height:1.8;overflow-x:auto;white-space:pre}
+        .lab{background:linear-gradient(135deg,#1e1e2e,#181825);border-radius:12px;padding:28px;margin-bottom:24px;color:#cdd6f4}
+        .lab-title{color:#a6e3a1;font-weight:800;font-size:1.05em;margin-bottom:6px}
+        .lab-desc{color:#a6adc8;font-size:.88em;margin-bottom:16px}
+        .lab ol{padding-left:20px;color:#cdd6f4;font-size:.9em;line-height:1.9}
+        .lab code{background:#313244;color:#f9e2af;padding:1px 6px;border-radius:4px;font-family:monospace}
+        .divider{border:none;height:2px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:40px 0}
+        ul li,ol li{margin-bottom:6px}
+        ul,ol{padding-left:20px}
+        .timeline{position:relative;padding-left:30px}
+        .timeline::before{content:'';position:absolute;left:10px;top:0;bottom:0;width:2px;background:var(--border)}
+        .timeline-item{position:relative;margin-bottom:24px}
+        .timeline-item::before{content:'';position:absolute;left:-24px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid white;box-shadow:0 0 0 2px var(--accent)}
+        .summary-card{background:linear-gradient(135deg,var(--secondary),#1f3d1a);color:white;border-radius:12px;padding:32px;margin-bottom:24px}
+        .summary-card h2{color:var(--primary);margin-bottom:16px;font-size:1.4em}
+        .checklist{list-style:none;padding:0}
+        .checklist li{padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+        .checklist li::before{content:"✅";flex-shrink:0}
+    </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">📘 AWS Teaching Guide – Day Session</div>
+  <h1>AWS <span>SQS</span></h1>
+  <p>Simple Queue Service — Fully managed message queuing for decoupling microservices, distributed systems, and serverless applications. Reliably delivers messages even if the consumer is offline.</p>
+  <div class="hero-meta">
+    <span>🕐 60–75 Minutes</span>
+    <span>🎯 Beginner–Intermediate</span>
+    <span>📦 Message Queuing</span>
+    <span>🔗 Works with Lambda, SNS, ECS, EC2</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: WHAT IS SQS -->
+  <div class="section-heading">
+    <div class="section-icon">📦</div>
+    <h2>What is AWS SQS?</h2>
+  </div>
+
+  <div class="card">
+    <div class="analogy">
+      <div class="analogy-title">🏦 Analogy — Bank Queue (Token System)</div>
+      <p>Think of an SQS queue like a bank token system. Customers (producers) take a token and wait. Bank tellers (consumers) call tokens one by one. If there are no tellers (consumers down), tokens are still in the queue — no customer is lost. If there are many tellers, they process tokens faster. The queue absorbs spikes and decouples the arrival rate from the processing rate.</p>
+    </div>
+
+    <h3>Why Do We Need Message Queues?</h3>
+    <p>Without queuing — if Service A calls Service B directly (synchronous), and B is slow or down, A fails too. With SQS — A drops a message in the queue and returns immediately. B processes when it's ready. They're completely decoupled.</p>
+
+    <div class="grid-3">
+      <div class="concept-card">
+        <div class="icon">⚡</div>
+        <h3>Decoupling</h3>
+        <p>Producer and consumer are independent. Producer doesn't wait for consumer. Consumer processes at its own pace.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🛡️</div>
+        <h3>Durability</h3>
+        <p>Messages are replicated across 3 AZs. Even if consumer crashes, messages stay in the queue for up to 14 days.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">📈</div>
+        <h3>Buffer</h3>
+        <p>Queue absorbs traffic spikes. 10K requests/sec hit the queue; consumer processes at 100/sec. No overload.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: QUEUE TYPES -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔀</div>
+    <h2>Queue Types: Standard vs FIFO</h2>
+  </div>
+
+  <div class="card">
+    <table class="compare-table">
+      <tr><th>Feature</th><th>Standard Queue</th><th>FIFO Queue</th></tr>
+      <tr><td>Message ordering</td><td>Best-effort (NOT guaranteed). Messages may arrive out of order.</td><td>Strict FIFO — first in, first out. Guaranteed.</td></tr>
+      <tr><td>Delivery</td><td>At-least-once. May deliver duplicate messages — consumer must handle deduplication.</td><td>Exactly-once processing — no duplicates.</td></tr>
+      <tr><td>Throughput</td><td>Unlimited (nearly). 300 msg/sec per API call, up to 3,000 with batching.</td><td>300 msg/sec (or 3,000 with batching).</td></tr>
+      <tr><td>Use case</td><td>Image processing, notifications, email delivery, log ingestion. Order doesn't matter.</td><td>Financial transactions, order placement, inventory. Order MATTERS.</td></tr>
+      <tr><td>Naming</td><td>Any name</td><td>Name must end with <code>.fifo</code></td></tr>
+      <tr><td>Cost</td><td>$0.40 per million requests</td><td>$0.50 per million requests</td></tr>
+    </table>
+    <div class="callout callout-warning">
+      <span class="icon">⚠️</span>
+      <div><strong>Teaching Point:</strong> Standard queues can deliver a message <em>more than once</em>. If your consumer isn't idempotent (safe to run twice), use FIFO or build deduplication logic.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: KEY CONCEPTS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🧩</div>
+    <h2>Key SQS Concepts — Must Know</h2>
+  </div>
+
+  <div class="card">
+    <h3>Critical SQS Parameters — Teach Each One</h3>
+    <table class="compare-table">
+      <tr><th>Parameter</th><th>Default</th><th>Max</th><th>What it controls</th></tr>
+      <tr><td>Message Retention Period</td><td>4 days</td><td>14 days</td><td>How long unprocessed messages stay in queue before auto-deletion</td></tr>
+      <tr><td>Visibility Timeout</td><td>30 sec</td><td>12 hours</td><td>How long a message is hidden from other consumers after one consumer picks it up</td></tr>
+      <tr><td>Message Size</td><td>—</td><td>256 KB</td><td>Max size of a single message payload</td></tr>
+      <tr><td>Delay Queue</td><td>0 sec</td><td>900 sec (15 min)</td><td>Delay before newly sent messages are visible to consumers</td></tr>
+      <tr><td>Long Polling Wait Time</td><td>0 sec (short poll)</td><td>20 sec</td><td>How long ReceiveMessage waits if queue is empty — reduces API calls</td></tr>
+      <tr><td>Max Receive Count (DLQ)</td><td>—</td><td>—</td><td>After how many receive attempts a message is sent to the Dead Letter Queue</td></tr>
+    </table>
+
+    <h4>Visibility Timeout — Most Important Concept</h4>
+    <div class="arch-diagram">
+Timeline of a message in SQS:
+
+00:00  Producer sends message to queue
+       → Message is visible in queue
+
+00:05  Consumer 1 calls ReceiveMessage → picks up the message
+       → Visibility Timeout starts (default 30 seconds)
+       → Message is HIDDEN from other consumers during this window
+
+       Consumer 1 is processing...
+
+00:20  Consumer 1 successfully processes the message
+       → Calls DeleteMessage API → message is permanently removed ✅
+
+--- OR FAILURE SCENARIO ---
+
+00:20  Consumer 1 CRASHES before processing
+       → Never calls DeleteMessage
+
+00:35  Visibility Timeout EXPIRES (30 sec after 00:05)
+       → Message becomes VISIBLE again in the queue
+
+00:36  Consumer 2 picks up the same message → processes it ✅
+       → Calls DeleteMessage → message removed</div>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <div><strong>Key Insight:</strong> SQS doesn't auto-delete messages when a consumer reads them. The consumer MUST explicitly call <code>DeleteMessage</code> after successful processing. This is what guarantees no message loss.</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>Dead Letter Queue (DLQ)</h3>
+    <p>If a message fails to be processed N times (configurable), SQS automatically moves it to a Dead Letter Queue instead of deleting it or looping forever.</p>
+    <div class="flow">
+      <div class="flow-box green">Message arrives in queue</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box blue">Consumer picks up → fails → message returns</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box orange">Repeat 3 more times</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box red">After 4 failures → sent to DLQ</div>
+    </div>
+    <div class="callout callout-success">
+      <span class="icon">✅</span>
+      <div><strong>Best Practice:</strong> Configure a CloudWatch alarm on the DLQ ApproximateNumberOfMessages metric. If DLQ has > 0 messages → alert the team. Set DLQ retention to 14 days to give the team time to investigate and replay.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: HANDS-ON LAB -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🛠️</div>
+    <h2>Hands-On: Create SQS Queue (Step-by-Step)</h2>
+  </div>
+
+  <div class="card">
+    <h3>Lab 1: Create a Standard Queue with DLQ</h3>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>First — Create the Dead Letter Queue</strong>
+        <ul>
+          <li>SQS Console → Create Queue</li>
+          <li>Type: Standard, Name: <code>orders-queue-dlq</code></li>
+          <li>Retention: 14 days, all other defaults → Create</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Create the Main Queue</strong>
+        <ul>
+          <li>SQS Console → Create Queue</li>
+          <li>Type: Standard, Name: <code>orders-queue</code></li>
+          <li>Visibility timeout: <strong>30 seconds</strong></li>
+          <li>Message retention: <strong>4 days</strong></li>
+          <li>Delivery delay: <strong>0 seconds</strong></li>
+          <li>Receive message wait time: <strong>20 seconds</strong> (enables long polling)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Configure Dead Letter Queue</strong>
+        <ul>
+          <li>Scroll down to "Dead-letter queue" → Enable</li>
+          <li>Choose queue: <code>orders-queue-dlq</code></li>
+          <li>Maximum receives: <strong>3</strong> (after 3 failed attempts → goes to DLQ)</li>
+        </ul>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Create Queue</strong>
+        Note the Queue URL: <code>https://sqs.ap-south-1.amazonaws.com/123456789012/orders-queue</code>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-title">🔬 Lab 2: Send and Receive Messages via CLI</div>
+    <div class="lab-desc">Practice the full producer → queue → consumer cycle from the terminal</div>
+    <ol>
+      <li>Send a message (Producer):
+        <code>aws sqs send-message --queue-url https://sqs.ap-south-1.amazonaws.com/123456789012/orders-queue --message-body '{"orderId":"1001","item":"Laptop","amount":45000}'</code></li>
+      <li>Send a batch (more efficient):
+        <code>aws sqs send-message-batch --queue-url URL --entries '[{"Id":"1","MessageBody":"Order 1"},{"Id":"2","MessageBody":"Order 2"}]'</code></li>
+      <li>Receive the message (Consumer — long poll):
+        <code>aws sqs receive-message --queue-url URL --wait-time-seconds 20 --max-number-of-messages 10</code></li>
+      <li>Note the ReceiptHandle in the output — save it!</li>
+      <li>Delete the message after processing:
+        <code>aws sqs delete-message --queue-url URL --receipt-handle "RECEIPT_HANDLE_FROM_STEP_4"</code></li>
+      <li>Check queue depth:
+        <code>aws sqs get-queue-attributes --queue-url URL --attribute-names ApproximateNumberOfMessages</code></li>
+    </ol>
+  </div>
+
+  <div class="lab">
+    <div class="lab-title">🔬 Lab 3: Lambda Consumer — Process SQS Messages Automatically</div>
+    <div class="lab-desc">Configure Lambda to automatically poll SQS and process messages — the most common production pattern</div>
+    <ol>
+      <li>Create a Lambda function (Python 3.12):
+        <ul>
+          <li>Function name: <code>OrderProcessor</code></li>
+          <li>Execution role: needs <code>sqs:ReceiveMessage</code>, <code>sqs:DeleteMessage</code>, <code>sqs:GetQueueAttributes</code></li>
+        </ul>
+      </li>
+      <li>Add SQS Trigger: Lambda → Configuration → Triggers → Add trigger → SQS → <code>orders-queue</code></li>
+      <li>Batch size: 10 (Lambda receives up to 10 messages per invocation)</li>
+      <li>Lambda code:</li>
+    </ol>
+    <div class="code-label">Python Lambda Handler for SQS</div>
+    <div class="code-block">import json
+
+def lambda_handler(event, context):
+    for record in event['Records']:
+        body = json.loads(record['body'])
+        print(f"Processing order: {body['orderId']}")
+        # Your processing logic here
+        # If this function succeeds: Lambda auto-deletes the messages
+        # If this function throws exception: Lambda returns messages to queue → retried
+
+    return {'statusCode': 200, 'body': 'Processed successfully'}</div>
+    <p style="color:#a6adc8;margin-top:10px;">When Lambda processes SQS, it handles the ReceiveMessage and DeleteMessage calls automatically. Your code just processes the messages.</p>
+  </div>
+
+  <!-- SECTION 5: LONG POLLING -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">⏱️</div>
+    <h2>Short Polling vs Long Polling</h2>
+  </div>
+  <div class="card">
+    <table class="compare-table">
+      <tr><th>Feature</th><th>Short Polling (default)</th><th>Long Polling (recommended)</th></tr>
+      <tr><td>How it works</td><td>ReceiveMessage returns immediately even if queue is empty</td><td>ReceiveMessage waits up to 20 sec for a message before returning empty</td></tr>
+      <tr><td>Empty responses</td><td>Many — high cost</td><td>Almost none — low cost</td></tr>
+      <tr><td>Latency</td><td>Low (responds immediately)</td><td>Low for messages (up to 20 sec for empty)</td></tr>
+      <tr><td>Cost</td><td>High (many API calls)</td><td>Low (fewer API calls)</td></tr>
+      <tr><td>Enable</td><td>Default</td><td>Set WaitTimeSeconds = 20 in ReceiveMessage, or set on queue</td></tr>
+    </table>
+    <div class="callout callout-success">
+      <span class="icon">✅</span>
+      <div><strong>Always use Long Polling (20 seconds) in production</strong> — it reduces empty ReceiveMessage API calls by up to 98%, cutting costs significantly.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 6: SNS + SQS FANOUT -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🌐</div>
+    <h2>SNS + SQS Fan-Out Pattern (Revisited from SNS)</h2>
+  </div>
+  <div class="card">
+    <h3>Why combine SNS and SQS?</h3>
+    <table class="compare-table">
+      <tr><th>If you only use SNS</th><th>If you add SQS between SNS and consumers</th></tr>
+      <tr><td>If consumer (Lambda/HTTP) is down → message is lost (after retries)</td><td>Messages buffer in SQS → consumer processes when it comes back up</td></tr>
+      <tr><td>Consumer must process at the same speed as messages arrive</td><td>Consumer can process at its own pace — queue absorbs spikes</td></tr>
+      <tr><td>No replay — once processed, message is gone</td><td>Messages stay in queue for up to 14 days — can reprocess</td></tr>
+    </table>
+    <div class="callout callout-success">
+      <span class="icon">💡</span>
+      <div><strong>Rule of Thumb:</strong> For critical workflows — SNS → SQS → Lambda/Worker. For simple notifications (email, SMS) — SNS direct subscription is fine.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: SECURITY -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔒</div>
+    <h2>SQS Security</h2>
+  </div>
+  <div class="card">
+    <div class="grid-2">
+      <div>
+        <h4>IAM Policies (Identity-Based)</h4>
+        <ul>
+          <li>Grant <code>sqs:SendMessage</code> to producers</li>
+          <li>Grant <code>sqs:ReceiveMessage</code> + <code>sqs:DeleteMessage</code> to consumers</li>
+          <li>EC2 instances, Lambda, ECS use IAM roles — no hardcoded keys</li>
+        </ul>
+      </div>
+      <div>
+        <h4>SQS Resource Policy (Queue Policy)</h4>
+        <ul>
+          <li>Allow cross-account access (Account B can send to your queue)</li>
+          <li>Allow specific AWS services like SNS to send messages</li>
+          <li>Restrict access by source IP (<code>aws:SourceIp</code> condition)</li>
+        </ul>
+      </div>
+    </div>
+    <h4>Encryption at Rest</h4>
+    <ul>
+      <li>Enable SSE (Server-Side Encryption) — messages encrypted using KMS</li>
+      <li>Choose: AWS Managed Key (free) or Customer Managed Key (for compliance/audit trail)</li>
+      <li>Encryption happens at the SQS service level — transparent to producers/consumers</li>
+    </ul>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <h2>📚 Session Summary — SQS Key Takeaways</h2>
+    <ul class="checklist" style="color:white">
+      <li>SQS = asynchronous message queue. Producer drops messages; consumer processes when ready</li>
+      <li>Standard Queue: best-effort order, at-least-once delivery, unlimited throughput</li>
+      <li>FIFO Queue: strict order, exactly-once delivery, 300 msg/sec (use when order matters)</li>
+      <li>Visibility Timeout: message hidden from other consumers while one is processing — prevents duplicate processing. Consumer must call DeleteMessage on success</li>
+      <li>Dead Letter Queue (DLQ): after N failed receive attempts → moves to DLQ. Always set up CloudWatch alarm on DLQ</li>
+      <li>Long Polling (20 sec): always use in production. Reduces empty API calls and cost significantly</li>
+      <li>Lambda + SQS: Lambda polls SQS automatically (event source mapping). Auto-deletes on success, returns on failure</li>
+      <li>SNS → SQS Fan-Out: SNS broadcasts; SQS queues buffer for each independent consumer microservice</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

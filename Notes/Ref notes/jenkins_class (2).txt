@@ -1,0 +1,306 @@
+any -- free agent/slave
+pipeline {
+    agent any
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+                sh 'mkdir abc'
+                sh 'ls -lart'
+                sh 'pwd'
+            }
+        }
+    }
+}
+
+
+none -- it allows to schedule stages on differant agents
+	pipeline {
+    agent none
+    stages {
+        stage('Hello') {
+            agent any
+            steps {
+                echo 'Hello World'
+                // sh 'mkdir abc'
+                sh 'ls -lart'
+                sh 'pwd'
+            }
+        }
+        stage('Hello1') {
+            agent any
+            steps {
+                echo 'Hello World'
+                // sh 'mkdir abc'
+                sh 'ls -lart'
+                sh 'pwd'
+            }
+        }
+    }
+}
+
+label -- it allows schedule on particular agent
+pipeline {
+    agent {
+        label 'salve01'
+    }
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+                sh 'mkdir abc'
+                sh 'ls -lart'
+                sh 'pwd'
+            }
+        }
+    }
+}
+
+docker -- it will create container and perform operation on top of that container
+
+pipeline {
+    agent {
+        docker {
+            image 'ubuntu:latest'
+        }
+    }
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+                sh 'mkdir abc'
+                sh 'ls -lart'
+                sh 'pwd'
+            }
+        }
+    }
+}
+
+
+
+pipeline {
+    agent any
+    environment{
+       test = "xy" 
+    }
+    stages {
+        stage('Hello') {
+            steps {
+                cleanWs()
+                echo 'Hello World'
+                sh 'mkdir $folder'
+                sh 'ls -lart'
+                sh 'pwd'
+                print BUILD_URL
+                sh "echo tool name is $tool"
+            }
+        }
+    }
+}
+
+
+
+
+
+
+options:
+
+retry --
+BuildDiscarder 
+
+// def test = "xy" --global parameters 
+pipeline {
+    agent any
+    environment{
+      test = "xy" 
+    }
+    parameters{
+        string(name:'pet',defaultValue:'jimmy',description:'name of pet')
+    }
+    options{
+        // retry(3)
+        // buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+        // disableConcurrentBuilds()
+		  timeout(time:20,unit:'SECONDS')
+        timestamps()
+        
+    }
+    stages {
+        stage('test'){
+            steps{
+                cleanWs()
+                sh """
+                echo "helloWorld" > a
+                echo "helloWorld" > b
+                echo "helloWorld" > c
+                echo "helloWorld" > d
+                """
+                sh "ls -lart && pwd"
+            }
+        }
+        stage('Hello') {
+            // options{
+            //     retry(3)
+            // }
+            steps {
+                // ÷cleanWs()
+                echo 'Hello World'
+                // sh 'mkdir $folder'
+                sh 'ls -lart'
+                sh 'pwd'
+                print BUILD_URL
+                sh "echo tool name is $tool"
+                print pet
+                retry(3){
+                    sh "ls -lart"
+                    sleep 60
+                }
+            }
+        }
+    }
+}
+
+
+
+trigger other jobs-
+
+					 build('projectA/test')
+                  build('projectB/test')
+
+triggers
+cron('* * * * *')
+pollSCM('* * * * *')
+
+Parallel Builds
+
+try/catch
+
+dir-- run from particular folder
+
+
+
+pipeline{
+    agent any
+    options{
+        timestamps()
+    }
+    stages{
+        stage('parallel'){
+            parallel{
+                stage('projectA'){
+                    steps{
+                        cleanWs()
+                        sh "echo projectA is running 1st time"
+                        // sleep 1
+                        sh "echo projectA is running 2st time"
+                        // sleep 1
+                        sh "echo projectA is running 3st time"
+                    }
+                }
+                stage('projectB'){
+                    steps{
+                        sh "echo projectB is running 1st time"
+                        // sleep 1
+                        sh "echo projectB is running 2st time"
+                        // sleep 1
+                        sh "echo projectB is running 3st time"                        
+                    }
+                }
+            }
+        }
+        stage('test'){
+            steps{
+                script{
+                    sh "mkdir testfolder"
+                dir('testfolder'){
+                      try{
+                        sh 'mkdir devopstest'
+                        sh "echo hello > a"
+                        sh 'cat a'
+                        }catch (Exception e){
+                            echo 'folder already exist'
+                        }
+                        sh 'ls -lart && pwd'
+                }
+                
+                }
+            }
+        }
+    }
+}
+
+
+
+
+// def test = "xy" --global parameters 
+pipeline {
+    agent any
+    
+    triggers{
+        // cron('* * * * *')
+        pollSCM('* * * * *')
+    }
+    // options{
+    //     // retry(3)
+    //     // buildDiscarder(logRotator(numToKeepStr: '10', daysToKeepStr: '30'))
+    //     // disableConcurrentBuilds()
+    //     // timeout(time:20,unit:'SECONDS')
+    //     // timestamps()
+    // }
+    stages {
+        stage('test'){
+            steps{
+                cleanWs()
+                sh """
+                echo "helloWorld" > a
+                echo "helloWorld" > b
+                echo "helloWorld" > c
+                echo "helloWorld" > d
+                """
+                sh "ls -lart && pwd"
+            }
+        }
+        stage('Hello') {
+            // options{
+            //     retry(3)
+            // }
+            steps {
+                // ÷cleanWs()
+                echo 'Hello World'
+                // sh 'mkdir $folder'
+                sh 'ls -lart'
+                sh 'pwd'
+                print BUILD_URL
+                // sh "echo tool name is $tool"
+                // print pet
+                retry(3){
+                    sh "ls -lart"
+                    // sleep 60
+                }
+                // build('projectA/test')
+                // build('projectB/test')
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

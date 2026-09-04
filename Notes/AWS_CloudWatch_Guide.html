@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS CloudWatch – Complete Teaching Guide</title>
+    <style>
+        :root{--primary:#FF9900;--primary-dark:#c77b00;--secondary:#232F3E;--accent:#1A9C3E;--info:#2563EB;--warning:#D97706;--danger:#DC2626;--light-bg:#F8FAFC;--card-bg:#FFFFFF;--border:#E2E8F0;--text-main:#1E293B;--text-muted:#64748B;--code-bg:#1e1e2e;--code-text:#cdd6f4}
+        *{box-sizing:border-box;margin:0;padding:0}
+        body{font-family:'Segoe UI',system-ui,sans-serif;line-height:1.7;color:var(--text-main);background:var(--light-bg);padding:0 20px 60px}
+        .hero{background:linear-gradient(135deg,#0f2027 0%,#1a3a5c 50%,#0f4c75 100%);color:white;text-align:center;padding:60px 40px 50px;margin:0 -20px 40px}
+        .hero-badge{display:inline-block;background:rgba(255,153,0,.25);border:1px solid rgba(255,153,0,.5);color:var(--primary);padding:5px 16px;border-radius:50px;font-size:.8em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:18px}
+        .hero h1{font-size:2.8em;font-weight:800;margin-bottom:12px}.hero h1 span{color:var(--primary)}
+        .hero p{font-size:1.1em;opacity:.85;max-width:650px;margin:0 auto 24px}
+        .hero-meta{display:flex;justify-content:center;gap:24px;flex-wrap:wrap}
+        .hero-meta span{background:rgba(255,255,255,.12);padding:6px 18px;border-radius:6px;font-size:.88em;font-weight:600}
+        .container{max-width:1100px;margin:0 auto}
+        .section-heading{display:flex;align-items:center;gap:14px;margin:50px 0 24px}
+        .section-icon{width:50px;height:50px;border-radius:12px;background:linear-gradient(135deg,#2563EB,#1d4ed8);display:flex;align-items:center;justify-content:center;font-size:1.4em;flex-shrink:0;box-shadow:0 4px 12px rgba(37,99,235,.35)}
+        .section-heading h2{font-size:1.7em;font-weight:800;color:var(--secondary)}
+        .card{background:var(--card-bg);border-radius:12px;padding:28px;margin-bottom:24px;box-shadow:0 2px 12px rgba(0,0,0,.06);border:1px solid var(--border)}
+        .card h3{font-size:1.15em;font-weight:700;color:var(--secondary);margin-bottom:14px}
+        .card h4{font-size:1em;font-weight:700;color:var(--info);margin:18px 0 8px}
+        .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+        .grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .grid-4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+        @media(max-width:768px){.grid-2,.grid-3,.grid-4{grid-template-columns:1fr}.hero h1{font-size:1.9em}}
+        .concept-card{background:var(--card-bg);border-radius:10px;padding:22px;border:1px solid var(--border);box-shadow:0 2px 8px rgba(0,0,0,.05);transition:transform .2s,box-shadow .2s}
+        .concept-card:hover{transform:translateY(-3px);box-shadow:0 8px 24px rgba(0,0,0,.1)}
+        .concept-card .icon{font-size:2em;margin-bottom:10px}
+        .concept-card h3{font-size:1.05em;font-weight:700;color:var(--secondary);margin-bottom:8px}
+        .concept-card p{font-size:.9em;color:var(--text-muted);line-height:1.6}
+        .code-block{background:var(--code-bg);color:var(--code-text);padding:20px 24px;border-radius:10px;overflow-x:auto;font-family:'Consolas','Courier New',monospace;font-size:.88em;line-height:1.7;margin:14px 0;white-space:pre}
+        .code-label{background:#313244;color:#cba6f7;font-size:.72em;font-weight:700;padding:4px 12px;border-radius:6px 6px 0 0;display:inline-block;letter-spacing:.5px}
+        .callout{padding:16px 20px;border-radius:8px;margin:16px 0;font-size:.93em;display:flex;gap:12px;align-items:flex-start}
+        .callout .icon{font-size:1.2em;flex-shrink:0;margin-top:1px}
+        .callout-info{background:#DBEAFE;border-left:4px solid var(--info)}
+        .callout-warning{background:#FEF3C7;border-left:4px solid var(--warning)}
+        .callout-success{background:#DCFCE7;border-left:4px solid var(--accent)}
+        .callout-danger{background:#FEE2E2;border-left:4px solid var(--danger)}
+        .callout-purple{background:#F3E8FF;border-left:4px solid #7C3AED}
+        .analogy{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1px solid #93c5fd;border-radius:10px;padding:20px 24px;margin:16px 0}
+        .analogy .analogy-title{font-weight:800;color:var(--info);font-size:.85em;letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+        .compare-table{width:100%;border-collapse:collapse;font-size:.9em;margin:16px 0}
+        .compare-table th{background:var(--secondary);color:white;padding:12px 16px;text-align:left}
+        .compare-table td{padding:11px 16px;border-bottom:1px solid var(--border);vertical-align:top}
+        .compare-table tr:nth-child(even) td{background:#f8fafc}
+        .compare-table td:first-child{font-weight:700;color:var(--secondary)}
+        .step-item{display:flex;gap:16px;margin-bottom:16px;align-items:flex-start}
+        .step-num{background:var(--info);color:white;width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.85em;flex-shrink:0}
+        .step-content{padding-top:4px}
+        .step-content strong{display:block;margin-bottom:3px}
+        .flow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0}
+        .flow-box{background:var(--secondary);color:white;padding:8px 16px;border-radius:8px;font-size:.85em;font-weight:600}
+        .flow-box.blue{background:var(--info)}
+        .flow-box.orange{background:var(--primary-dark)}
+        .flow-box.green{background:var(--accent)}
+        .flow-box.red{background:var(--danger)}
+        .flow-box.purple{background:#7C3AED}
+        .flow-arrow{color:var(--text-muted);font-size:1.2em;font-weight:700}
+        .lab{background:linear-gradient(135deg,#1e1e2e,#181825);border-radius:12px;padding:28px;margin-bottom:24px;color:#cdd6f4}
+        .lab-title{color:#89b4fa;font-weight:800;font-size:1.05em;margin-bottom:6px}
+        .lab-desc{color:#a6adc8;font-size:.88em;margin-bottom:16px}
+        .lab ol{padding-left:20px;color:#cdd6f4;font-size:.9em;line-height:1.9}
+        .lab code{background:#313244;color:#f9e2af;padding:1px 6px;border-radius:4px;font-family:monospace}
+        .divider{border:none;height:2px;background:linear-gradient(to right,transparent,var(--border),transparent);margin:40px 0}
+        .arch-diagram{background:#1e1e2e;color:#89b4fa;border-radius:10px;padding:24px;font-family:monospace;font-size:.85em;line-height:1.8;overflow-x:auto;white-space:pre}
+        ul li,ol li{margin-bottom:6px}
+        ul,ol{padding-left:20px}
+        .metric-viz{background:linear-gradient(135deg,#0f2027,#1a3a5c);border-radius:12px;padding:24px;margin:16px 0;color:white;font-family:monospace}
+        .metric-viz h4{color:var(--primary);margin-bottom:16px;font-family:'Segoe UI',sans-serif}
+        .bar-row{display:flex;align-items:center;gap:12px;margin:8px 0}
+        .bar-label{width:120px;font-size:.8em;color:#a6adc8;text-align:right}
+        .bar{height:28px;border-radius:4px;display:flex;align-items:center;padding-left:10px;font-size:.78em;font-weight:700}
+        .bar.blue{background:linear-gradient(90deg,#1d4ed8,#3b82f6);color:white}
+        .bar.green{background:linear-gradient(90deg,#166534,#22c55e);color:white}
+        .bar.red{background:linear-gradient(90deg,#991b1b,#ef4444);color:white}
+        .bar.orange{background:linear-gradient(90deg,#92400e,#f59e0b);color:white}
+        .summary-card{background:linear-gradient(135deg,var(--secondary),#0f4c75);color:white;border-radius:12px;padding:32px;margin-bottom:24px}
+        .summary-card h2{color:var(--primary);margin-bottom:16px;font-size:1.4em}
+        .checklist{list-style:none;padding:0}
+        .checklist li{padding:5px 0;display:flex;gap:8px;align-items:flex-start}
+        .checklist li::before{content:"✅";flex-shrink:0}
+    </style>
+</head>
+<body>
+<div class="hero">
+  <div class="hero-badge">📘 AWS Teaching Guide – Day Session</div>
+  <h1>AWS <span>CloudWatch</span></h1>
+  <p>The complete monitoring, observability, and alerting hub for your entire AWS environment. Metrics, Logs, Alarms, Dashboards, and Events — all in one place.</p>
+  <div class="hero-meta">
+    <span>🕐 60–75 Minutes</span>
+    <span>🎯 Intermediate</span>
+    <span>📊 Monitoring & Alerting</span>
+    <span>🔗 Works with every AWS service</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- SECTION 1: WHAT IS CLOUDWATCH -->
+  <div class="section-heading">
+    <div class="section-icon">📊</div>
+    <h2>What is AWS CloudWatch?</h2>
+  </div>
+
+  <div class="card">
+    <div class="analogy">
+      <div class="analogy-title">🏥 Analogy — The Hospital Dashboard</div>
+      <p>Imagine a hospital ICU. Every patient has monitors showing heart rate, blood pressure, oxygen — in real time. When readings go critical, alarms sound and nurses are paged. CloudWatch is exactly that — the <strong>health monitoring system</strong> for your entire AWS infrastructure. Every service publishes vital signs (metrics), CloudWatch displays them, and alerts you when something goes wrong.</p>
+    </div>
+    <h3>Core Pillars of CloudWatch</h3>
+    <div class="grid-4">
+      <div class="concept-card">
+        <div class="icon">📈</div>
+        <h3>Metrics</h3>
+        <p>Numerical time-series data. CPU%, NetworkIn, RequestCount. Every AWS service publishes metrics automatically.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">📝</div>
+        <h3>Logs</h3>
+        <p>Text-based output from applications, servers, Lambda functions, VPC Flow Logs. Searchable and filterable.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🔔</div>
+        <h3>Alarms</h3>
+        <p>Trigger actions when a metric crosses a threshold. Scale your ASG, send an SNS notification, stop an EC2 instance.</p>
+      </div>
+      <div class="concept-card">
+        <div class="icon">🗺️</div>
+        <h3>Dashboards</h3>
+        <p>Custom visual panels with metrics from multiple services and regions in a single view.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: METRICS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">📈</div>
+    <h2>CloudWatch Metrics — Deep Dive</h2>
+  </div>
+
+  <div class="card">
+    <h3>Key Concepts: Namespace, Metric Name, Dimensions</h3>
+    <table class="compare-table">
+      <tr><th>Concept</th><th>What it means</th><th>Example</th></tr>
+      <tr><td>Namespace</td><td>Container/category for metrics. Each service has one.</td><td><code>AWS/EC2</code>, <code>AWS/RDS</code>, <code>AWS/Lambda</code></td></tr>
+      <tr><td>Metric Name</td><td>What is being measured</td><td><code>CPUUtilization</code>, <code>NetworkIn</code>, <code>Errors</code></td></tr>
+      <tr><td>Dimension</td><td>Key-value pair that identifies the specific resource</td><td><code>InstanceId=i-1234abcd</code></td></tr>
+      <tr><td>Period</td><td>Time granularity of each data point</td><td>60 seconds (1 minute) or 300 seconds (5 minutes)</td></tr>
+      <tr><td>Statistics</td><td>Aggregation function applied over a period</td><td>Average, Sum, Maximum, Minimum, SampleCount</td></tr>
+      <tr><td>Resolution</td><td>Standard (1-min min) or High-Resolution (1-second)</td><td>High-res requires custom metrics agent</td></tr>
+    </table>
+
+    <h4>Important Built-In EC2 Metrics (Auto-Collected — Free)</h4>
+    <div class="grid-2">
+      <ul>
+        <li>✅ <code>CPUUtilization</code> — % CPU used (0-100)</li>
+        <li>✅ <code>NetworkIn</code> / <code>NetworkOut</code> — bytes in/out</li>
+        <li>✅ <code>NetworkPacketsIn</code> / <code>NetworkPacketsOut</code></li>
+        <li>✅ <code>DiskReadOps</code> / <code>DiskWriteOps</code></li>
+        <li>✅ <code>StatusCheckFailed</code> — hardware/OS level failure</li>
+      </ul>
+      <div>
+        <div class="callout callout-warning">
+          <span class="icon">⚠️</span>
+          <div><strong>Common Gotcha:</strong> EC2 does NOT report Memory Usage or Disk Space by default! These are inside the OS — AWS can't see them. You must install the <strong>CloudWatch Agent</strong> to get RAM and disk metrics.</div>
+        </div>
+      </div>
+    </div>
+
+    <h4>Metric Resolution — Standard vs High-Resolution</h4>
+    <table class="compare-table">
+      <tr><th>Type</th><th>Resolution</th><th>Retention</th><th>Cost</th></tr>
+      <tr><td>Standard</td><td>1-minute minimum</td><td>15 months</td><td>Free for basic metrics</td></tr>
+      <tr><td>High-Resolution</td><td>1-second</td><td>3 hours at 1-sec, then rolled up</td><td>$0.30 per metric/month</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>Custom Metrics — Publish Your Own App Metrics</h3>
+    <p>You can publish any metric from your application using the AWS CLI or SDK. Useful for business KPIs or app-specific monitoring.</p>
+    <div class="code-label">PUBLISH CUSTOM METRIC VIA CLI</div>
+    <div class="code-block">aws cloudwatch put-metric-data \
+  --namespace "MyApp/OrderService" \
+  --metric-name "OrdersProcessed" \
+  --value 142 \
+  --unit Count \
+  --dimensions Environment=Production,Service=OrderAPI</div>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <div><strong>Example use cases:</strong> Active user sessions, queue depth, orders per minute, login failures per hour, cache hit ratio. These custom metrics can trigger alarms just like AWS built-in metrics.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: LOGS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">📝</div>
+    <h2>CloudWatch Logs — Centralized Log Management</h2>
+  </div>
+
+  <div class="card">
+    <h3>Key Concepts: Log Groups, Log Streams, Log Events</h3>
+    <div class="arch-diagram">
+CloudWatch Logs Hierarchy:
+
+Log Group: /aws/lambda/OrderProcessor       ← One per application/service
+  └── Log Stream: 2024/09/02/[$LATEST]abc123  ← One per execution/instance
+        ├── 09:00:01  INFO: Order received: ORD-1001
+        ├── 09:00:02  INFO: Payment validated
+        ├── 09:00:03  INFO: Order shipped
+        └── 09:00:04  ERROR: Notification service timeout
+
+Log Group: /var/log/nginx/access.log         ← From EC2 via CloudWatch Agent
+  └── Log Stream: i-1234abcd5678            ← One stream per EC2 instance
+        ├── 09:01:05  192.168.1.5 GET /api/products 200 45ms
+        └── 09:01:06  192.168.1.5 POST /api/order 500 2340ms</div>
+
+    <h4>Log Retention — Always Configure This!</h4>
+    <p>By default, CloudWatch Logs are retained <strong>FOREVER</strong> — costing money indefinitely. Always set retention policy.</p>
+    <table class="compare-table">
+      <tr><th>Retention Period</th><th>Recommendation</th></tr>
+      <tr><td>1 day – 7 days</td><td>Development environments, Lambda debug logs</td></tr>
+      <tr><td>30 days</td><td>Standard application logs, general debugging</td></tr>
+      <tr><td>90 days</td><td>Security logs for incident response windows</td></tr>
+      <tr><td>1 year</td><td>Compliance-required logs (HIPAA, SOC2)</td></tr>
+      <tr><td>Never expire</td><td>Avoid — archive to S3 Glacier instead for long-term</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>CloudWatch Agent — Install on EC2 for Full Observability</h3>
+    <div class="callout callout-info">
+      <span class="icon">ℹ️</span>
+      <div>The CloudWatch Agent runs on EC2 and collects: OS metrics (RAM, disk, process count, swap), and streams application log files to CloudWatch Logs.</div>
+    </div>
+
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content">
+        <strong>Attach IAM Role to EC2</strong>
+        Create IAM role with policy: <code>CloudWatchAgentServerPolicy</code>. Attach to EC2 instance.
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content">
+        <strong>Install the Agent</strong>
+        <div class="code-block">sudo yum install amazon-cloudwatch-agent -y    # Amazon Linux / RHEL
+sudo apt-get install amazon-cloudwatch-agent  # Ubuntu/Debian</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content">
+        <strong>Configure via Wizard (Easiest Method)</strong>
+        <div class="code-block">sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-config-wizard</div>
+        The wizard asks: which metrics (CPU, RAM, disk?), which log files to collect, what log group names to use.
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content">
+        <strong>Start the Agent</strong>
+        <div class="code-block">sudo systemctl start amazon-cloudwatch-agent
+sudo systemctl enable amazon-cloudwatch-agent   # start on reboot</div>
+      </div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-content">
+        <strong>Verify in Console</strong>
+        CloudWatch → Metrics → CWAgent namespace → See mem_used_percent, disk_used_percent appearing.
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>CloudWatch Logs Insights — Query Logs with SQL-like Syntax</h3>
+    <p>Logs Insights lets you analyze log data interactively using a purpose-built query language.</p>
+    <div class="grid-2">
+      <div>
+        <div class="code-label">QUERY: Find all ERROR logs in last 1 hour</div>
+        <div class="code-block">fields @timestamp, @message
+| filter @message like /ERROR/
+| sort @timestamp desc
+| limit 50</div>
+      </div>
+      <div>
+        <div class="code-label">QUERY: Count 5xx errors by minute</div>
+        <div class="code-block">fields @timestamp, @message
+| filter @message like /5[0-9][0-9]/
+| stats count(*) as errors by bin(1m)
+| sort @timestamp desc</div>
+      </div>
+    </div>
+    <div class="code-label">QUERY: Lambda cold starts analysis</div>
+    <div class="code-block">filter @type = "REPORT"
+| stats avg(@initDuration) as avg_cold_start,
+        count(@initDuration) as cold_starts,
+        max(@duration) as max_duration
+  by bin(5m)</div>
+  </div>
+
+  <!-- SECTION 4: METRIC FILTERS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔎</div>
+    <h2>Metric Filters — Turn Log Data into Metrics</h2>
+  </div>
+  <div class="card">
+    <h3>What is a Metric Filter?</h3>
+    <p>A Metric Filter scans a CloudWatch Log Group for a specific text pattern and increments a custom metric each time it finds a match. This bridges logs and alarms.</p>
+    <div class="flow">
+      <div class="flow-box blue">App writes "ERROR 500" to log</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box green">CloudWatch Logs captures it</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box orange">Metric Filter: count "ERROR 500" occurrences</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box purple">Custom Metric: HTTP5xxErrors count</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-box red">Alarm fires → SNS alert</div>
+    </div>
+    <br>
+    <h4>Example: Create Metric Filter for HTTP 500 Errors</h4>
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-content"><strong>Go to:</strong> CloudWatch → Log Groups → select your log group → Actions → Create metric filter</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-content"><strong>Filter pattern:</strong> <code>[ip, id, user, timestamp, request, status_code=5*, size]</code> or simply <code>"HTTP/1.1 5"</code></div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-content"><strong>Metric details:</strong> Namespace: <code>MyApp/WebServer</code>, Metric name: <code>HTTP5xxErrors</code>, Value: <code>1</code>, Unit: Count</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-content"><strong>Create alarm:</strong> On this new metric — If count &gt;= 10 in 5 minutes → Alert the on-call team via SNS</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: ALARMS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🔔</div>
+    <h2>CloudWatch Alarms — Step-by-Step Creation</h2>
+  </div>
+
+  <div class="card">
+    <h3>Alarm States</h3>
+    <div class="grid-3">
+      <div class="concept-card" style="border-left:4px solid var(--accent)">
+        <div class="icon">✅</div>
+        <h3>OK</h3>
+        <p>The metric is within the defined threshold. Everything is normal.</p>
+      </div>
+      <div class="concept-card" style="border-left:4px solid var(--danger)">
+        <div class="icon">🚨</div>
+        <h3>ALARM</h3>
+        <p>The metric has breached the threshold for the configured number of periods. Action is triggered.</p>
+      </div>
+      <div class="concept-card" style="border-left:4px solid #6B7280">
+        <div class="icon">❓</div>
+        <h3>INSUFFICIENT_DATA</h3>
+        <p>Not enough data points to evaluate the alarm (e.g., EC2 just started, metric hasn't been collected yet).</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="lab">
+    <div class="lab-title">🔬 Lab: Create an EC2 CPU Alarm with SNS Notification</div>
+    <div class="lab-desc">Goal: Alert when any EC2 instance's CPU exceeds 80% for 5 minutes</div>
+    <ol>
+      <li>Go to <code>CloudWatch → Alarms → Create Alarm</code></li>
+      <li>Click <code>Select metric → EC2 → Per-Instance Metrics</code></li>
+      <li>Find your instance, check <code>CPUUtilization</code> → Select metric</li>
+      <li>Conditions:
+        <ul>
+          <li>Statistic: <code>Average</code></li>
+          <li>Period: <code>1 minute</code></li>
+          <li>Threshold type: <code>Static</code></li>
+          <li>Condition: <code>Greater than 80</code></li>
+          <li>Datapoints to alarm: <code>5 out of 5</code> (fires only if CPU &gt; 80% for 5 consecutive minutes)</li>
+        </ul>
+      </li>
+      <li>Notification: Select SNS topic → <code>DevOps-Alerts</code> (or create new topic with your email)</li>
+      <li>Name: <code>EC2-HighCPU-Alarm</code> → Create alarm</li>
+      <li>Test it: SSH into EC2, run <code>stress --cpu 4 --timeout 400</code> → Watch alarm transition to ALARM state</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h3>Composite Alarms — Advanced</h3>
+    <p>A Composite Alarm combines multiple alarms with AND/OR logic to reduce alert noise.</p>
+    <div class="callout callout-info">
+      <span class="icon">💡</span>
+      <div><strong>Example:</strong> Only alert if BOTH CPU &gt; 80% AND Network errors &gt; 100. A CPU spike alone might not be a problem — but CPU spike + network errors together indicates real trouble.</div>
+    </div>
+    <div class="code-label">COMPOSITE ALARM RULE</div>
+    <div class="code-block">ALARM("EC2-HighCPU-Alarm") AND ALARM("EC2-NetworkErrors-Alarm")</div>
+  </div>
+
+  <!-- SECTION 6: DASHBOARDS -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">🗺️</div>
+    <h2>CloudWatch Dashboards</h2>
+  </div>
+  <div class="card">
+    <h3>Creating a Production Dashboard</h3>
+    <div class="callout callout-info">
+      <span class="icon">📊</span>
+      <div>Dashboards are custom pages with widgets (line graphs, number displays, text) showing metrics from any AWS service or region. They are real-time and auto-refresh.</div>
+    </div>
+    <h4>Recommended Widgets for a DevOps Dashboard:</h4>
+    <div class="grid-2">
+      <ul>
+        <li>📊 EC2 CPU Utilization (line graph) — all instances</li>
+        <li>📊 ALB Request Count per Target (line graph)</li>
+        <li>📊 ALB 5XX Error Rate (line graph)</li>
+        <li>📊 RDS Read/Write Latency (line graph)</li>
+      </ul>
+      <ul>
+        <li>🔢 Active EC2 Instance Count (number widget)</li>
+        <li>🔢 Lambda Error Count (number widget)</li>
+        <li>📊 SQS Queue Depth (line graph)</li>
+        <li>🔔 Alarm Status Panel (alarm list widget)</li>
+      </ul>
+    </div>
+    <div class="callout callout-warning">
+      <span class="icon">💰</span>
+      <div><strong>Cost:</strong> First 3 dashboards with up to 50 metrics are free. After that: $3/dashboard/month.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 7: CLOUDWATCH EVENTS / EVENTBRIDGE -->
+  <hr class="divider">
+  <div class="section-heading">
+    <div class="section-icon">⚡</div>
+    <h2>CloudWatch Events / Amazon EventBridge</h2>
+  </div>
+  <div class="card">
+    <h3>Automated Responses to Infrastructure Changes</h3>
+    <p>CloudWatch Events (now evolved into <strong>Amazon EventBridge</strong>) lets you trigger automated actions when AWS resource state changes.</p>
+    <div class="grid-2">
+      <div>
+        <h4>Event Sources (Triggers):</h4>
+        <ul>
+          <li>EC2 state change: running → stopped</li>
+          <li>Auto Scaling: instance launched/terminated</li>
+          <li>CloudTrail: specific API call made</li>
+          <li>Scheduled: run every 5 minutes (cron)</li>
+          <li>CodePipeline: deployment started/failed</li>
+        </ul>
+      </div>
+      <div>
+        <h4>Targets (Actions):</h4>
+        <ul>
+          <li>Trigger a Lambda function</li>
+          <li>Send to SQS queue</li>
+          <li>Publish to SNS topic</li>
+          <li>Start an SSM Automation runbook</li>
+          <li>Start a CodePipeline pipeline</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout callout-success">
+      <span class="icon">💡</span>
+      <div><strong>Example:</strong> EC2 instance stops unexpectedly → EventBridge triggers Lambda → Lambda sends Slack message to #incidents channel with instance ID and last CloudWatch metrics.</div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="summary-card">
+    <h2>📚 Session Summary — CloudWatch Key Takeaways</h2>
+    <ul class="checklist" style="color:white">
+      <li>CloudWatch is the central observability service — Metrics, Logs, Alarms, Dashboards, Events</li>
+      <li>EC2 does NOT send RAM/Disk metrics by default — install CloudWatch Agent for those</li>
+      <li>Alarms have 3 states: OK, ALARM, INSUFFICIENT_DATA. Alarms trigger SNS, ASG actions</li>
+      <li>Log Groups → Log Streams → Log Events. Always set retention policy to avoid runaway costs</li>
+      <li>Logs Insights: powerful SQL-like query language for analyzing log data</li>
+      <li>Metric Filters: pattern match log text → create a metric → create alarm on that metric</li>
+      <li>Composite Alarms: combine multiple alarms with AND/OR to reduce noise</li>
+      <li>EventBridge: trigger Lambda/SQS/SNS automatically when AWS state changes</li>
+      <li>Custom Metrics: publish any app data (orders/min, login failures) via CLI or SDK</li>
+    </ul>
+  </div>
+
+</div>
+</body>
+</html>

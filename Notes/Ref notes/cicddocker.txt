@@ -1,0 +1,85 @@
+pipeline{
+    agent any
+    stages{
+        stage('checkout'){
+            steps{
+                cleanWs()
+                git branch: 'main', url: 'https://github.com/Siddeshg672/hello_world_public_war.git'
+                // sh "git clone https://github.com/Siddeshg672/hello_world_public_war.git -b main"
+            }
+        }
+        // stage('sonar scan'){
+        //     steps{
+        //         withSonarQubeEnv('sonar_nov') {
+        //             sh "mvn clean verify sonar:sonar -Dsonar.projectKey=sonar"
+        //         }
+        //     }
+        // }
+        stage('compile'){
+            steps{
+                sh "mvn clean install"
+                sh "cp -R webapp/target/webapp.war ."                 
+                sh "mv webapp.war webapp-${BUILD_NUMBER}.war"
+            }
+        }
+        stage('create docker image and upload to jfrog'){
+            steps{
+                sh "docker build -t sampledockeruplaod:${BUILD_NUMBER} -f Dockerfile ." 
+                sh "docker tag sampledockeruplaod:${BUILD_NUMBER} shstechacademy.jfrog.io/sampledockeruplaod/newimage:${BUILD_NUMBER}"
+                withCredentials([usernamePassword(credentialsId: 'dockercred', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh "docker login -u ${user} -p ${pass} shstechacademy.jfrog.io"
+                    sh "docker push shstechacademy.jfrog.io/sampledockeruplaod/newimage:${BUILD_NUMBER}"
+                }
+                sh "docker tag sampledockeruplaod:${BUILD_NUMBER} siddeshg672/testdeployimage:${BUILD_NUMBER}"
+                withCredentials([usernamePassword(credentialsId: 'dockerhublogin', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh "docker login -u ${user} -p ${pass}"
+                    sh "docker push siddeshg672/testdeployimage:${BUILD_NUMBER}"
+                }
+            }
+        }
+        stage('create container'){
+            steps{
+                script{
+                withCredentials([usernamePassword(credentialsId: 'dockercred', passwordVariable: 'pass', usernameVariable: 'user')]) {
+                    sh "docker login -u ${user} -p ${pass} shstechacademy.jfrog.io"
+                    sh "docker pull shstechacademy.jfrog.io/sampledockeruplaod/newimage:${BUILD_NUMBER}"
+                    try{
+                        sh "docker rm -f app1"    
+                    }catch (Exception e) {
+                        echo "container not available"
+                    }
+                    
+                    sh "docker run -id --name app1 -p 8090:8080 shstechacademy.jfrog.io/sampledockeruplaod/newimage:${BUILD_NUMBER}"
+                }
+                    
+                }
+            }
+        }
+        // stage('upload war to jfrog'){
+        //     steps{
+        //         rtUpload (
+        //             // Obtain an Artifactory server instance, defined in Jenkins --> Manage Jenkins --> Configure System:                 
+        //             serverId: "DemoNov",                     
+        //             spec: """{                             
+        //                 "files": [                                     
+        //                         {                                         
+        //                           "pattern": "webapp-${BUILD_NUMBER}.war",                                         
+        //                           "target": "sample_demoNov"
+        //                         }                                 
+        //                     ]                             
+        //             }"""                 
+        //         )             
+        //     }
+        // }
+        // stage('deploy on to tomcat'){
+        //     steps{
+        //         sshagent(credentials: ['jenkins_ssh'], ignoreMissing: true) {
+        //             sh 'scp -o StrictHostKeyChecking=no webapp/target/webapp.war tomcat@18.204.196.153:/opt/tomcat/webapps'                 
+                    
+        //         }             
+                
+        //     }         
+            
+        // }
+    }
+}

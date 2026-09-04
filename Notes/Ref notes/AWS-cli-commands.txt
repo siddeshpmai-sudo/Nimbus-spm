@@ -1,0 +1,27 @@
+    1  cat /etc/*release*
+    2  curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+    3  unzip awscliv2.zip
+    4  sudo ./aws/install
+    5  aws
+    6  aws --version
+    7  aws configure
+    8  aws ec2 describe-instances
+    9  clr
+   10  clear
+   11  aws ec2 describe-instances --query 'Instances[*].[InstanceId]' --output text
+   12  exit
+   13  aws ec2 describe-instances
+   14  aws ec2 describe-instances --query "Reservations[*].Instances[*]
+   15  aws ec2 describe-instances --query "Reservations[*].Instances[*]"
+   16  aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId]"
+   17  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId]"
+   18  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId]" --output text
+   19  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId].{PublicIP:PublicIpAddress" --output text
+   20  aws ec2 describe-instances --query "Reservations[*].Instances[*].[ImageId].{PublicIP:PublicIpAddress}" --output text
+   21  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress}" --output text
+   22  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,status}" --output text
+   23  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,status:status.name}" --output text
+   24  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name}" --output text
+   25  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType}" --output text
+   26  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType,VpcId:VpcId}" --output text
+   27  aws ec2 describe-instances --query "Reservations[*].Instances[*].{PublicIP:PublicIpAddress,Name:Tags[?Key=='Name']|[0].Value,Status:State.Name,Type:InstanceType,VpcId:VpcId}" --output table

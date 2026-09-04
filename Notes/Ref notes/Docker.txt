@@ -1,0 +1,30 @@
+***Docker
+
+Docker is an open-source containerization platform. This Docker tool designed to make it easier to create, deploy and run application by using containers.
+
+***Docker images
+
+Docker image is a package. that have everything to run an application.
+Set of instruction stored in the form of layer. Each layer is read only.
+
+***Docker containers
+
+Docker container is a standardized unit which can be create on the fly to deploy a particular application or environment.
+It’s a running instance of an image. Container are writable.
+
+Docker architecture
+
+
+virual machine vs Container
+
+
+Docker login
+docker images
+docker rmi 51035bcd0a9d
+docker login -u siddeshg672
+docker logout
+docker pull siddeshg672/testdeployimage:tagname_test
+docker tag jenkins/jenkins siddeshg672/testdeployimage:tagname_test
+docker push siddeshg672/testdeployimage:tagname_test
+
+

@@ -1,0 +1,23 @@
+
+
+41. more filename
+42. less filename
+43. du -sh filename
+44. du -sh <directory_name>
+45. du -sh *
+46. df -h
+47. head filename
+48. head -5 filename
+49. tail filename
+50. tail -3 filename
+51. | [pipe]
+52. head -6 filename|tail -1
+53. ls -ltr|wc -l
+54. grep -i "devops" file
+55. grep -in "devops" file
+56. grep -ic "devops" file
+57. grep -iw "devops" file
+58. grep -il "devops" *
+59. grep -ilR "devops" *
+60. grep -ie "pattern1" -ie "pattern2" -ie "pattern3" file
+61. ls -a

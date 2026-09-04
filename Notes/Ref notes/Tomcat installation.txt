@@ -1,0 +1,78 @@
+
+
+Tomcat installation
+1.	sudo apt-get update
+2.	sudo apt-get install default-jdk
+3.	sudo groupadd tomcat
+4.	sudo useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
+5.	cd /tmp
+6.	sudo wget https://mirrors.estointernet.in/apache/tomcat/tomcat-8/v8.5.78/bin/apache-tomcat-8.5.78.tar.gz
+7.	sudo mkdir /opt/tomcat
+8.	sudo tar -xvf apache-tomcat-8.5.78.tar.gz
+9.	sudo cp -R apache-tomcat-8.5.54/* /opt/tomcat
+10.	sudo chgrp -R tomcat /opt/tomcat
+11.	sudo chmod -R g+r conf
+12.	sudo chmod g+x conf
+13.	sudo chown -R tomcat webapps/ work/ temp/ logs/
+14.	sudo update-java-alternatives -l
+15.	sudo vi /etc/systemd/system/tomcat.service
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.target
+
+[Service]
+Type=forking
+Environment=JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+[Install]
+WantedBy=multi-user.target
+16.	sudo systemctl daemon-reload
+17.	sudo systemctl start tomcat
+18.	sudo systemctl status tomcat
+19.	sudo ufw allow 8080
+20.	sudo systemctl enable tomcat
+21.	swith to root sudo su
+22.	chmod +x /opt/tomcat/bin/*.sh
+23.	vi /opt/tomcat/conf/tomcat-users.xml
+Add below lines above the tomcat users
+
+       <role rolename="manager-gui" />
+<user username="manager" password="manager_password" roles="manager-gui" />
+
+<role rolename="admin-gui" />
+<user username="admin" password="admin_password" roles="manager-gui,admin-gui" />
+ 
+24.	vi /opt/tomcat/webapps/manager/META-INF/context.xml
+
+Comment out the below lines 
+
+                   sameSiteCookies="strict" />
+<!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->
+
+
+
+25.	vi /opt/tomcat/webapps/host-manager/META-INF/context.xml
+
+Comment out the below lines 
+
+                   sameSiteCookies="strict" />
+<!--  <Valve className="org.apache.catalina.valves.RemoteAddrValve"
+         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->
+
+
+made below changes in both files
+ 
+26.	systemctl restart tomcat 

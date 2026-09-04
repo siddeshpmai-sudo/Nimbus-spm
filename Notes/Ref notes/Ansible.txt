@@ -1,0 +1,21 @@
+
+
+
+ansible all -m shell -a "mkdir test" --private-key=Myaws.pem -u ubuntu
+
+ansible all -m shell -a "ls -ltr" --private-key=Myaws.pem -u ubuntu
+
+
+---
+- hosts: all
+  
+  tasks:
+    - name: lisiting the folders
+      shell: ls -ltr
+
+    - name: creating folder
+      file:
+        path: /home/ubuntu/ansible_test
+        state: directory
+        mode: 0777
+

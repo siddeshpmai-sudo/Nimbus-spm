@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nimbus Auto | SUVs</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased bg-[#0f172a]">
+
+    <!-- Navigation -->
+    <nav class="fixed w-full z-50 glass-nav px-6 py-4 flex justify-between items-center">
+        <div class="text-2xl font-extrabold tracking-tighter">
+            <a href="index.html">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">NIMBUS</span> AUTO
+            </a>
+        </div>
+        <div class="hidden md:flex space-x-8 text-sm font-semibold text-gray-300">
+            <a href="index.html" class="hover:text-white transition">Home</a>
+            <a href="suvs.html" class="text-white">SUVs</a>
+            <a href="sedans.html" class="hover:text-white transition">Sedans</a>
+            <a href="hatchbacks.html" class="hover:text-white transition">Hatchbacks</a>
+        </div>
+        <a href="index.html" class="bg-gray-700 text-white px-5 py-2 rounded-full font-bold text-sm hover:bg-gray-600 transition">Back to Home</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="pt-32 pb-24 px-6 md:px-20 page-transition">
+        <div class="mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4">Powerful <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-orange-400">SUVs</span></h1>
+            <p class="text-gray-400 text-lg">Command the road with our premium selection of Sports Utility Vehicles.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-1 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/ford_everest.jpg" alt="Ford Endeavour" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Ford Endeavour</h4>
+                    <p class="text-gray-400 text-sm mb-4">4x4 • Diesel • 7 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Ford Endeavour', 'Ford • Full-Size SUV', 'images/ford_everest.jpg', '2.0L Bi-Turbo Diesel', '10-Speed Automatic', '210 hp', '$38,500', 'The Ford Endeavour (Everest) offers unmatched off-road capability mixed with premium interior comfort. Perfect for large families who love adventure.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-2 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/renault_duster.jpg" alt="Renault Duster" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Renault Duster</h4>
+                    <p class="text-gray-400 text-sm mb-4">AWD • Turbo Petrol • 5 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Renault Duster', 'Renault • Compact SUV', 'images/renault_duster.jpg', '1.3L Turbo Petrol', 'CVT Automatic', '156 hp', '$18,000', 'The Renault Duster is a rugged, reliable compact SUV that brings incredible value. With high ground clearance and robust suspension, it thrives anywhere.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-3 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/toyota_fortuner.jpg" alt="Toyota Fortuner" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Toyota Fortuner</h4>
+                    <p class="text-gray-400 text-sm mb-4">4x4 • Automatic • 7 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Toyota Fortuner', 'Toyota • Mid-Size SUV', 'images/toyota_fortuner.jpg', '2.8L Diesel', '6-Speed Automatic', '201 hp', '$45,000', 'The undisputed king of reliability. The Fortuner combines aggressive styling with bulletproof mechanics, ensuring you get where you need to go in style.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="car-card bg-[#1e293b] rounded-2xl overflow-hidden border border-[#334155] stagger-4 page-transition">
+                <div class="car-image-wrapper h-56 bg-gray-800">
+                    <img src="images/tata_nexon.jpg" alt="Tata Nexon" class="car-image w-full h-full object-cover">
+                </div>
+                <div class="p-6">
+                    <h4 class="text-xl font-bold mb-1">Tata Nexon</h4>
+                    <p class="text-gray-400 text-sm mb-4">FWD • EV / Petrol • 5 Seats</p>
+                    <div class="flex justify-between items-center mt-6">
+                        <button onclick="openModal('Tata Nexon', 'Tata Motors • Compact SUV', 'images/tata_nexon.jpg', '1.2L Revotron / 40kWh EV', 'AMT / Direct Drive', '118 hp', '$15,000', 'A highly popular compact SUV featuring top-notch safety ratings (5-star Global NCAP) and futuristic styling. Available in ICE and fully Electric variants.')" class="w-full text-sm font-bold border border-gray-500 rounded-full px-4 py-2 hover:bg-white hover:text-black transition">View Details</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Modal -->
+    <div id="modal" class="hidden fixed inset-0 z-[100] bg-black bg-opacity-80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-[#1e293b] rounded-2xl max-w-2xl w-full border border-[#334155] overflow-hidden shadow-2xl transform transition-all">
+            <div class="relative h-64 bg-gray-900">
+                <img id="modal-img" src="" class="w-full h-full object-cover">
+                <button onclick="closeModal()" class="absolute top-4 right-4 bg-black bg-opacity-50 hover:bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center font-bold transition">&times;</button>
+            </div>
+            <div class="p-8">
+                <h3 id="modal-title" class="text-3xl font-extrabold mb-2">Car Name</h3>
+                <p id="modal-subtitle" class="text-gray-400 text-sm mb-6 uppercase tracking-wider">Subtitle</p>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Engine</p>
+                        <p id="modal-engine" class="font-semibold text-sm">V8</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Trans</p>
+                        <p id="modal-trans" class="font-semibold text-sm">Auto</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Power</p>
+                        <p id="modal-power" class="font-semibold text-sm">300 hp</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-500 text-xs uppercase font-bold mb-1">Price</p>
+                        <p id="modal-price" class="font-semibold text-green-400 text-sm">$50,000</p>
+                    </div>
+                </div>
+                <p id="modal-desc" class="text-gray-300 leading-relaxed text-sm">Description goes here.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        function openModal(title, subtitle, img, engine, trans, power, price, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-subtitle').innerText = subtitle;
+            document.getElementById('modal-img').src = img;
+            document.getElementById('modal-engine').innerText = engine;
+            document.getElementById('modal-trans').innerText = trans;
+            document.getElementById('modal-power').innerText = power;
+            document.getElementById('modal-price').innerText = price;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal').classList.remove('hidden');
+        }
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

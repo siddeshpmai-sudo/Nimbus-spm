@@ -1,0 +1,18 @@
+
+
+
+103. chown new_name file
+104. chown new_name:new_grp file
+105. sed [stream line editor]
+106. sed 's/old_pattern/new_pattern/g' filename
+107. sed 's/samsung/sony/g' newfile
+108. sed -i 's/Testing/development/g' file2
+109. sed 's/testing/development/gi' file2
+110. sed '2s/testing/development/gi' file2
+111. sed '10,30s/testing/development/gi' file2
+112. sed '30,$s/testing/development/gi' file2
+113. sed -n '98p' file
+114. sed -n '2p' file2 
+115. sed -n '10,20p' file
+116. sed '2d' file2 
+117. sed '100d' file

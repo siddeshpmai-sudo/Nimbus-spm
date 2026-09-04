@@ -1,0 +1,21 @@
+
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: probe
+  labels:
+    type: probe
+spec:
+  containers:
+  - name: probe
+    image: k8s.gcr.io/liveness
+    args:
+    - /server
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
+      failureThreshold: 2

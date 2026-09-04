@@ -1,0 +1,178 @@
+installation
+wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+sudo apt update && sudo apt install terraform
+
+
+IAC - Infrastructure as code
+
+applicabel for cloud and on-perm 
+
+
+hasi corp configuration language(HCL)
+
+resource "aws_ec2_instace" "tes"{
+
+}
+
+
+
+files in terraform
+	main.tf
+	variables.tf	
+	output.tf
+	version.tf
+
+types of variables
+	* variables.tf
+	* export TF_VAR_FILENAME
+	* terrfaorm.tfvars
+	
+
+terrforn stats:
+	terraform init
+	terraform plan
+	terraform apply
+	terraform show
+	terraform update
+	terraform destory
+
+
+life cycle rules
+	create_before_destory
+	prevent_destory
+	ignore_changes
+
+terraform statefile -- terraform.tfstate
+		state locking
+
+
+
+
+
+
+
+
+
+provider "aws" {
+    region = ""
+    access_key = ""
+    secret_key = ""
+}
+resource "aws_iam_user" "admin-user" {
+    name = "lucy"
+    tags = {
+        Description = "technical lead"
+    }
+}
+
+user creation and ploicy attachment to user with policy details provided in file with json 
+resource "aws_iam_user" "admin-user" {
+    name = "lucy"
+    tags = {
+        Description = "technical lead"
+    }
+}
+resource "aws_iam_policy" "adminUser" {
+    name = "AdminUsers"
+    policy = <<EOF
+    {
+        "version" : "2012-10-17"
+        "statement" : [
+            {
+                "Effect": "Allow",
+                "Action": "*",
+                "Resources": "*"
+            }
+        ]
+    }
+    EOF
+}
+resource "aws_iam_user_policy_attachment" "lucy_admin_access" {
+    user = aws_iam_user.admin-user.name
+    policy_arn = aws_iam_policy.adminUser.arn
+}
+
+with file (create file in terraform folder in json formet)
+resource "aws_iam_policy" "adminUser" {
+    name = "AdminUsers"
+    policy = file("name.json")
+}
+
+
+s3 bucket creation
+provider "aws" {
+    region = ""
+    access_key = ""
+    secret_key = ""
+}
+resource "aws_s3_bucket" "finance" {
+    bucket = "finance-1234"
+    tags = {
+        Description = "finance and payroll"
+    }
+}
+resource "aws_s3_bucket_object" "finance-2020" {
+    content = "/root/finance/finance-2020.doc"
+    key = "finance-2020.doc"
+    bucket = aws_s3_bucket.finance.id
+}
+data "aws_iam_group" "finance-data" {
+    group_name = "finance-analysts"
+}
+resource "aws_s3_bucket_policy" "finance-policy" {
+    bucket = aws_s3_bucket.finance.id
+    policy = <<EOF
+    {
+        "version": "2012-10-17",
+        "statement": [
+            {
+                "Action": "*",
+                "Effect": "Alloe",
+                "Resource": "arn:aws:s3:::${aws_s3_bucket.finance.id}/*",
+                "Prinicple": {
+                    "AWS":[
+                        "${data.aws_iam_group.finance-data.arn}
+                    ]
+                }
+            }
+        ]
+    }
+    EOF
+}
+
+
+
+
+ec2
+provider "aws" {
+    region = ""
+    access_key = ""
+    secret_key = ""
+}
+resource "aws_instance" "webserver" {
+    ami             = "ami-idddd"
+    instance_type   = "t2.micro"
+    tags = {
+        Name        = "webserver"
+        Description = "an nginx webserve on ubuntu"
+    }
+    key_name = aws_key_pair.web.id
+    vpc_security_group_ids = [ aws_security_group.ssh-access.id ]
+}
+resource "aws_key_pair" "web" {
+    public_key = file("/root/.ssh/web.pub")
+}
+resource "aws_security_group" "ssh-access" {
+    name        = "ssh-access"
+    Description = "Allow ssh accesss from internet"
+    ingress {
+        from_port   = 22
+        to_port     = 22
+        protocal    = "tcp"
+        cidr_blocks = ["0.0.0.0.0"]
+    }
+}
+output publicip {
+    value           = aws_instance.webserver.public_ip
+}
