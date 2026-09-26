@@ -116,6 +116,19 @@ function requireAuth(req, res, next) {
   });
 }
 
+// ── Subdomain routing for notes.nimbuswiztech.com ──
+const notesStatic = express.static(path.join(__dirname, 'Notes-July26', 'html-site'));
+app.use((req, res, next) => {
+  // Check if the request is for the july26 subdomain
+  if (req.hostname.toLowerCase() === 'july26.nimbuswiztech.com' || req.hostname === 'july26.localhost') {
+    return notesStatic(req, res, () => {
+      // If file not found in Notes directory, return 404
+      res.status(404).send('<h2>404 - Note not found</h2>');
+    });
+  }
+  next(); // Otherwise, continue to the main site logic
+});
+
 // ── Serve static files (HTML, CSS, JS, images) ─
 app.use(express.static(path.join(__dirname, 'public')));
 
