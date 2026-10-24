@@ -129,6 +129,11 @@ app.use((req, res, next) => {
   next(); // Otherwise, continue to the main site logic
 });
 
+// ── Redirect old interview_prep to july26 subdomain ──
+app.get('/interview_prep.html', (req, res) => {
+  res.redirect(301, 'https://july26.nimbuswiztech.com/interview_prep.html');
+});
+
 // ── Serve static files (HTML, CSS, JS, images) ─
 app.use(express.static(path.join(__dirname, 'public')));
 
