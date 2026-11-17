@@ -121,6 +121,10 @@ const notesStatic = express.static(path.join(__dirname, 'Notes-July26', 'html-si
 app.use((req, res, next) => {
   // Check if the request is for the july26 subdomain
   if (req.hostname.toLowerCase() === 'july26.nimbuswiztech.com' || req.hostname === 'july26.localhost') {
+    // Normalize lowercase /interview or missing slash to /Interview/
+    if (req.path === '/interview' || req.path === '/interview/' || req.path === '/Interview') {
+      return res.redirect(301, '/Interview/');
+    }
     return notesStatic(req, res, () => {
       // If file not found in Notes directory, return 404
       res.status(404).send('<h2>404 - Note not found</h2>');
@@ -129,9 +133,13 @@ app.use((req, res, next) => {
   next(); // Otherwise, continue to the main site logic
 });
 
-// ── Redirect old interview_prep to july26 subdomain ──
+// ── Redirect old interview_prep & Interview paths to july26 subdomain ──
 app.get('/interview_prep.html', (req, res) => {
   res.redirect(301, 'https://july26.nimbuswiztech.com/interview_prep.html');
+});
+app.get(['/Interview', '/Interview/*', '/interview', '/interview/*'], (req, res) => {
+  const targetPath = req.originalUrl.replace(/^\/interview(\/|$)/i, '/Interview$1');
+  res.redirect(301, `https://july26.nimbuswiztech.com${targetPath}`);
 });
 
 // ── Serve static files (HTML, CSS, JS, images) ─
